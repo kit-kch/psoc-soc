@@ -33,6 +33,11 @@
 #
 #*****************************************************************************************
 
+# The following lines were manually added
+set script_file [file normalize [info script]]
+set script_folder [file dirname $script_file]
+cd $script_folder
+
 # Set the reference directory for source file relative paths (by default the value is script directory path)
 set origin_dir "."
 
