@@ -33,26 +33,43 @@ module fpga_standalone_top(
         output ac_lrclk
     );
 
-    // Generate all required clocks
     wire clk_soc;
     wire locked;
+    wire reset;
+
+    assign reset = btn_c;
+
+    // Generate all required clocks
     clk_wiz_0 pll (
         .clk_in1(sys_clk),
-        .reset(btn_c),
+        .reset(reset),
         .clk_soc(clk_soc),
         //.clk_adau_mclk(ac_mclk),
         .locked(locked));
 
+    // ADAU configuration
+    wire [23:0] adau_command;
+    wire adau_command_valid;
+    wire spi_ready;
+    wire adau_configured;
 
+    // The SPI ADAU master
+    adau_spi_master spi(
+        .clk(clk_soc),
+        .reset(reset),
+        .data_in({adau_command, 8'b0}),
+        .valid(adau_command_valid),
+        .ready(spi_ready),
+        .cdata(ac_addr1_cdata),
+        .cclk(ac_scl_cclk),
+        .clatch_n(ac_addr0_clatch),
+        .led(led[7:5]));
 
     // Default LED outputs for debugging signals
-    assign led = dip & {3'b000, btn_c, btn_d, btn_l, btn_r, btn_u};
+    assign led[4:0] = dip[4:0] & {btn_c, btn_d, btn_l, btn_r, btn_u};
     
     //Default outputs for ADAU signals
     assign ac_mclk = 'b0;
-    assign ac_addr0_clatch = 'b0;
-    assign ac_addr1_cdata = 'b0;
-    assign ac_scl_cclk = 'b0;
     assign ac_dac_sdata = 'b0;
     assign ac_bclk = 'b0;
     assign ac_lrclk = 'b0;
