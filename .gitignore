@@ -2,6 +2,7 @@
 vivado.jou*
 vivado.log*
 vivado_pid*
+vivado_*
 psoc_fpga/
 # vivado creates useless files in this folder
 src/ip/*
