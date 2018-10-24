@@ -1,4 +1,7 @@
 # vivado generated project
+vivado.jou*
+vivado.log*
+vivado_pid*
 psoc_fpga/
 # vivado creates useless files in this folder
 src/ip/*
