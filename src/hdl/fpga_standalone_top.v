@@ -44,34 +44,37 @@ module fpga_standalone_top(
         .clk_in1(sys_clk),
         .reset(reset),
         .clk_soc(clk_soc),
-        //.clk_adau_mclk(ac_mclk),
+        .clk_adau_mclk(ac_mclk),
         .locked(locked));
 
-    // ADAU configuration
-    wire [23:0] adau_command;
-    wire adau_command_valid;
-    wire spi_ready;
-    wire adau_configured;
+    // Interface to the ADAU
+    wire [23:0] sine_generator_out;
+    wire audio_full;
 
-    // The SPI ADAU master
-    adau_spi_master spi(
-        .clk(clk_soc),
-        .reset(reset),
-        .data_in({adau_command, 8'b0}),
-        .valid(adau_command_valid),
-        .ready(spi_ready),
-        .cdata(ac_addr1_cdata),
-        .cclk(ac_scl_cclk),
-        .clatch_n(ac_addr0_clatch),
-        .led(led[7:5]));
+    adau_interface adau
+      (.clk_120mhz(clk_soc),
+       .reset(reset),
+
+       .audio_in({2{sine_generator_out}}),
+       .audio_in_valid(1),
+       .audio_full(audio_full),
+       .enable_audio(1),
+       .init_complete(),
+
+       .cclk(ac_scl_cclk),
+       .clatch_n(ac_addr0_clatch),
+       .cdata(ac_addr1_cdata)
+      );
+
+    // The audio generator
+    sine_generator sine
+      (.clk(clk_soc),
+       .reset(reset),
+       .enable(!audio_full),
+       .out(sine_generator_out)
+       );
 
     // Default LED outputs for debugging signals
     assign led[4:0] = dip[4:0] & {btn_c, btn_d, btn_l, btn_r, btn_u};
     
-    //Default outputs for ADAU signals
-    assign ac_mclk = 'b0;
-    assign ac_dac_sdata = 'b0;
-    assign ac_bclk = 'b0;
-    assign ac_lrclk = 'b0;
-
  endmodule

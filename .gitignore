@@ -8,3 +8,5 @@ psoc_fpga/
 # vivado creates useless files in this folder
 src/ip/*
 !src/ip/*.xci
+# for all the vim users ;)
+*.swp
