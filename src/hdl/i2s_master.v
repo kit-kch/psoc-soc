@@ -19,15 +19,17 @@ module i2s_master
    // This FIFO stores the audio data.
    // The write interface just gets exposed to the user of this module.
    // We get our audio data from the read interface.
-   audio_data_fifo fifo
+   fifo
+      #(.WIDTH(48), .SIZE(8))
+   audio_data_fifo
      (.clk(clk),
-      .rst(reset),
+      .reset(reset),
 
       .din(frame_in),
-      .wr_en(write_frame),
+      .wr(write_frame),
       .full(full),
 
-      .rd_en(fifo_read),
+      .rd(fifo_read),
       .dout(cur_frame),
       .empty(fifo_empty)
       );

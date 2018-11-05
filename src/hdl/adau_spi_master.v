@@ -1,55 +1,81 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-//
-// Description:
-// SPI master interface to send commands to the ADAU chip.           
-// 
-//////////////////////////////////////////////////////////////////////////////////
+`timescale 1ns/1ps
 
+module adau_spi_master
+  (input clk,
+   input reset,
 
-module adau_spi_master(
-    input clk,
-    input reset,
+   input [31:0] data_in,
+   input valid,
+   output ready,
 
-    input [31:0] data_in,
-    input valid,
-    output ready,
+   output cdata,
+   output cclk,
+   output reg clatch_n);
 
-    output cdata,
-    output cclk,
-    output reg clatch_n,
-    
-    // some example debug signals
-    output [2:0] led
-    );
+   // CLK runs at 120MHz. We use a counter to generate a pulse every 6
+   // CLKs. If we toggle CCLK on each pulse we get a 10MHz signal -
+   // the maximum CCLK frequency.
+   localparam CCLK_DIVIDER = 6;
+   localparam DIVIDER_BITS = $clog2(CCLK_DIVIDER);
+   reg [CCLK_DIVIDER-1:0] divider;
+   wire divider_tick = divider == (CCLK_DIVIDER - 1);
 
+   // 2 states per bit (clock high, clock low) times 32 bits per
+   // transfer gives 64 states. We need another wait state after
+   // pulling CLATCH_N high, so we respect the minimum pulse width on that
+   // signal. Finally, we need an idle state, where READY is asserted.
+   // Therefore, during a transfer, our FSM steps through these states
+   // in order:
+   localparam BIT_31_CLOCK_LOW  = 0;
+   localparam BIT_31_CLOCK_HIGH = 1;
+   localparam BIT_30_CLOCK_LOW  = 2;
+   // ...
+   localparam BIT_0_CLOCK_HIGH = 62;
+   localparam CLATCH_N_GOING_HIGH = 63;  // AKA BIT_0_CLOCK_LOW
+   localparam WAITING_FOR_CLATCH_N = 64;
+   localparam IDLE = 65;
 
-    // Placeholder example debug code. Replace with your SPI implementation
-    assign ac_addr0_clatch = 'b0;
-    assign ac_addr1_cdata = 'b0;
-    assign ac_scl_cclk = 'b0;
-    assign ready = 'b0;
-    assign cdata = 'b0;
-    assign cclk = 'b0;
-    
-    reg [2:0] ledreg = 0;
-    reg [24:0] counter = 0;
+   reg [6:0] state;
+   assign ready = state == IDLE;
 
-    assign led = ledreg;
-    always @(posedge clk) begin
-        clatch_n = 'b0;
-        if(reset) begin
-            ledreg <= 0;
-        end
-        else begin
-            if (counter == 0) begin
-                if(ledreg == 0)
-                    ledreg <= 1;
-            else
-                ledreg <= {ledreg[1:0], 1'b0}; 
+   // The clock is low in even states and high in odd states. The only
+   // exception is IDLE - we need to force the clock low there. If we
+   // didn't do this, the clock would be high while IDLE, and low in
+   // the next state. Since the minimum IDLE duration is one CLK
+   // period, the minimum CCLK pulse width might be violated.
+   assign cclk = state[0] && (state != IDLE);
+
+   // This shift register holds the data to be transferred. The MSB is
+   // sent first, so we connect it to CDATA and shift to the left.
+   reg [31:0] shiftreg;
+   assign cdata = shiftreg[31];
+
+   always @(posedge clk) begin
+      if(reset) begin
+         state <= IDLE;
+         clatch_n <= 1;
+         divider <= 0;
+      end else begin
+         if(ready) begin
+            if(valid) begin
+               state <= 0;
+               shiftreg <= data_in;
+               clatch_n <= 0;
             end
-            counter <= counter +1;   
-        end
-    end
+         end else begin
+            if(divider_tick)
+              divider <= 0;
+            else
+              divider <= divider + 1;
 
+            if(divider_tick) begin
+               state <= state + 1;
+               if(cclk)  // CCLK about to fall?
+                 shiftreg <= {shiftreg[30:0], 1'b0};
+               if(state == CLATCH_N_GOING_HIGH)
+                 clatch_n <= 1;
+            end
+         end
+      end
+   end
 endmodule

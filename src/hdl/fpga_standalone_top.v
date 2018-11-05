@@ -59,11 +59,15 @@ module fpga_standalone_top(
        .audio_in_valid(1),
        .audio_full(audio_full),
        .enable_audio(1),
-       .init_complete(),
+       .init_done(),
 
        .cclk(ac_scl_cclk),
        .clatch_n(ac_addr0_clatch),
-       .cdata(ac_addr1_cdata)
+       .cdata(ac_addr1_cdata),
+
+       .sdata(ac_dac_sdata),
+       .bclk(ac_bclk),
+       .lrclk(ac_lrclk)
       );
 
     // The audio generator
