@@ -3,8 +3,8 @@
 //
 // Description:
 // Standalone top module which does not include the picorv32 processor.
-// This is used for simple debugging to get the ADAU driver working first.           
-// 
+// This is used for simple debugging to get the ADAU driver working first.
+//
 //////////////////////////////////////////////////////////////////////////////////
 
 
@@ -56,9 +56,9 @@ module fpga_standalone_top(
        .reset(reset),
 
        .audio_in({2{sine_generator_out}}),
-       .audio_in_valid(1),
+       .audio_in_valid(!audio_full),
        .audio_full(audio_full),
-       .enable_audio(1),
+       .enable_audio(1'b1),
        .init_done(),
 
        .cclk(ac_scl_cclk),
@@ -80,5 +80,5 @@ module fpga_standalone_top(
 
     // Default LED outputs for debugging signals
     assign led[4:0] = dip[4:0] & {btn_c, btn_d, btn_l, btn_r, btn_u};
-    
+
  endmodule

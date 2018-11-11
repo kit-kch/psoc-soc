@@ -14,6 +14,9 @@ module i2s_master
     output full
     );
    wire [47:0] cur_frame;
+   wire [23:0] cur_frame_right = cur_frame[23:0];
+   wire [23:0] cur_frame_left = cur_frame[47:24];
+
    wire fifo_read, fifo_empty;
 
    // This FIFO stores the audio data.
@@ -68,7 +71,7 @@ module i2s_master
                if(bclk_edges == 0) begin
                   // First falling edge? Load the next sample.
                   // LRCLK tells us which channel to use.
-                  shiftreg <= lrclk ? cur_frame[23:0] : cur_frame[47:24];
+                  shiftreg <= lrclk ? cur_frame_right : cur_frame_left;
                   // if(lrclk && !fifo_empty)
                   //     fifo_read is high
                end else begin // bclk_edges != 0

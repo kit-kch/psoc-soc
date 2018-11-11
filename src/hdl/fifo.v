@@ -40,4 +40,3 @@ module fifo #(
    assign empty = low_eq && msb_eq;
    assign full = low_eq && !msb_eq;
 endmodule
-
