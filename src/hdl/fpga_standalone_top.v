@@ -79,6 +79,6 @@ module fpga_standalone_top(
        );
 
     // Default LED outputs for debugging signals
-    assign led[4:0] = dip[4:0] & {btn_c, btn_d, btn_l, btn_r, btn_u};
+    assign led = dip & {3'b111, btn_c, btn_d, btn_l, btn_r, btn_u};
 
  endmodule
