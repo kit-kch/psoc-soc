@@ -1,5 +1,5 @@
 // MEMORY MAP:
-// - 0x00010000 - 0x00013fff: RAM (read-write)
+// - 0x00010000 - 0x00017fff: RAM (read-write)
 // - 0x80000000: DIP switches (read-only)
 // - 0x80000004: LEDs (read-write)
 // - 0x80000008: buttons (read-only)
@@ -16,18 +16,18 @@ module cpu_bus_logic(
    // CPU connections
    input [31:0] addr,
    input [31:0] wdata,
-   output [31:0] rdata,
+   output reg [31:0] rdata,
    input [3:0] wstrb,
    input valid,
-   output ready,
+   output reg ready,
 
    // debugging stuff
    input [7:0] dip,
    input [4:0] buttons,
-   output reg [7:0] leds,
+   output reg [7:0] led,
 
    // RAM interface
-   output [13:0] ram_addr,
+   output [14:0] ram_addr,
    output [31:0] ram_wdata,
    output reg ram_valid,
    output [3:0] ram_wstrb,
@@ -36,12 +36,12 @@ module cpu_bus_logic(
 
    // adau_interface signals
    output [47:0] adau_audio,
-   output adau_audio_valid,
+   output reg adau_audio_valid,
    input adau_audio_full,
    input adau_init_done
    );
 
-   assign ram_addr = addr[13:0];
+   assign ram_addr = addr[14:0];
    assign ram_wstrb = wstrb;
    assign ram_wdata = wdata;
 
@@ -49,43 +49,42 @@ module cpu_bus_logic(
    always @(*) begin
       ram_valid = 0;
       ready = 1;
-      case(addr)
-         32'b0000_0000_0000_0001_00??_????_????_????: begin
+      casez(addr)
+         32'b0000_0000_0000_0001_0???_????_????_????: begin
             rdata = ram_rdata;
-            ram_valid = 1;
+            ram_valid = valid;
             ready = ram_ready;
          end
-         8'h8000_0000: mem_rdata = {24'b0, dip};
-         8'h8000_0004: mem_rdata = {24'b0, led};
-         8'h8000_0008: mem_rdata = {27'b0, buttons};
-         8'h8000_000c: mem_rdata = {30'b0, adau_init_done, adau_audio_full};
-         default: mem_rdata = 32'h0000_0000;
+         32'h8000_0000: rdata = {24'b0, dip};
+         32'h8000_0004: rdata = {24'b0, led};
+         32'h8000_0008: rdata = {27'b0, buttons};
+         32'h8000_000c: rdata = {30'b0, adau_init_done, adau_audio_full};
+         default: rdata = 32'h0000_0000;
       endcase
 
-      adau_audio_valid = (addr == 32'h8000_0014) && |mem_wstrb[2:0];
+      adau_audio_valid = (addr == 32'h8000_0014) && |wstrb[3:1];
    end
 
    // write logic
    reg [23:0] left_audio;
-   assign adau_audio = {left_audio, mem_wdata[23:0]};
+   assign adau_audio = {left_audio, wdata[31:8]};
    always @(posedge clk) begin
       if(reset) begin
-         leds <= 8'h00;
+         led <= 8'h00;
          left_audio <= 24'h000000;
       end else if(valid) begin
          case(addr)
-            8'h8000_0004: begin
+            32'h8000_0004: begin
                if(wstrb[0])
-                  led <= mem_wdata[7:0];
+                  led <= wdata[7:0];
             end
-
-            8'h8000_0010: begin
+            32'h8000_0010: begin
+               if(wstrb[3])
+                  left_audio[23:16] <= wdata[31:24];
                if(wstrb[2])
-                  left_audio[23:16] <= wdata[23:16];
+                  left_audio[15:8] <= wdata[23:16];
                if(wstrb[1])
-                  left_audio[15:8] <= wdata[15:8];
-               if(wstrb[0])
-                  left_audio[7:0] <= wdata[7:0];
+                  left_audio[7:0] <= wdata[15:8];
             end
          endcase
       end

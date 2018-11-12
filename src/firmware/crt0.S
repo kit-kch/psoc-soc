@@ -1,4 +1,4 @@
-        .section isr_vector
+        .section .startup
         .global _start
 _start:
         # Set up the stack.

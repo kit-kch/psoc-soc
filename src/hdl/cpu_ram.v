@@ -2,8 +2,8 @@
 
 module cpu_ram
   // Total memory size is 2^SIZE words (= 4*2^SIZE bytes)
-  // SIZE=12 gives us 16KiB
-  #(parameter SIZE=12)
+  // SIZE=13 gives us 32KiB
+  #(parameter SIZE=13)
    (input clk,
     input reset,
     input [SIZE+1:0] addr,

@@ -26,6 +26,6 @@ int main(void)
             int sample = *buf++;
             R_AUDIO_LEFT = sample;
             R_AUDIO_RIGHT = sample;
-        }
+	}
     }
 }

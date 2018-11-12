@@ -3,11 +3,11 @@ ENTRY(_start)
 SECTIONS
 {
         . = 0x00010000;
-        _ramend = 0x00014000;
-        .text : ALIGN(4)
+        _ramend = 0x00018000;
+        .text :
         {
-               *(.isr_vector)
-               KEEP(*(.isr_vector))
+	       *(.startup)
+	       KEEP(*(.startup))
                *(.text)
                *(.text*)
                *(.rodata)

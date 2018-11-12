@@ -35,8 +35,8 @@ module fifo #(
       end
    end
 
-   assign low_eq = rd_ptr[SIZE-1:0] == wr_ptr[SIZE-1:0];
-   assign msb_eq = rd_ptr[SIZE] == wr_ptr[SIZE];
+   wire low_eq = rd_ptr[SIZE-1:0] == wr_ptr[SIZE-1:0];
+   wire msb_eq = rd_ptr[SIZE] == wr_ptr[SIZE];
    assign empty = low_eq && msb_eq;
    assign full = low_eq && !msb_eq;
 endmodule

@@ -98,7 +98,7 @@ static void sum(int *a_out, int *b, unsigned int count)
 
 #include "mario.h"
 
-#define CHUNK 256
+#define CHUNK 64
 static int voice_buf[CHUNK];
 static int mix_buf[CHUNK];
 

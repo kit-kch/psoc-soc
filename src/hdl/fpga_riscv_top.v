@@ -29,6 +29,8 @@ module fpga_riscv_top(
     wire locked;
     wire reset;
 
+   assign reset = btn_c;
+
     // Generate all required clocks
     clk_wiz_0 pll (
         .clk_in1(sys_clk),
@@ -49,7 +51,7 @@ module fpga_riscv_top(
       .audio_full(adau_audio_full),
       .enable_audio(1'b1),
       .init_done(adau_init_done),
-      
+
       .cclk(ac_scl_cclk),
       .clatch_n(ac_addr0_clatch),
       .cdata(ac_addr1_cdata),
@@ -60,7 +62,7 @@ module fpga_riscv_top(
     );
 
     // RAM for the CPU
-    wire [13:0] ram_addr;
+    wire [14:0] ram_addr;
     wire [31:0] ram_wdata, ram_rdata;
     wire ram_valid, ram_ready;
     wire [3:0] ram_wstrb;
@@ -85,13 +87,14 @@ module fpga_riscv_top(
       .reset(reset),
       .addr(bus_addr),
       .wdata(bus_wdata),
+      .wstrb(bus_wstrb),
       .rdata(bus_rdata),
       .valid(bus_valid),
       .ready(bus_ready),
-      
+
       .dip(dip),
       .buttons({btn_c, btn_d, btn_l, btn_r, btn_u}),
-      .leds(led),
+      .led(led),
 
       .ram_addr(ram_addr),
       .ram_wdata(ram_wdata),
@@ -110,8 +113,9 @@ module fpga_riscv_top(
    picorv32
      #(.REGS_INIT_ZERO(1),
        .PROGADDR_RESET(32'h0001_0000),
+       .ENABLE_MUL(1)
        ) cpu (
-         .clk(clk_120mhz),
+         .clk(clk_soc),
          .resetn(!reset),
          .mem_valid(bus_valid),
          .mem_ready(bus_ready),
