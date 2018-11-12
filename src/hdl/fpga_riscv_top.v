@@ -7,6 +7,7 @@ module fpga_riscv_top(
         // for debugging
         output [7:0] led,
         input [7:0] dip,
+        output [7:0] debug,
         input btn_c,
         input btn_d,
         input btn_l,

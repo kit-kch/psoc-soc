@@ -1,3 +1,22 @@
+# Debug PMOD pins
+# ----------------------------------------------------------------------------
+set_property PACKAGE_PIN V4 [get_ports {debug[7]}];             # "JD2_N"
+set_property IOSTANDARD LVCMOS33 [get_ports {debug[7]}];
+set_property PACKAGE_PIN V5 [get_ports {debug[6]}];             # "JD2_P"
+set_property IOSTANDARD LVCMOS33 [get_ports {debug[6]}];
+set_property PACKAGE_PIN W7 [get_ports {debug[5]}];             # "JD1_N"
+set_property IOSTANDARD LVCMOS33 [get_ports {debug[5]}];
+set_property PACKAGE_PIN V7 [get_ports {debug[4]}];             # "JD1_P"
+set_property IOSTANDARD LVCMOS33 [get_ports {debug[4]}];
+set_property PACKAGE_PIN AA4 [get_ports {debug[3]}];            # "JC2_N"
+set_property IOSTANDARD LVCMOS33 [get_ports {debug[3]}];
+set_property PACKAGE_PIN Y4 [get_ports {debug[2]}];             # "JC2_P"
+set_property IOSTANDARD LVCMOS33 [get_ports {debug[2]}];
+set_property PACKAGE_PIN AB6 [get_ports {debug[1]}];            # "JC1_N"
+set_property IOSTANDARD LVCMOS33 [get_ports {debug[1]}];
+set_property PACKAGE_PIN AB7 [get_ports {debug[0]}];            # "JC1_P"
+set_property IOSTANDARD LVCMOS33 [get_ports {debug[0]}];
+
 # ----------------------------------------------------------------------------
 # Bank 13
 # Note that the bank voltage for IO Bank 13 is fixed to 3.3V on ZedBoard.

@@ -15,6 +15,7 @@ module fpga_standalone_top(
         // for debugging
         output [7:0] led,
         input [7:0] dip,
+        output [7:0] debug,
         input btn_c,
         input btn_d,
         input btn_l,
@@ -38,6 +39,7 @@ module fpga_standalone_top(
     wire reset;
 
     assign reset = btn_c;
+    assign debug[7:0] = {reset, ac_mclk, ac_addr0_clatch, ac_addr1_cdata,  ac_scl_cclk, ac_dac_sdata, ac_bclk, ac_lrclk};
 
     // Generate all required clocks
     clk_wiz_0 pll (
