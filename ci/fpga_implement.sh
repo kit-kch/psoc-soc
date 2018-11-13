@@ -15,7 +15,7 @@ case "$COMMAND" in
       implement_soc)
           echo "Testing SOC implementation"
           vivado -mode batch -source "ci/fpga_soc.tcl" -nojournal -log "fpga_soc.log"
-          cp -v psoc_fpga/psoc_fpga.runs/impl_1/fpga_rsicv_top.bit out/
+          cp -v psoc_fpga/psoc_fpga.runs/impl_1/fpga_riscv_top.bit out/
           ;;
       *)
           printf "Unknown command: '%s'\n\n" "$COMMAND" >&2
