@@ -1,0 +1,1 @@
+[![pipeline status](https://gitlab.itiv.kit.edu/psoc/psoc_fpga/badges/master/pipeline.svg)](https://gitlab.itiv.kit.edu/psoc/psoc_fpga/commits/master)
