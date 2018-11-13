@@ -1,0 +1,22 @@
+stages:
+  - fpga
+
+implement-standalone:
+  stage: fpga
+  script:
+    - ./ci/fpga_implement.sh implement_standalone
+  tags:
+    - tools
+  artifacts:
+    paths:
+    - out/
+
+implement-soc:
+  stage: fpga
+  script:
+    - ./ci/fpga_implement.sh implement_soc
+  tags:
+    - tools
+  artifacts:
+    paths:
+    - out/
