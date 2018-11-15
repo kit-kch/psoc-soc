@@ -53,8 +53,8 @@ module tb_adau_command_list();
       cmds[0] = 32'h00_0000_00;
       cmds[1] = 32'h00_0000_00;
       cmds[2] = 32'h00_0000_00;
-      cmds[3] = 32'h01_4000_01;
-      cmds[4] = 32'h01_40f9_ff;
+      cmds[3] = 32'h00_4000_01;
+      cmds[4] = 32'h00_40f9_ff;
 
       spi_ready <= 1;
       for(i = 0; i < 5; i = i + 1) begin

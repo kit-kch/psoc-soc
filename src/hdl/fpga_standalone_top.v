@@ -36,18 +36,24 @@ module fpga_standalone_top(
 
     wire clk_soc;
     wire locked;
-    wire reset;
-
-    assign reset = btn_c;
-    assign debug[7:0] = {reset, ac_mclk, ac_addr0_clatch, ac_addr1_cdata,  ac_scl_cclk, ac_dac_sdata, ac_bclk, ac_lrclk};
 
     // Generate all required clocks
     clk_wiz_0 pll (
         .clk_in1(sys_clk),
-        .reset(reset),
+        .reset(btn_c),
         .clk_soc(clk_soc),
         .clk_adau_mclk(ac_mclk),
         .locked(locked));
+
+   // stretch the reset pulse
+   reg [5:0] reset_counter = 6'b111111;
+   wire reset = reset_counter[5];
+   always @(posedge clk_soc) begin
+      if(!locked)
+	reset_counter <= 6'b111111;
+      else if(|reset_counter)
+	reset_counter <= reset_counter - 1;
+   end
 
     // Interface to the ADAU
     wire [23:0] sine_generator_out;
@@ -82,5 +88,7 @@ module fpga_standalone_top(
 
     // Default LED outputs for debugging signals
     assign led = dip & {3'b111, btn_c, btn_d, btn_l, btn_r, btn_u};
+
+    assign debug[7:0] = {reset, ac_mclk, ac_addr0_clatch, ac_addr1_cdata,  ac_scl_cclk, ac_dac_sdata, ac_bclk, ac_lrclk};
 
  endmodule
