@@ -10,3 +10,4 @@ src/ip/*
 !src/ip/*.xci
 # for all the vim users ;)
 *.swp
+*.xcix
