@@ -1,7 +1,6 @@
 #!/bin/bash
 
-echo "Setting up licenses"
-source ./ci/itiv-setup.sh
+source /tools/xilinx/set_xilinx2018.2.sh
 mkdir -p out
 set -ex
 
