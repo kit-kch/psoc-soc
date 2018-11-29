@@ -45,6 +45,7 @@ module fpga_riscv_top(
     wire adau_audio_in_valid, adau_audio_full, adau_init_done;
     adau_interface adau (
       .clk_120mhz(clk_soc),
+      .ac_mclk(ac_mclk),
       .reset(reset),
 
       .audio_in(adau_audio_in),

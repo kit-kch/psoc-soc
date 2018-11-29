@@ -45,15 +45,15 @@ module fpga_standalone_top(
         .clk_adau_mclk(ac_mclk),
         .locked(locked));
 
-   // stretch the reset pulse
-   reg [5:0] reset_counter = 6'b111111;
-   wire reset = reset_counter[5];
-   always @(posedge clk_soc) begin
-      if(!locked)
-	reset_counter <= 6'b111111;
-      else if(|reset_counter)
-	reset_counter <= reset_counter - 1;
-   end
+    // stretch the reset pulse
+    reg [5:0] reset_counter = 6'b111111;
+    wire reset = reset_counter[5];
+    always @(posedge clk_soc) begin
+       if(!locked)
+           reset_counter <= 6'b111111;
+       else if(|reset_counter)
+	       reset_counter <= reset_counter - 1;
+    end
 
     // Interface to the ADAU
     wire [23:0] sine_generator_out;
@@ -61,6 +61,7 @@ module fpga_standalone_top(
 
     adau_interface adau
       (.clk_120mhz(clk_soc),
+       .ac_mclk(ac_mclk),
        .reset(reset),
 
        .audio_in({2{sine_generator_out}}),

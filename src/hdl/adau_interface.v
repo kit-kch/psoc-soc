@@ -2,6 +2,7 @@
 
 module adau_interface(
    input clk_120mhz,
+   input ac_mclk,
    input reset,
 
    // user signals
@@ -46,12 +47,11 @@ module adau_interface(
       .init_done(init_done)
       );
 
-   wire i2s_enable = init_done && enable_audio;
    i2s_master i2s
-      (.clk(clk_120mhz),
-       .reset(reset),
+      (.clk_soc(clk_120mhz),
+       .ac_mclk(ac_mclk),
+       .reset(0), //FIXME
 
-       .enable(i2s_enable),
        .frame_in(audio_in),
        .write_frame(audio_in_valid),
        .full(audio_full),

@@ -1,9 +1,9 @@
 `timescale 1ns/1ps
 
 module i2s_master
-   (input clk,
+   (input clk_soc,
+    input ac_mclk,
     input reset,
-    input enable,
 
     output reg bclk,
     output reg lrclk,
@@ -13,89 +13,101 @@ module i2s_master
     input write_frame,
     output full
     );
+
    wire [47:0] cur_frame;
    wire [23:0] cur_frame_right = cur_frame[23:0];
    wire [23:0] cur_frame_left = cur_frame[47:24];
-
-   wire fifo_read, fifo_empty;
+   wire fifo_empty;
+   reg fifo_read;
 
    // This FIFO stores the audio data.
    // The write interface just gets exposed to the user of this module.
    // We get our audio data from the read interface.
-   fifo
-      #(.WIDTH(48), .SIZE(8))
-   audio_data_fifo
-     (.clk(clk),
-      .reset(reset),
-
-      .din(frame_in),
-      .wr(write_frame),
-      .full(full),
-
-      .rd(fifo_read),
-      .dout(cur_frame),
-      .empty(fifo_empty)
-      );
-
-   // We need a BCLK frequency/data rate of
-   //   2 channels * (24 bit data + 1 bit overhead) * 48k / s = 2.4 Mbit/s
-   // 120MHz/2.4MHz is a ratio of 50. Therefore our counter counts to 25.
-   localparam COUNTER_TOP = 25;
-   localparam DIV_BITS = $clog2(COUNTER_TOP);
-   reg [DIV_BITS-1:0] divider;
-   wire bclk_tick = divider == COUNTER_TOP - 1;
-
-   // Once again, we send our data using a shift register.
-   reg [23:0] shiftreg;
-   assign sdata = shiftreg[23];
-
-   // This counter keeps track of how many bits have been sent.
-   reg [4:0] bclk_edges;
-
-   always @(posedge clk) begin
-      if(reset || !enable) begin
+   audio_fifo audio_data_fifo (
+      .rst(reset),                // input wire rst
+      .wr_clk(clk_soc),           // input wire wr_clk
+      .rd_clk(ac_mclk),         // input wire rd_clk
+      .din(frame_in),             // input wire [47 : 0] din
+      .wr_en(write_frame),        // input wire wr_en
+      .rd_en(fifo_read),          // input wire rd_en
+      .dout(cur_frame),           // output wire [47 : 0] dout
+      .full(full),                // output wire full
+      .empty(fifo_empty),         // output wire empty
+      .wr_rst_busy(),             // output wire wr_rst_busy
+      .rd_rst_busy()              // output wire rd_rst_busy
+   );
+   
+   reg [5:0] bclk_counter;
+   reg [23:0] sdata_sreg;
+   reg [1:0] startup;
+   assign sdata = sdata_sreg[23];
+   reg fifo_was_empty;
+   
+   reg mclk_tick_counter;
+   always @(posedge ac_mclk) begin
+      if(reset) begin
          bclk <= 0;
-         lrclk <= 0;
-         bclk_edges <= 0;
-         divider <= 0;
+         lrclk <= 1;
+         // This forces the FSM to do the initial lcclk transisiton
+         bclk_counter <= 63;
+         sdata_sreg <= 24'b0;
+         fifo_read <= 0;
+         startup <= 0;
+         mclk_tick_counter <= 0;
       end else begin
-         if(bclk_tick)
-           divider <= 0;
-         else
-           divider <= divider + 1;
+         // Reset on every adau_mclk clk, to pulse for only one adau_mclk cycle
+         fifo_read <= 0;
+         mclk_tick_counter <= mclk_tick_counter + 1;
+         
+         // After reset, first read one FIFO entry
+         if (startup == 0) begin
+             if (!fifo_empty) begin
+                 fifo_read <= 1;
+                 startup <= 1;
+             end
+         end if (startup == 1) begin
+             fifo_read <= 0;
+             startup <= 2;
+         // Everything else is done on the tick counter, which essentially stretches the pulses
+         end else if (mclk_tick_counter == 1) begin
+            bclk_counter <= bclk_counter + 1;
+            
+            // Prepare next output bit. write before bclk goes low
+            // Note: requires LRDEL=1
+            if (bclk == 0 && bclk_counter != 0) begin
+                sdata_sreg <= {sdata_sreg[22:0], 1'b0};
+            end
+            
+            // Generate bclk signal for first 48 cycles only
+            if (bclk_counter < 48) begin
+                bclk <= ! bclk;
+            end
+            // Generate lrclk
+            if (bclk_counter == 63) begin
+                // Load next output value
+                if (lrclk == 0) begin
+                    if (fifo_was_empty)
+                        sdata_sreg <= 24'b0;
+                    else
+                        sdata_sreg <= cur_frame_right;
 
-         if(bclk_tick) begin
-            bclk <= ~bclk;
-
-            if(bclk) begin  // Falling edge on BCLK imminent?
-               if(bclk_edges == 0) begin
-                  // First falling edge? Load the next sample.
-                  // LRCLK tells us which channel to use.
-                  shiftreg <= lrclk ? cur_frame_right : cur_frame_left;
-                  // if(lrclk && !fifo_empty)
-                  //     fifo_read is high
-               end else begin // bclk_edges != 0
-                  shiftreg <= {shiftreg[22:0], 1'b0};
-               end
-               if(bclk_edges == 24) begin  // Current sample done?
-                  // Toggle LRCLK and prepare for the next sample.
-                  lrclk <= ~lrclk;
-                  bclk_edges <= 0;
-               end else begin
-                  bclk_edges <= bclk_edges + 1;
-               end
-
-            end // if(bclk)
-         end  // if(bclk_tick)
-      end  // else
-   end  // always @(posedge clk)
-
-   // We read from the FIFO when:
-   assign fifo_read = (
-                       !reset && enable &&       // We are actually sending data...
-                       bclk_tick && bclk &&      // ...and BCLK will be low next CLK...
-                       bclk_edges == 0 &&        // ...and we are loading new data into shiftreg...
-                       lrclk &&                  // ...which belongs to the right (= last) channel.
-                       !fifo_empty               // Also, we don't want to underflow the FIFO.
-                       );
+                    // Read next FIFO entry
+                    fifo_was_empty <= 1;
+                    if (!fifo_empty) begin
+                        fifo_read <= 1;
+                        fifo_was_empty <= 0;
+                    end
+                end else begin
+                    if (fifo_was_empty)
+                    sdata_sreg <= 24'b0;
+                else
+                    sdata_sreg <= cur_frame_left;
+                end
+                
+                lrclk <= !lrclk;
+                bclk_counter <= 0;
+            end
+         end
+      end
+   end
 endmodule
