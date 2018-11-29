@@ -216,12 +216,12 @@ set_property -name "top_auto_set" -value "0" -objects $obj
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- [file normalize "${origin_dir}/src/ip/clk_wiz_0.xci"] \
+ [file normalize "${origin_dir}/src/ip/clk_wiz/clk_wiz_0.xci"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/src/ip/clk_wiz_0.xci"
+set file "src/ip/clk_wiz/clk_wiz_0.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
@@ -238,7 +238,7 @@ if { ![get_property "is_locked" $file_obj] } {
 set obj [get_filesets sources_1]
 # Add local files from the original project (-no_copy_sources specified)
 set files [list \
- [file normalize "${origin_dir}/psoc_fpga/src/ip/audio_fifo.xci" ]\
+ [file normalize "${origin_dir}/src/ip/audio_fifo/audio_fifo.xci" ]\
 ]
 set added_files [add_files -fileset sources_1 $files]
 
@@ -246,7 +246,7 @@ set added_files [add_files -fileset sources_1 $files]
 # None
 
 # Set 'sources_1' fileset file properties for local files
-set file "$origin_dir/src/ip/audio_fifo.xci"
+set file "src/ip/audio_fifo/audio_fifo.xci"
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
