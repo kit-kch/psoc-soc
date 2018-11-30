@@ -51,7 +51,6 @@ module fpga_riscv_top(
       .audio_in(adau_audio_in),
       .audio_in_valid(adau_audio_in_valid),
       .audio_full(adau_audio_full),
-      .enable_audio(1'b1),
       .init_done(adau_init_done),
 
       .cclk(ac_scl_cclk),

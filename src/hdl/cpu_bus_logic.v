@@ -61,32 +61,45 @@ module cpu_bus_logic(
          32'h8000_000c: rdata = {30'b0, adau_init_done, adau_audio_full};
          default: rdata = 32'h0000_0000;
       endcase
-
-      adau_audio_valid = (addr == 32'h8000_0014) && |wstrb[3:1];
    end
 
    // write logic
-   reg [23:0] left_audio;
-   assign adau_audio = {left_audio, wdata[31:8]};
+   reg [23:0] left_audio, right_audio;
+   assign adau_audio = {left_audio, right_audio};
    always @(posedge clk) begin
       if(reset) begin
          led <= 8'h00;
          left_audio <= 24'h000000;
-      end else if(valid) begin
-         case(addr)
-            32'h8000_0004: begin
-               if(wstrb[0])
-                  led <= wdata[7:0];
-            end
-            32'h8000_0010: begin
-               if(wstrb[3])
-                  left_audio[23:16] <= wdata[31:24];
-               if(wstrb[2])
-                  left_audio[15:8] <= wdata[23:16];
-               if(wstrb[1])
-                  left_audio[7:0] <= wdata[15:8];
-            end
-         endcase
+         right_audio <= 24'h000000;
+      end else begin
+          if (!adau_audio_full && adau_audio_valid)
+              adau_audio_valid <= 0;
+
+          if(valid) begin
+             case(addr)
+                32'h8000_0004: begin
+                   if(wstrb[0])
+                      led <= wdata[7:0];
+                end
+                32'h8000_0010: begin
+                   if(wstrb[2])
+                      left_audio[23:16] <= wdata[23:16];
+                   if(wstrb[1])
+                      left_audio[15:8] <= wdata[15:8];
+                   if(wstrb[0])
+                      left_audio[7:0] <= wdata[7:0];
+                end
+                32'h8000_0014: begin
+                   if(wstrb[2])
+                      right_audio[23:16] <= wdata[23:16];
+                   if(wstrb[1])
+                      right_audio[15:8] <= wdata[15:8];
+                   if(wstrb[0])
+                      right_audio[7:0] <= wdata[7:0];
+                   adau_audio_valid <= 1;
+                end
+             endcase
+         end
       end
    end
 endmodule
