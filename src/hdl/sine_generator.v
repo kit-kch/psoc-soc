@@ -2,28 +2,28 @@
 
 module sine_generator(input clk,
                       input reset,
-                      input enable,
+                      input ready,
+                      output reg valid,
                       output reg [23:0] out
                       );
-   localparam PHASE_PRECISION = 16;
-   localparam LUT_SIZE = 8;
-   localparam LUT_HEIGHT = 1 << LUT_SIZE;
-   // phase_increment = (2^PHASE_PRECISION - 1) * frequency / sample_rate
-   // 601 results in 440Hz, assuming a 48kHz sample rate and PHASE_PRECISION=16
-   wire [PHASE_PRECISION-1:0] phase_increment = 601;
-
-   reg [23:0] lut [0:LUT_HEIGHT - 1];
+                      
+   reg [23:0] lut [0:90];
    initial $readmemh("sin_lut_256x24.mem", lut);
+   reg [6:0] lut_addr;
 
-   reg [PHASE_PRECISION-1:0] phase;
-   wire [LUT_SIZE-1:0] lut_addr = phase[PHASE_PRECISION-1:PHASE_PRECISION-LUT_SIZE];
 
    always @(posedge clk) begin
       if(reset) begin
-         phase <= 0;
-      end else if(enable) begin
-         phase <= phase + phase_increment;
+         lut_addr <= 0;
+         valid <= 0;
+      end else begin
+         out <= lut[lut_addr];
+         valid <= 1;
+         if (ready && valid) begin
+             lut_addr <= lut_addr + 1;
+             if (lut_addr == 90)
+                 lut_addr <= 0;
+         end
       end
-      out <= lut[lut_addr];
    end
 endmodule

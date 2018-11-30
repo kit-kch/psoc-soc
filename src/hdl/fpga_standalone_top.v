@@ -58,6 +58,7 @@ module fpga_standalone_top(
     // Interface to the ADAU
     wire [23:0] sine_generator_out;
     wire audio_full;
+    wire audio_valid;
 
     adau_interface adau
       (.clk_120mhz(clk_soc),
@@ -65,9 +66,8 @@ module fpga_standalone_top(
        .reset(reset),
 
        .audio_in({2{sine_generator_out}}),
-       .audio_in_valid(!audio_full),
        .audio_full(audio_full),
-       .enable_audio(1'b1),
+       .audio_in_valid(audio_valid),
        .init_done(),
 
        .cclk(ac_scl_cclk),
@@ -83,7 +83,8 @@ module fpga_standalone_top(
     sine_generator sine
       (.clk(clk_soc),
        .reset(reset),
-       .enable(!audio_full),
+       .valid(audio_valid),
+       .ready(!audio_full),
        .out(sine_generator_out)
        );
 

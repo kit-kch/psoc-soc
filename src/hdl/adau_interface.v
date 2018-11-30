@@ -9,7 +9,6 @@ module adau_interface(
    input [47:0] audio_in,
    input audio_in_valid,
    output audio_full,
-   input enable_audio,
    output init_done,
 
    // ADAU signals
