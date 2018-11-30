@@ -131,4 +131,6 @@ module fpga_riscv_top(
          .pcpi_ready(1'b0),
          .irq(32'b0)
        );
+
+   assign debug[7:0] = {reset, ac_mclk, ac_addr0_clatch, ac_addr1_cdata,  ac_scl_cclk, ac_dac_sdata, ac_bclk, ac_lrclk};
 endmodule
