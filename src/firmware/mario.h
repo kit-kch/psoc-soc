@@ -1538,8 +1538,7 @@ static const struct note voice0_notes[] = {
 static struct voice voice0 = {
         .note_count=1534,
         .notes=voice0_notes,
-        .waveform=SQUARE,
-        .volume=4
+        .volume=0x1ffffff
 };
 static const struct note voice1_notes[] = {
 {.time=70, .d_phase=58989149},
@@ -2753,8 +2752,7 @@ static const struct note voice1_notes[] = {
 static struct voice voice1 = {
         .note_count=1206,
         .notes=voice1_notes,
-        .waveform=SQUARE,
-        .volume=4
+        .volume=0x1ffffff
 };
 static const struct note voice2_notes[] = {
 {.time=70, .d_phase=13138339},
@@ -3574,9 +3572,8 @@ static const struct note voice2_notes[] = {
 static struct voice voice2 = {
         .note_count=812,
         .notes=voice2_notes,
-        .waveform=SQUARE,
-        .volume=4
+        .volume=0x1ffffff
 };
-static const unsigned int voice_count = 3;
-static struct voice *voices[] = { &voice0, &voice1, &voice2 };
+#define VOICE_COUNT 3
+static const struct voice *voices[VOICE_COUNT] = { &voice0, &voice1, &voice2 };
 static const unsigned int song_duration = 8382446;
