@@ -68,7 +68,7 @@ module fpga_standalone_top(
        .audio_in({2{sine_generator_out}}),
        .audio_full(audio_full),
        .audio_in_valid(audio_valid),
-       .init_done(),
+       .adau_init_done(),
 
        .cclk(ac_scl_cclk),
        .clatch_n(ac_addr0_clatch),

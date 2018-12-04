@@ -9,7 +9,7 @@ module adau_interface(
    input [47:0] audio_in,
    input audio_in_valid,
    output audio_full,
-   output init_done,
+   output adau_init_done,
 
    // ADAU signals
    output cclk,
@@ -39,11 +39,11 @@ module adau_interface(
    adau_command_list adau_commands
      (.clk(clk_120mhz),
       .reset(reset),
-      
+
       .command(adau_command),
       .command_valid(adau_command_valid),
       .spi_ready(spi_ready),
-      .init_done(init_done)
+      .adau_init_done(adau_init_done)
       );
 
    i2s_master i2s

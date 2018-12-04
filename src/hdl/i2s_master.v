@@ -36,13 +36,13 @@ module i2s_master
       .wr_rst_busy(),             // output wire wr_rst_busy
       .rd_rst_busy()              // output wire rd_rst_busy
    );
-   
+
    reg [5:0] bclk_counter;
    reg [23:0] sdata_sreg;
    reg [1:0] startup;
    assign sdata = sdata_sreg[23];
    reg fifo_was_empty;
-   
+
    reg mclk_tick_counter;
    always @(posedge ac_mclk) begin
       if(reset) begin
@@ -58,7 +58,7 @@ module i2s_master
          // Reset on every adau_mclk clk, to pulse for only one adau_mclk cycle
          fifo_read <= 0;
          mclk_tick_counter <= mclk_tick_counter + 1;
-         
+
          // After reset, first read one FIFO entry
          if (startup == 0) begin
              if (!fifo_empty) begin
@@ -71,13 +71,13 @@ module i2s_master
          // Everything else is done on the tick counter, which essentially stretches the pulses
          end else if (mclk_tick_counter == 1) begin
             bclk_counter <= bclk_counter + 1;
-            
+
             // Prepare next output bit. write before bclk goes low
             // Note: requires LRDEL=1
             if (bclk == 0 && bclk_counter != 0) begin
                 sdata_sreg <= {sdata_sreg[22:0], 1'b0};
             end
-            
+
             // Generate bclk signal for first 48 cycles only
             if (bclk_counter < 48) begin
                 bclk <= ! bclk;
@@ -103,7 +103,7 @@ module i2s_master
                 else
                     sdata_sreg <= cur_frame_left;
                 end
-                
+
                 lrclk <= !lrclk;
                 bclk_counter <= 0;
             end
