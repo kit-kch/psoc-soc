@@ -1,4 +1,5 @@
 stages:
+  - tests
   - fpga
 
 implement-standalone:
@@ -20,3 +21,10 @@ implement-soc:
   artifacts:
     paths:
     - out/
+
+run-tests:
+  stage: tests
+  script:
+    - ./ci/run_tests.sh
+  tags:
+    - tools
