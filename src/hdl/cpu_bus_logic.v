@@ -50,6 +50,7 @@ module cpu_bus_logic(
       ram_valid = 0;
       ready = 1;
       casez(addr)
+         // 0x00010000 - 0x00017FFF
          32'b0000_0000_0000_0001_0???_????_????_????: begin
             rdata = ram_rdata;
             ram_valid = valid;

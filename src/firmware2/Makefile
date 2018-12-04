@@ -4,7 +4,7 @@ CC := $(RISCV)riscv32-unknown-elf-gcc
 LD := $(RISCV)riscv32-unknown-elf-ld
 OBJCOPY := $(RISCV)riscv32-unknown-elf-objcopy
 
-CFLAGS := -Os -march=rv32im -mabi=ilp32 -ffreestanding -nostdlib -nostartfiles
+CFLAGS := -Os -march=rv32im -mabi=ilp32
 ASFLAGS := -march=rv32im -mabi=ilp32
 
 firmware.mem: firmware.bin
@@ -13,12 +13,16 @@ firmware.mem: firmware.bin
 firmware.bin: firmware.elf
 	$(OBJCOPY) $< -Obinary $@
 
-firmware.elf: firmware.o crt0.o
+firmware.elf: init.o firmware.o
 	$(CC) -o $@ $^ -Wl,-Tlinkage.ld $(CFLAGS)
+
+init.o: init.S
+	$(CC) -c -o $@ $^ $(CFLAGS)
 
 .PHONY: clean almostclean
 clean:
-	rm -f firmware.{mem,bin,elf,o} crt0.o synth.o
+	rm -f firmware.{mem,bin,elf,o}
+	rm -f init.o
 
 almostclean:
-	rm -f firmware.{bin,elf,o} crt0.o synth.o
+	rm -f firmware.{bin,elf,o}
