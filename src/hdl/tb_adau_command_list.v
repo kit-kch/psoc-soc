@@ -4,7 +4,7 @@ module tb_adau_command_list();
 
    wire [31:0] command;
    wire command_valid;
-   wire init_done;
+   wire adau_init_done;
    reg reset;
    reg spi_ready;
 
@@ -13,7 +13,7 @@ module tb_adau_command_list();
       // Outputs
       .command (command),
       .command_valid (command_valid),
-      .init_done (init_done),
+      .adau_init_done (adau_init_done),
       // Inputs
       .clk (clk),
       .reset (reset),
@@ -31,8 +31,8 @@ module tb_adau_command_list();
       reset <= 0;
       @(posedge clk);
 
-      if(init_done !== 0)
-        $error("INIT_DONE must be low after a reset");
+      if(adau_init_done !== 0)
+        $error("ADAU_INIT_DONE must be low after a reset");
       if(command_valid !== 1)
         $error("COMMAND_VALID must be high after a reset");
 
@@ -78,13 +78,13 @@ module tb_adau_command_list();
       join
 
       @(posedge clk);
-      if(init_done === 1)
-        $error("INIT_DONE is high, even though SPI_READY is not");
+      if(adau_init_done === 1)
+        $error("ADAU_INIT_DONE is high, even though SPI_READY is not");
 
       spi_ready <= 1;
       @(posedge clk);
-      if(init_done === 0)
-        $error("INIT_DONE did not go high");
+      if(adau_init_done === 0)
+        $error("ADAU_INIT_DONE did not go high");
 
       $finish;
    end

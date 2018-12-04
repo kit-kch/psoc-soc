@@ -8,7 +8,7 @@ module adau_command_list
     output command_valid,
     input spi_ready,
 
-    output init_done
+    output adau_init_done
     );
    reg [4:0] command_index;
 
@@ -88,7 +88,7 @@ module adau_command_list
    wire [4:0] command_count = 16;
 
    assign command_valid = command_index != command_count;
-   assign init_done = spi_ready && !command_valid;
+   assign adau_init_done = spi_ready && !command_valid;
    always @(posedge clk) begin
       if(reset)
         command_index <= 0;
