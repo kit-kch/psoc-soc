@@ -31,5 +31,6 @@ done
 
 if [ -n "$FAILS" ]; then
 	echo "failing tests: $FAILS"
+	exit 1
 fi
 
