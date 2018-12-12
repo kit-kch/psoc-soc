@@ -1,44 +1,35 @@
 #!/bin/bash
 
+# The filesets to be simulated
+SETS="i2s_master_tests spi_master_tests adau_command_list_tests"
+
 source /tools/xilinx/set_xilinx2018.2.sh
-
-TOP_MODULE=$1
-shift
-SOURCE_FILES=$@
-SOURCE_PATHS=`for f in $SOURCE_FILES; do echo -n "../src/hdl/$f "; done`
-
 set -x
-mkdir run-tests
-cd run-tests
 
-echo "========== COMPILING VERILOG SOURCES =========="
-xvlog ../src/hdl/*.v || (echo 'Compilation failed'; exit 1)
+vivado -mode batch -source "ci/gen_sim_scripts.tcl" || exit 1
 
-TESTBENCHES="adau_spi_master_tb tb_i2s_master tb_adau_command_list"
-
-EC=0
-PASSING=""
-FAILING=""
-
-fail() {
-    EC=1
-    FAILING="$FAILING $tb"
-    continue
+sim() {
+    echo "========== simulating $1 =========="
+    cd psoc_fpga/psoc_fpga.sim/$1/behav/xsim
+    ./compile.sh || return
+    ./elaborate.sh || return
+    ./simulate.sh
+    # Grepping the log files is not pretty, but xsim does not seem to offer any other solution.
+    grep -q '^Error:' simulate.log && return 1
+    grep -q 'Timing violation in scope' simulate.log && return 1
+    return 0
 }
 
-for tb in $TESTBENCHES; do
-    echo "========== Running testbench: $tb =========="
-    xelab -debug typical $tb -s $tb || fail
 
-    xsim -R -onerror quit $tb
-    # There ought to be a better way to detect whether Verilog code has
-    # called $error than to grep the logs, but right now I can't find it.
-    grep -s '^Error:' xsim.log && fail
+FAILS=
 
-    PASSING="$PASSING $tb"
+for s in $SETS; do
+    pushd .
+    sim $s || FAILS="$s $FAILS"
+    popd
 done
 
-echo "Passing testbenches: $PASSING"
-echo "Failing techbenches: $FAILING"
+if [ -n "$FAILS" ]; then
+	echo "failing tests: $FAILS"
+fi
 
-exit $EC
