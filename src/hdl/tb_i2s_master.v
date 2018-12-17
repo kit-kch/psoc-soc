@@ -30,12 +30,6 @@ module tb_i2s_master();
       .write_frame (write_frame)
       );
 
-   specify
-      // $period(posedge bclk, 416.7);  // ~2.4MHz
-      // $period(posedge lrclk, 20834);  // 48kHz
-      // SDATA changes when BCLK falls
-   endspecify
-
    task receive_frame;
       input [23:0] want_l, want_r;
       reg [23:0] l, r;

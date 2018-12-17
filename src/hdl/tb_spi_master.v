@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module adau_spi_master_tb();
+module tb_spi_master();
    wire cclk;
    wire cdata;
    wire clatch_n;
