@@ -48,7 +48,7 @@ module i2s_master
       if(reset) begin
          bclk <= 0;
          lrclk <= 1;
-         // This forces the FSM to do the initial lcclk transisiton
+         // This forces the FSM to do the initial lrclk transisiton
          bclk_counter <= 63;
          sdata_sreg <= 24'b0;
          fifo_read <= 0;
@@ -65,7 +65,7 @@ module i2s_master
                  fifo_read <= 1;
                  startup <= 1;
              end
-         end if (startup == 1) begin
+         end else if (startup == 1) begin
              fifo_read <= 0;
              startup <= 2;
          // Everything else is done on the tick counter, which essentially stretches the pulses
@@ -92,14 +92,14 @@ module i2s_master
                         sdata_sreg <= cur_frame_right;
 
                     // Read next FIFO entry
-                    fifo_was_empty <= 1;
+		    fifo_was_empty <= 1;
                     if (!fifo_empty) begin
                         fifo_read <= 1;
                         fifo_was_empty <= 0;
                     end
                 end else begin
                     if (fifo_was_empty)
-                    sdata_sreg <= 24'b0;
+                      sdata_sreg <= 24'b0;
                 else
                     sdata_sreg <= cur_frame_left;
                 end
