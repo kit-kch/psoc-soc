@@ -114,7 +114,11 @@ module fpga_riscv_top(
    picorv32
      #(.REGS_INIT_ZERO(1),
        .PROGADDR_RESET(32'h0001_0000),
-       .ENABLE_MUL(1)
+       .PROGADDR_IRQ(32'h0001_0010),
+       .ENABLE_MUL(1),
+       .ENABLE_IRQ(1),
+       .LATCHED_IRQ(32'hffff_ffff),
+       .MASKED_IRQ(32'hffff_ff00)
        ) cpu (
          .clk(clk_soc),
          .resetn(!reset),
@@ -128,7 +132,7 @@ module fpga_riscv_top(
          .pcpi_rd(32'b0),
          .pcpi_wait(1'b0),
          .pcpi_ready(1'b0),
-         .irq(32'b0)
+         .irq({24'b0, btn_c, btn_d, btn_l, btn_r, btn_u, 3'b0})
        );
 
    assign debug[7:0] = {reset, ac_mclk, ac_addr0_clatch, ac_addr1_cdata,  ac_scl_cclk, ac_dac_sdata, ac_bclk, ac_lrclk};

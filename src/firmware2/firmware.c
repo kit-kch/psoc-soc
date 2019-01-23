@@ -8,7 +8,9 @@
 #define AUDIO_STATUS_FIFO_FULL (1 << 0)
 #define AUDIO_STATUS_CONFIGURED (1 << 1)
 
-
+int maskirq(int mask);
+int waitirq(void);
+unsigned int timer(unsigned int);
 
 static int sin_buf[91] = { 0x000000, 0x08d4b3, 0x119ea1, 0x1a5310, 0x22e761,
     0x2b511e, 0x338602, 0x3b7c0c, 0x432983, 0x4a850c, 0x5185ab, 0x5822d6,
@@ -25,8 +27,21 @@ static int sin_buf[91] = { 0x000000, 0x08d4b3, 0x119ea1, 0x1a5310, 0x22e761,
     0xb57af4, 0xbcd67d, 0xc483f4, 0xcc79fe, 0xd4aee2, 0xdd189f, 0xe5acf0,
     0xee615f, 0xf72b4d };
 
+void irq_handler(void *irq_address, int irq_mask)
+{
+    R_LED = 0xffffffff;
+}
+
 int main(void)
 {
+    R_LED = 0x00000000;
+
+    maskirq(~(1 << 3)); // enable IRQ 3 (btn_u)
+    while(1) {
+	waitirq();
+    }
+
+#if 0
     while(!(R_AUDIO_STATUS & AUDIO_STATUS_CONFIGURED))
         ;
 
@@ -46,7 +61,8 @@ int main(void)
             }
         }
         count = 0;
-        
+
         R_LED = ~R_LED;
     }
+#endif
 }

@@ -14,6 +14,8 @@ SECTIONS
   .text           :
   {
     *(.real_start)
+    . = ALIGN(16); /* place .irq_entry at 0x00010010 */
+    *(.irq_entry)
     *(.text)
     *(.text.unlikely .text.*_unlikely .text.unlikely.*)
     *(.text.exit .text.exit.*)
