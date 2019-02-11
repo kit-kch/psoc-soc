@@ -12,6 +12,7 @@ firmware.mem: firmware.bin
 
 firmware.bin: firmware.elf
 	$(OBJCOPY) $< -Obinary $@
+	@stat -c 'firmware size is %5s / 32768 bytes' $@
 
 firmware.elf: init.o firmware.o
 	$(CC) -o $@ $^ -Wl,-Tlinkage.ld $(CFLAGS)
