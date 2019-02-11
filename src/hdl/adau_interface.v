@@ -49,7 +49,7 @@ module adau_interface(
    i2s_master i2s
       (.clk_soc(clk_120mhz),
        .ac_mclk(ac_mclk),
-       .reset(0), //FIXME
+       .reset(reset),
 
        .frame_in(audio_in),
        .write_frame(audio_in_valid),

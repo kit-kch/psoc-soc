@@ -97,7 +97,8 @@ module cpu_bus_logic(
                       right_audio[15:8] <= wdata[15:8];
                    if(wstrb[0])
                       right_audio[7:0] <= wdata[7:0];
-                   adau_audio_valid <= 1;
+                   if(|wstrb)
+                     adau_audio_valid <= 1;
                 end
              endcase
          end
