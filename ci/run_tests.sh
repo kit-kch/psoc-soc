@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # The filesets to be simulated
-SETS="i2s_master_tests spi_master_tests adau_command_list_tests"
+SETS="i2s_master_tests spi_master_tests adau_command_list_tests sine_generator_tests cpu_ram_tests cpu_bus_logic_tests"
 
 source /tools/xilinx/set_xilinx2018.2.sh
 set -x
