@@ -21,7 +21,7 @@ puts $mmi {
       <BusBlock>
 }
 
-set rambs [lsort [get_cells -hierarchical -filter { PRIMITIVE_TYPE == BMEM.bram.RAMB36E1 && NAME =~ "ram/words*" }]]
+set rambs [lsort [get_cells -hierarchical -filter { PRIMITIVE_TYPE == BMEM.bram.RAMB36E1 && NAME =~ "ram/ramb_inst*" }]]
 set msb 3
 set lsb 0
 
