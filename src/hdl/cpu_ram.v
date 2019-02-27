@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-// Total size is 32KiB
+// 8 RAMB36E1 dual-port configured as 4bit x 8k, concatenated horizontally => 32KiB
 module cpu_ram
    (input clk,
     input reset,

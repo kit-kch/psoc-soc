@@ -3,48 +3,65 @@ module tb_cpu_ram;
    always #10 clk <= ~clk;
 
    reg reset = 1;
-   reg valid = 0;
-   reg [31:0] addr;
-   reg [31:0] wdata;
-   reg [3:0] wstrb;
 
-   wire [31:0] rdata;
-   wire ready;
+   reg d_req = 0;
+   reg [31:0] d_addr;
+   reg [31:0] d_wdata;
+   reg [3:0] d_be;
+   wire [31:0] d_rdata;
+   wire d_valid;
+
+   reg i_req = 0;
+   reg [31:0] i_addr;
+   wire [31:0] i_rdata;
+   wire i_valid;
 
    localparam size = 13;
    localparam n_words = 1 << size;
    localparam verbose = 0;
 
    cpu_ram uut
-     (
-      // Outputs
-      // Inputs
-      .clk              (clk),
+     (.clk              (clk),
       .reset            (reset),
 
-      .d_addr           (addr[size+1:0]),
-      .d_req            (valid),
-      .d_we             (|wstrb),
-      .d_be             (wstrb),
-      .d_wdata          (wdata[31:0]),
+      .d_addr           (d_addr[size+1:0]),
+      .d_req            (d_req),
+      .d_we             (|d_be),
+      .d_be             (d_be),
+      .d_wdata          (d_wdata[31:0]),
 
-      .d_rdata          (rdata[31:0]),
-      .d_valid          (ready),
+      .d_rdata          (d_rdata[31:0]),
+      .d_valid          (d_valid),
 
-      .i_addr           (15'b0),
-      .i_req            (1'b0)
-      );
+      .i_addr           (i_addr[size+1:0]),
+      .i_req            (i_req),
+      .i_rdata          (i_rdata),
+      .i_valid          (i_valid));
 
-   task wait_ready;
+   task wait_d_valid;
       fork
          begin: waiting
-            while(!ready)
+            while(!d_valid)
               @(posedge clk);
             disable timeout;
          end
          begin: timeout
             #1000 disable waiting;
-            $error("READY did not go high after 1000ns");
+            $error("D_VALID did not go high after 1000ns");
+         end
+      join
+   endtask
+
+   task wait_i_valid;
+      fork
+         begin: waiting
+            while(!i_valid)
+              @(posedge clk);
+            disable timeout;
+         end
+         begin: timeout
+            #1000 disable waiting;
+            $error("I_VALID did not go high after 1000ns");
          end
       join
    endtask
@@ -56,16 +73,16 @@ module tb_cpu_ram;
       begin
          if(verbose)
            $display("write: %08x <- %08x [%04b] @ %t", {word_addr, 2'b00}, data, wstrb_, $time);
-         addr <= {word_addr, 2'b00};
-         wstrb <= wstrb_;
-         wdata <= data;
-         valid <= 1;
+         d_addr <= {word_addr, 2'b00};
+         d_be <= wstrb_;
+         d_wdata <= data;
+         d_req <= 1;
          @(posedge clk);
-         valid <= 0;
-         wait_ready;
-         addr <= 32'hx;
-         wstrb <= 4'bx;
-         wdata <= 32'hx;
+         d_req <= 0;
+         wait_d_valid;
+         d_addr <= 32'hx;
+         d_be <= 4'bx;
+         d_wdata <= 32'hx;
          @(posedge clk);
       end
    endtask
@@ -76,16 +93,27 @@ module tb_cpu_ram;
       begin
          if(verbose)
            $display("read: %08x (expecting %08x) @ %t", {word_addr, 2'b00}, data, $time);
-         addr <= {word_addr, 2'b00};
-         wstrb <= 4'b0000;
-         valid <= 1;
+
+         d_addr <= {word_addr, 2'b00};
+         d_be <= 4'b0000;
+         d_req <= 1;
          @(posedge clk);
-         valid <= 0;
-         wait_ready;
-         if(rdata !== data)
-           $error("bad output data for address %08x (want: %08x, got: %08x)", {word_addr, 2'b00}, data, rdata);
-         addr <= 32'hx;
-         wstrb <= 4'bx;
+         d_req <= 0;
+         wait_d_valid;
+         if(d_rdata !== data)
+           $error("bad output data for address %08x on the D port (want: %08x, got: %08x)", {word_addr, 2'b00}, data, d_rdata);
+         d_addr <= 32'hx;
+         d_be <= 4'bx;
+         @(posedge clk);
+
+         i_addr <= {word_addr, 2'b00};
+         i_req <= 1;
+         @(posedge clk);
+         i_req <= 0;
+         wait_i_valid;
+         if(i_rdata !== data)
+           $error("bad output data for address %08x on the I port (want: %08x, got: %08x)", {word_addr, 2'b00}, data, i_rdata);
+         i_addr <= 32'bx;
          @(posedge clk);
       end
    endtask
