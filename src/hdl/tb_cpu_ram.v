@@ -11,28 +11,20 @@ module tb_cpu_ram;
    wire [31:0] rdata;
    wire ready;
 
-   localparam size = 13;
-   localparam n_words = 1 << size;
-   localparam verbose = 0;
+   localparam SIZE = 13;
 
-   cpu_ram uut
+   cpu_ram #(.SIZE(SIZE)) uut
      (
       // Outputs
+      .rdata            (rdata[31:0]),
+      .ready            (ready),
       // Inputs
       .clk              (clk),
       .reset            (reset),
-
-      .d_addr           (addr[size+1:0]),
-      .d_req            (valid),
-      .d_we             (|wstrb),
-      .d_be             (wstrb),
-      .d_wdata          (wdata[31:0]),
-
-      .d_rdata          (rdata[31:0]),
-      .d_valid          (ready),
-
-      .i_addr           (15'b0),
-      .i_req            (1'b0)
+      .addr             (addr[SIZE+1:0]),
+      .wdata            (wdata[31:0]),
+      .valid            (valid),
+      .wstrb            (wstrb[3:0])
       );
 
    task wait_ready;
@@ -54,8 +46,6 @@ module tb_cpu_ram;
       input [3:0] wstrb_;
       input [31:0] data;
       begin
-         if(verbose)
-           $display("write: %08x <- %08x [%04b] @ %t", {word_addr, 2'b00}, data, wstrb_, $time);
          addr <= {word_addr, 2'b00};
          wstrb <= wstrb_;
          wdata <= data;
@@ -74,8 +64,6 @@ module tb_cpu_ram;
       input [29:0] word_addr;
       input [31:0] data;
       begin
-         if(verbose)
-           $display("read: %08x (expecting %08x) @ %t", {word_addr, 2'b00}, data, $time);
          addr <= {word_addr, 2'b00};
          wstrb <= 4'b0000;
          valid <= 1;
@@ -83,12 +71,15 @@ module tb_cpu_ram;
          valid <= 0;
          wait_ready;
          if(rdata !== data)
-           $error("bad output data for address %08x (want: %08x, got: %08x)", {word_addr, 2'b00}, data, rdata);
+           $error("bad output data for address (want: %08x, got: %08x)", {word_addr, 2'b00}, data, rdata);
          addr <= 32'hx;
          wstrb <= 4'bx;
          @(posedge clk);
       end
    endtask
+
+   //integer n_words = 1 << SIZE;
+   localparam n_words = 5;
 
    reg [31:0] test_pattern[0:n_words-1];
 
@@ -107,7 +98,6 @@ module tb_cpu_ram;
 
    initial begin
       $dumpvars;
-      $timeformat(-9, 3, " ns", 1);
 
       repeat(5)
         @(posedge clk);
