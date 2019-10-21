@@ -52,6 +52,8 @@ tags
 *.sdk
 *.hw
 *.ip_user_files
+psoc_fpga.sim
+psoc_fpga.runs
 
 ### IP synth
 *_synth_*
