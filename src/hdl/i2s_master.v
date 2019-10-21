@@ -26,7 +26,7 @@ module i2s_master
    audio_fifo audio_data_fifo (
       .rst(reset),                // input wire rst
       .wr_clk(clk_soc),           // input wire wr_clk
-      .rd_clk(ac_mclk),         // input wire rd_clk
+      .rd_clk(ac_mclk),           // input wire rd_clk
       .din(frame_in),             // input wire [47 : 0] din
       .wr_en(write_frame),        // input wire wr_en
       .rd_en(fifo_read),          // input wire rd_en

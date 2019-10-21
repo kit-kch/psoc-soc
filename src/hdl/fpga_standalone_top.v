@@ -34,16 +34,18 @@ module fpga_standalone_top(
         output ac_lrclk
     );
 
+    // global fast clock
     wire clk_soc;
     wire locked;
 
     // Generate all required clocks
-    clk_wiz_0 pll (
+    clk_wiz_0 pll(
         .clk_in1(sys_clk),
         .reset(btn_c),
         .clk_soc(clk_soc),
         .clk_adau_mclk(ac_mclk),
-        .locked(locked));
+        .locked(locked)
+    );
 
     // stretch the reset pulse
     reg [5:0] reset_counter = 6'b111111;
@@ -52,45 +54,68 @@ module fpga_standalone_top(
        if(!locked)
            reset_counter <= 6'b111111;
        else if(|reset_counter)
-	       reset_counter <= reset_counter - 1;
+           reset_counter <= reset_counter - 1;
     end
 
-    // Interface to the ADAU
+
+    // ctrl <=> spi interface
+    wire [31:0] adau_command;
+    wire adau_command_valid, spi_ready, adau_init_done;
+
+    adau_command_list ctrl(
+        .clk(clk_soc),
+        .reset(reset),
+
+        .command(adau_command),
+        .command_valid(adau_command_valid),
+        .spi_ready(spi_ready),
+        .adau_init_done(adau_init_done)
+    );
+
+    adau_spi_master spi(
+        .clk(clk_soc),
+        .reset(reset),
+
+        .data_in(adau_command),
+        .valid(adau_command_valid),
+        .ready(spi_ready),
+
+        .cdata(ac_addr1_cdata),
+        .cclk(ac_scl_cclk),
+        .clatch_n(ac_addr0_clatch)
+    );
+
+
+    // sin <=> i2s
     wire [23:0] sine_generator_out;
     wire audio_full;
     wire audio_valid;
 
-    adau_interface adau
-      (.clk_120mhz(clk_soc),
-       .ac_mclk(ac_mclk),
-       .reset(reset),
+    i2s_master i2s(
+        .clk_soc(clk_soc),
+        .ac_mclk(ac_mclk),
+        .reset(reset),
 
-       .audio_in({2{sine_generator_out}}),
-       .audio_full(audio_full),
-       .audio_in_valid(audio_valid),
-       .adau_init_done(),
+        .frame_in({2{sine_generator_out}}),
+        .write_frame(audio_valid),
+        .full(audio_full),
 
-       .cclk(ac_scl_cclk),
-       .clatch_n(ac_addr0_clatch),
-       .cdata(ac_addr1_cdata),
+        .bclk(ac_bclk),
+        .lrclk(ac_lrclk),
+        .sdata(ac_dac_sdata)
+    );
 
-       .sdata(ac_dac_sdata),
-       .bclk(ac_bclk),
-       .lrclk(ac_lrclk)
-      );
+    sine_generator sin(
+        .clk(clk_soc),
+        .reset(reset),
+        .valid(audio_valid),
+        .ready(!audio_full),
+        .out(sine_generator_out)
+    );
 
-    // The audio generator
-    sine_generator sine
-      (.clk(clk_soc),
-       .reset(reset),
-       .valid(audio_valid),
-       .ready(!audio_full),
-       .out(sine_generator_out)
-       );
 
     // Default LED outputs for debugging signals
     assign led = dip & {3'b111, btn_c, btn_d, btn_l, btn_r, btn_u};
-
     assign debug[7:0] = {reset, ac_mclk, ac_addr0_clatch, ac_addr1_cdata,  ac_scl_cclk, ac_dac_sdata, ac_bclk, ac_lrclk};
 
  endmodule
