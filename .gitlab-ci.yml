@@ -24,6 +24,9 @@ i2s_master_tests:
     - ./ci/run_tests.sh i2s_master_tests
   tags:
     - work1
+  artifacts:
+    paths:
+    - out/
 
 spi_master_tests:
   stage: test
@@ -31,6 +34,9 @@ spi_master_tests:
     - ./ci/run_tests.sh spi_master_tests
   tags:
     - work1
+  artifacts:
+    paths:
+    - out/
 
 adau_command_list_tests:
   stage: test
@@ -38,6 +44,9 @@ adau_command_list_tests:
     - ./ci/run_tests.sh adau_command_list_tests
   tags:
     - work1
+  artifacts:
+    paths:
+    - out/
 
 sine_generator_tests:
   stage: test
@@ -45,6 +54,9 @@ sine_generator_tests:
     - ./ci/run_tests.sh sine_generator_tests
   tags:
     - work1
+  artifacts:
+    paths:
+    - out/
 
 cpu_ram_tests:
   stage: test
@@ -52,6 +64,9 @@ cpu_ram_tests:
     - ./ci/run_tests.sh cpu_ram_tests
   tags:
     - work1
+  artifacts:
+    paths:
+    - out/
 
 cpu_bus_logic_tests:
   stage: test
@@ -59,3 +74,6 @@ cpu_bus_logic_tests:
     - ./ci/run_tests.sh cpu_bus_logic_tests
   tags:
     - work1
+  artifacts:
+    paths:
+    - out/
