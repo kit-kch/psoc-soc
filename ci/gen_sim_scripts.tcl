@@ -1,6 +1,5 @@
-source psoc_fpga.tcl
+open_project psoc_fpga.xpr
 foreach fileset [get_filesets -filter {FILESET_TYPE==SimulationSrcs}] {
-	set_property RUNTIME all $fileset
-	launch_simulation -simset $fileset -scripts_only
+    set_property RUNTIME all $fileset
+    launch_simulation -simset $fileset -scripts_only
 }
-

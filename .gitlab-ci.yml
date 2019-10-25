@@ -1,5 +1,5 @@
 stages:
-  - tests
+  - test
   - fpga
 
 implement-standalone:
@@ -22,9 +22,44 @@ implement-soc:
     paths:
     - out/
 
-run-tests:
-  stage: tests
+i2s_master_tests:
+  stage: test
   script:
-    - ./ci/run_tests.sh
+    - ./ci/run_tests.sh i2s_master_tests
+  tags:
+    - tools
+
+spi_master_tests:
+  stage: test
+  script:
+    - ./ci/run_tests.sh spi_master_tests
+  tags:
+    - tools
+
+adau_command_list_tests:
+  stage: test
+  script:
+    - ./ci/run_tests.sh adau_command_list_tests
+  tags:
+    - tools
+
+sine_generator_tests:
+  stage: test
+  script:
+    - ./ci/run_tests.sh sine_generator_tests
+  tags:
+    - tools
+
+cpu_ram_tests:
+  stage: test
+  script:
+    - ./ci/run_tests.sh cpu_ram_tests
+  tags:
+    - tools
+
+cpu_bus_logic_tests:
+  stage: test
+  script:
+    - ./ci/run_tests.sh cpu_bus_logic_tests
   tags:
     - tools
