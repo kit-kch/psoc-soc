@@ -1,23 +1,19 @@
-stages:
-  - test
-  - fpga
-
 implement-standalone:
-  stage: fpga
+  stage: test
   script:
     - ./ci/fpga_implement.sh implement_standalone
   tags:
-    - tools
+    - work1
   artifacts:
     paths:
     - out/
 
 implement-soc:
-  stage: fpga
+  stage: test
   script:
     - ./ci/fpga_implement.sh implement_soc
   tags:
-    - tools
+    - work1
   artifacts:
     paths:
     - out/
@@ -27,39 +23,39 @@ i2s_master_tests:
   script:
     - ./ci/run_tests.sh i2s_master_tests
   tags:
-    - tools
+    - work1
 
 spi_master_tests:
   stage: test
   script:
     - ./ci/run_tests.sh spi_master_tests
   tags:
-    - tools
+    - work1
 
 adau_command_list_tests:
   stage: test
   script:
     - ./ci/run_tests.sh adau_command_list_tests
   tags:
-    - tools
+    - work1
 
 sine_generator_tests:
   stage: test
   script:
     - ./ci/run_tests.sh sine_generator_tests
   tags:
-    - tools
+    - work1
 
 cpu_ram_tests:
   stage: test
   script:
     - ./ci/run_tests.sh cpu_ram_tests
   tags:
-    - tools
+    - work1
 
 cpu_bus_logic_tests:
   stage: test
   script:
     - ./ci/run_tests.sh cpu_bus_logic_tests
   tags:
-    - tools
+    - work1
