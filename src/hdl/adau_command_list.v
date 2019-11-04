@@ -105,7 +105,7 @@ module adau_command_list(
     assign command_valid = command_index != command_count;
     assign adau_init_done = spi_ready && !command_valid;
 
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk, posedge reset) begin
         if (reset)
             command_index <= 0;
         else if (spi_ready && command_valid)

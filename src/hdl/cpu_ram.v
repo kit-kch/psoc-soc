@@ -20,7 +20,7 @@ module cpu_ram
 
    wire [SIZE-1:0] a = addr[SIZE+1:2];
 
-   always @(posedge clk) begin
+   always @(posedge clk, posedge reset) begin
       if(reset) begin
          ready <= 0;
       end else if(valid) begin

@@ -67,7 +67,7 @@ module cpu_bus_logic(
    // write logic
    reg [23:0] left_audio, right_audio;
    assign adau_audio = {left_audio, right_audio};
-   always @(posedge clk) begin
+   always @(posedge clk, posedge reset) begin
       if(reset) begin
          led <= 8'h00;
          left_audio <= 24'h000000;

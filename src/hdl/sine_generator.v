@@ -11,7 +11,7 @@ module sine_generator(input clk,
    initial $readmemh("sin_lut_91x24.mem", lut);
    reg [6:0] lut_addr;
 
-   always @(posedge clk) begin
+   always @(posedge clk, posedge reset) begin
       if(reset) begin
          lut_addr <= 0;
          valid <= 0;
