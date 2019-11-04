@@ -45,7 +45,7 @@ module adau_command_list(
             // - left channel first
             // - MSB first
             // - data starts one BCLK after the LRCLK edge
-            7:  command = 32'h00_4016_40;
+            7:  command = 32'h00_4016_41;
 
             // playback mixer left (mixer 3):
             // - mute right input to left playback channel
@@ -105,7 +105,7 @@ module adau_command_list(
     assign command_valid = command_index != command_count;
     assign adau_init_done = spi_ready && !command_valid;
 
-    always @(posedge clk, posedge reset) begin
+    always @(posedge clk) begin
         if (reset)
             command_index <= 0;
         else if (spi_ready && command_valid)

@@ -41,7 +41,7 @@ module fpga_standalone_top(
     // Generate all required clocks
     clk_wiz_0 pll(
         .clk_in1(sys_clk),
-        .reset(btn_c),
+        .reset(0),
         .clk_soc(clk_soc),
         .clk_adau_mclk(ac_mclk),
         .locked(locked)

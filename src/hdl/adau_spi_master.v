@@ -6,7 +6,7 @@
 
     input [31:0] data_in,
     input valid,
-    output ready,
+    output reg ready,
 
     output cdata,
     output cclk,
@@ -36,7 +36,6 @@
     localparam IDLE = 65;
 
     reg [6:0] state;
-    reg ready;
 
     // The clock is low in even states and high in odd states. The only
     // exception is IDLE - we need to force the clock low there. If we
@@ -50,8 +49,9 @@
     reg [31:0] shiftreg;
     assign cdata = shiftreg[31];
 
-    always @(posedge clk, posedge reset) begin
-        if(reset) begin
+    always @(posedge clk) begin
+        if (reset) begin
+            shiftreg <= 0;
             state <= IDLE;
             clatch_n <= 1;
             divider <= 0;

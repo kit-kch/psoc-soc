@@ -45,8 +45,9 @@ module i2s_master(
     reg fifo_was_empty;
 
     reg mclk_tick_counter;
-    always @(posedge ac_mclk, posedge reset) begin
+    always @(posedge ac_mclk) begin
         if (reset) begin
+            fifo_was_empty <= 0;
             bclk <= 0;
             lrclk <= 1;
             // This forces the FSM to do the initial lrclk transisiton
@@ -100,9 +101,9 @@ module i2s_master(
                         end
                     end else begin
                         if (fifo_was_empty)
-                        sdata_sreg <= 24'b0;
-                    else
-                        sdata_sreg <= cur_frame_left;
+                            sdata_sreg <= 24'b0;
+                        else
+                            sdata_sreg <= cur_frame_left;
                     end
 
                     lrclk <= !lrclk;

@@ -10,35 +10,35 @@
 // - 0x80000014: right audio sample (write-only)
 //   Writing to the right channel triggers a write into the audio FIFO.
 module cpu_bus_logic(
-   input clk,
-   input reset,
+      input clk,
+      input reset,
 
-   // CPU connections
-   input [31:0] addr,
-   input [31:0] wdata,
-   output reg [31:0] rdata,
-   input [3:0] wstrb,
-   input valid,
-   output reg ready,
+      // CPU connections
+      input [31:0] addr,
+      input [31:0] wdata,
+      output reg [31:0] rdata,
+      input [3:0] wstrb,
+      input valid,
+      output reg ready,
 
-   // debugging stuff
-   input [7:0] dip,
-   input [4:0] buttons,
-   output reg [7:0] led,
+      // debugging stuff
+      input [7:0] dip,
+      input [4:0] buttons,
+      output reg [7:0] led,
 
-   // RAM interface
-   output [14:0] ram_addr,
-   output [31:0] ram_wdata,
-   output reg ram_valid,
-   output [3:0] ram_wstrb,
-   input [31:0] ram_rdata,
-   input ram_ready,
+      // RAM interface
+      output [14:0] ram_addr,
+      output [31:0] ram_wdata,
+      output reg ram_valid,
+      output [3:0] ram_wstrb,
+      input [31:0] ram_rdata,
+      input ram_ready,
 
-   // adau_interface signals
-   output [47:0] adau_audio,
-   output reg adau_audio_valid,
-   input adau_audio_full,
-   input adau_init_done
+      // adau_interface signals
+      output reg [23:0] adau_audio_l, adau_audio_r,
+      output reg adau_audio_valid,
+      input adau_audio_full,
+      input adau_init_done
    );
 
    assign ram_addr = addr[14:0];
@@ -65,13 +65,11 @@ module cpu_bus_logic(
    end
 
    // write logic
-   reg [23:0] left_audio, right_audio;
-   assign adau_audio = {left_audio, right_audio};
-   always @(posedge clk, posedge reset) begin
+   always @(posedge clk) begin
       if(reset) begin
          led <= 8'h00;
-         left_audio <= 24'h000000;
-         right_audio <= 24'h000000;
+         adau_audio_l <= 24'h000000;
+         adau_audio_r <= 24'h000000;
       end else begin
           if (!adau_audio_full && adau_audio_valid)
               adau_audio_valid <= 0;
@@ -84,19 +82,19 @@ module cpu_bus_logic(
                 end
                 32'h8000_0010: begin
                    if(wstrb[2])
-                      left_audio[23:16] <= wdata[23:16];
+                      adau_audio_l[23:16] <= wdata[23:16];
                    if(wstrb[1])
-                      left_audio[15:8] <= wdata[15:8];
+                      adau_audio_l[15:8] <= wdata[15:8];
                    if(wstrb[0])
-                      left_audio[7:0] <= wdata[7:0];
+                      adau_audio_l[7:0] <= wdata[7:0];
                 end
                 32'h8000_0014: begin
                    if(wstrb[2])
-                      right_audio[23:16] <= wdata[23:16];
+                      adau_audio_r[23:16] <= wdata[23:16];
                    if(wstrb[1])
-                      right_audio[15:8] <= wdata[15:8];
+                      adau_audio_r[15:8] <= wdata[15:8];
                    if(wstrb[0])
-                      right_audio[7:0] <= wdata[7:0];
+                      adau_audio_r[7:0] <= wdata[7:0];
                    if(|wstrb)
                      adau_audio_valid <= 1;
                 end
