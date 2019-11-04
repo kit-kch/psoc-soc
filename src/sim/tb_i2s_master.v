@@ -6,6 +6,10 @@
 // - audio frames begin when LRCLK falls
 // - 2 channels per frame
 // - ADAU is the I2S slave
+// - 48 BCLK cycles per audio frame
+// - left channel first
+// - MSB first
+// - data starts one BCLK after the LRCLK edge (Data delay from LRCLK edge (in BCLK units))
 module tb_i2s_master();
     // Generate clocks
     reg clk_soc;
@@ -22,7 +26,7 @@ module tb_i2s_master();
     wire sdata;
     reg reset;
     reg write_frame;
-    reg [47:0] frame_in;
+    reg [23:0] frame_in_l, frame_in_r;
 
     i2s_master uut(
         .bclk (bclk),
@@ -33,7 +37,8 @@ module tb_i2s_master();
         .clk_soc (clk_soc),
         .ac_mclk (ac_mclk),
         .reset(reset),
-        .frame_in (frame_in),
+        .frame_in_l (frame_in_l),
+        .frame_in_r (frame_in_r),
         .write_frame (write_frame)
     );
 
@@ -169,23 +174,28 @@ module tb_i2s_master();
         // Push some test data into the FIFO.
         @(posedge clk_soc);
         $display("sending 0x123456 0xabcdef");
-        frame_in <= 48'h123456_abcdef;
+        frame_in_l <= 24'h123456;
+        frame_in_r <= 24'habcdef;
         write_frame <= 1;
 
         @(posedge clk_soc);
         $display("sending 0x111111 0x222222");
-        frame_in <= 48'h111111_222222;
+        frame_in_l <= 24'h111111;
+        frame_in_r <= 24'h222222;
 
         @(posedge clk_soc);
         $display("sending 0x333333 0x444444");
-        frame_in <= 48'h333333_444444;
+        frame_in_l <= 24'h333333;
+        frame_in_r <= 24'h444444;
 
         @(posedge clk_soc);
         $display("sending 0x555555 0x666666");
-        frame_in <= 48'h555555_666666;
+        frame_in_l <= 24'h555555;
+        frame_in_r <= 24'h666666;
 
         @(posedge clk_soc);
-        frame_in <= 48'hxxxxxx_xxxxxx;
+        frame_in_l <= 24'hxxxxxx;
+        frame_in_r <= 24'hxxxxxx;
         write_frame <= 0;
 
         // Check the received data.
@@ -199,7 +209,8 @@ module tb_i2s_master();
         // Test the FULL flag.
         do_reset;
 
-        frame_in <= 48'hffffff_ffffff;
+        frame_in_l <= 24'hxxxxxx;
+        frame_in_r <= 24'hxxxxxx;
         write_frame <= 1;
         @(posedge clk_soc);
         for (i = 0; i < 10000 && !full; i = i+1) begin

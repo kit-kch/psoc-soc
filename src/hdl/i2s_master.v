@@ -1,19 +1,20 @@
 `timescale 1ns/1ps
 
 module i2s_master(
-    input clk_soc,
-    input ac_mclk,
-    input reset,
+        input clk_soc,
+        input ac_mclk,
+        input reset,
 
-    output reg bclk,
-    output reg lrclk,
-    output sdata,
+        output reg bclk,
+        output reg lrclk,
+        output sdata,
 
-    input [47:0] frame_in,
-    input write_frame,
-    output full
+        input [23:0] frame_in_l, frame_in_r,
+        input write_frame,
+        output full
     );
 
+    wire [47:0] frame_in = {frame_in_l, frame_in_r};
     wire [47:0] cur_frame;
     wire [23:0] cur_frame_right = cur_frame[23:0];
     wire [23:0] cur_frame_left = cur_frame[47:24];

@@ -96,7 +96,8 @@ module fpga_standalone_top(
         .ac_mclk(ac_mclk),
         .reset(reset),
 
-        .frame_in({2{sine_generator_out}}),
+        .frame_in_l(sine_generator_out),
+        .frame_in_r(sine_generator_out),
         .write_frame(audio_valid),
         .full(audio_full),
 
