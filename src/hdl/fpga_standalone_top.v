@@ -117,6 +117,6 @@ module fpga_standalone_top(
 
     // Default LED outputs for debugging signals
     assign led = dip & {3'b111, btn_c, btn_d, btn_l, btn_r, btn_u};
-    assign debug[7:0] = {reset, ac_mclk, ac_addr0_clatch, ac_addr1_cdata,  ac_scl_cclk, ac_dac_sdata, ac_bclk, ac_lrclk};
+    assign debug[7:0] = {reset, ac_mclk, ac_addr0_clatch, ac_addr1_cdata, ac_scl_cclk, ac_dac_sdata, ac_bclk, ac_lrclk};
 
  endmodule
