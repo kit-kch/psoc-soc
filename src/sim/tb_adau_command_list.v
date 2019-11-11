@@ -55,7 +55,7 @@ module tb_adau_command_list();
         $timeformat(-9, 5, " ns", 10);
 
         reset = 1;
-        #100 ;
+        #200 ;
         reset <= 0;
         @(posedge clk);
 
