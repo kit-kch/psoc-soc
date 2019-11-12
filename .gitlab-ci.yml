@@ -67,13 +67,3 @@ cpu_ram_tests:
   artifacts:
     paths:
     - out/
-
-cpu_bus_logic_tests:
-  stage: test
-  script:
-    - ./ci/run_tests.sh cpu_bus_logic_tests
-  tags:
-    - work1
-  artifacts:
-    paths:
-    - out/

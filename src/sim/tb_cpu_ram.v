@@ -37,6 +37,7 @@ module tb_cpu_ram;
          begin: timeout
             #1000 disable waiting;
             $error("READY did not go high after 1000ns");
+            $finish;
          end
       join
    endtask
@@ -70,8 +71,10 @@ module tb_cpu_ram;
          @(posedge clk);
          valid <= 0;
          wait_ready;
-         if(rdata !== data)
+         if(rdata !== data) begin
            $error("bad output data for address (want: %08x, got: %08x)", {word_addr, 2'b00}, data, rdata);
+           $finish;
+         end
          addr <= 32'hx;
          wstrb <= 4'bx;
          @(posedge clk);
@@ -135,6 +138,7 @@ module tb_cpu_ram;
       for(ii = n_words-1; ii >= 0; ii = ii-1)  // backwards
         read_check(ii, test_pattern[ii]);
 
+      $display("Test OK");
       $finish;
    end
 endmodule
