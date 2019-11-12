@@ -8,8 +8,8 @@ module sine_generator(
         output reg [23:0] out
     );
 
-    reg [23:0] lut [0:90];
-    initial $readmemh("sin_lut_91x24.mem", lut);
+    reg [23:0] lut [0:89];
+    initial $readmemh("sin_lut_90x24.mem", lut);
     reg [6:0] lut_addr;
 
     always @(posedge clk) begin
@@ -22,7 +22,7 @@ module sine_generator(
             valid <= 1;
             if (ready && valid) begin
                 lut_addr = lut_addr + 1;
-                if (lut_addr == 91)
+                if (lut_addr == 90)
                     lut_addr = 0;
                 out <= lut[lut_addr];
             end
