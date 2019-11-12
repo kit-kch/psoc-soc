@@ -50,11 +50,13 @@ module fpga_standalone_top(
     // stretch the reset pulse
     reg [5:0] reset_counter = 6'b111111;
     wire reset = reset_counter[5];
-    always @(posedge clk_soc) begin
-       if(!locked)
-           reset_counter <= 6'b111111;
-       else if(|reset_counter)
-           reset_counter <= reset_counter - 1;
+    always @(posedge clk_soc, posedge btn_c) begin
+        if (btn_c == 1)
+            reset_counter <= 6'b111111;
+        else if(!locked)
+            reset_counter <= 6'b111111;
+        else if(|reset_counter)
+            reset_counter <= reset_counter - 1;
     end
 
 
