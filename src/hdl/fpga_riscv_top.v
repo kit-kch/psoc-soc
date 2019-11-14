@@ -145,8 +145,8 @@ module fpga_riscv_top(
    // CPU instance
    picorv32 #(
         .REGS_INIT_ZERO(1),
-        .PROGADDR_RESET(32'h0001_0000),
-        .PROGADDR_IRQ(32'h0001_0010),
+        .PROGADDR_RESET(32'h0000_0000),
+        .PROGADDR_IRQ(32'h0000_0010),
         .ENABLE_MUL(1),
         .ENABLE_IRQ(1),
         .LATCHED_IRQ(32'hffff_ffff),
