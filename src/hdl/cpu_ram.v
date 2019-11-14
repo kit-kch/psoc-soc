@@ -3,7 +3,7 @@
 module cpu_ram
   // Total memory size is 2^SIZE words (= 4*2^SIZE bytes)
   // SIZE=13 gives us 32KiB
-  #(parameter SIZE=13)
+  #(parameter SIZE=13, parameter HEIGHT = (1 << SIZE) - 1)
    (input clk,
     input reset,
     input [SIZE+1:0] addr,
@@ -13,8 +13,6 @@ module cpu_ram
     output reg [31:0] rdata,
     output reg ready
     );
-
-   localparam HEIGHT = (1 << SIZE) - 1;
 
    reg [31:0] words [0:HEIGHT];
 

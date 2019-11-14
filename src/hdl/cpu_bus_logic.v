@@ -27,7 +27,7 @@ module cpu_bus_logic(
       output reg [7:0] led,
 
       // RAM interface
-      output [14:0] ram_addr,
+      output [18:0] ram_addr,
       output [31:0] ram_wdata,
       output reg ram_valid,
       output [3:0] ram_wstrb,
@@ -41,7 +41,7 @@ module cpu_bus_logic(
       input adau_init_done
    );
 
-   assign ram_addr = addr[14:0];
+   assign ram_addr = addr[18:0];
    assign ram_wstrb = wstrb;
    assign ram_wdata = wdata;
 
@@ -50,8 +50,9 @@ module cpu_bus_logic(
       ram_valid = 0;
       ready = 1;
       casez(addr)
-         // 0x00010000 - 0x00017FFF
-         32'b0000_0000_0000_0001_0???_????_????_????: begin
+         // 20 bit address
+         // 0x0000_0000 - 0x000F_FFFF
+         32'b0000_0000_0000_????_????_????_????_????: begin
             rdata = ram_rdata;
             ram_valid = valid;
             ready = ram_ready;
