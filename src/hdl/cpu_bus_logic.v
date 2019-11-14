@@ -50,9 +50,9 @@ module cpu_bus_logic(
       ram_valid = 0;
       ready = 1;
       casez(addr)
-         // 20 bit address
-         // 0x0000_0000 - 0x000F_FFFF
-         32'b0000_0000_0000_????_????_????_????_????: begin
+         // 19 bit address / 4 MiB
+         // 0x0000_0000 - 0x0007_FFFF
+         32'b0000_0000_0000_0???_????_????_????_????: begin
             rdata = ram_rdata;
             ram_valid = valid;
             ready = ram_ready;

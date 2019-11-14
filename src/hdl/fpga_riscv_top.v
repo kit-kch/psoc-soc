@@ -96,6 +96,7 @@ module fpga_riscv_top(
     wire ram_valid, ram_ready;
     wire [3:0] ram_wstrb;
 
+    // This gives exactly 4MiB
     cpu_ram #(.SIZE(17), .HEIGHT(131072-1)) ram(
         .clk(clk_soc),
         .reset(reset),
