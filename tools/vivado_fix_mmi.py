@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from xml.dom import minidom, Node
+import sys
 
 # This script reformats a .mmi file for updatemem.
 # updatemem tool. 
