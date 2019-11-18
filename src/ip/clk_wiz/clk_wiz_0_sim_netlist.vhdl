@@ -1,10 +1,10 @@
 -- Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2018.2.1 (lin64) Build 2288692 Thu Jul 26 18:23:50 MDT 2018
--- Date        : Mon Nov  4 15:31:02 2019
--- Host        : localhost.localdomain running 64-bit CentOS Linux release 7.7.1908 (Core)
--- Command     : write_vhdl -force -mode funcsim
---               /home/ws/nq5949/Dokumente/psoc_fpga/src/ip/clk_wiz/clk_wiz_0_sim_netlist.vhdl
+-- Date        : Fri Nov 15 17:21:43 2019
+-- Host        : itiv-work1.itiv.kit.edu running 64-bit CentOS Linux release 7.7.1908 (Core)
+-- Command     : write_vhdl -force -mode funcsim {/home/pfau/Documents/02
+--               Lehre/repos/psoc_fpga/src/ip/clk_wiz/clk_wiz_0_sim_netlist.vhdl}
 -- Design      : clk_wiz_0
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -91,7 +91,7 @@ mmcm_adv_inst: unisim.vcomponents.MMCME2_ADV
       CLKFBOUT_USE_FINE_PS => false,
       CLKIN1_PERIOD => 10.000000,
       CLKIN2_PERIOD => 0.000000,
-      CLKOUT0_DIVIDE_F => 9.625000,
+      CLKOUT0_DIVIDE_F => 19.250000,
       CLKOUT0_DUTY_CYCLE => 0.500000,
       CLKOUT0_PHASE => 0.000000,
       CLKOUT0_USE_FINE_PS => false,
