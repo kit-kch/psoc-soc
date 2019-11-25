@@ -99,13 +99,13 @@ module fpga_riscv_top(
 
 
     // RAM for the CPU
-    wire [18:0] ram_addr;
+    wire [14:0] ram_addr;
     wire [31:0] ram_wdata, ram_rdata;
     wire ram_valid, ram_ready;
     wire [3:0] ram_wstrb;
 
     // This gives exactly 4MiB
-    cpu_ram #(.SIZE(17), .HEIGHT(131072-1)) ram(
+    cpu_ram #(.SIZE(13)) ram(
         .clk(clk_soc),
         .reset(reset),
         .addr(ram_addr),
