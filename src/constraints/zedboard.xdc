@@ -112,3 +112,6 @@ set_property PACKAGE_PIN R18 [get_ports {btn_r}];               # "BTNR"
 set_property IOSTANDARD LVCMOS18 [get_ports {btn_r}];
 set_property PACKAGE_PIN T18 [get_ports {btn_u}];               # "BTNU"
 set_property IOSTANDARD LVCMOS18 [get_ports {btn_u}];
+
+# Clock domain crossing for reset signal
+set_false_path -from [get_pins {reset_counter_reg[5]/C}]
