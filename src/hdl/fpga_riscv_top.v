@@ -28,9 +28,6 @@ module fpga_riscv_top(
 
     wire clk_soc;
     wire locked;
-    wire reset;
-
-    assign reset = btn_c;
 
     // Generate all required clocks
     clk_wiz_0 pll(
@@ -41,6 +38,17 @@ module fpga_riscv_top(
         .locked(locked)
     );
 
+    // stretch the reset pulse
+    reg [5:0] reset_counter = 6'b111111;
+    wire reset = reset_counter[5];
+    always @(posedge clk_soc) begin
+        if (btn_c == 1)
+            reset_counter <= 6'b111111;
+        else if(!locked)
+            reset_counter <= 6'b111111;
+        else if(|reset_counter)
+            reset_counter <= reset_counter - 1;
+    end
 
     // ctrl <=> spi interface
     wire [31:0] adau_command;
