@@ -1,10 +1,10 @@
 -- Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2018.2.1 (lin64) Build 2288692 Thu Jul 26 18:23:50 MDT 2018
--- Date        : Fri Nov 15 17:21:43 2019
+-- Date        : Mon Nov  4 10:47:43 2019
 -- Host        : itiv-work1.itiv.kit.edu running 64-bit CentOS Linux release 7.7.1908 (Core)
--- Command     : write_vhdl -force -mode funcsim {/home/pfau/Documents/02
---               Lehre/repos/psoc_fpga/src/ip/clk_wiz/clk_wiz_0_sim_netlist.vhdl}
+-- Command     : write_vhdl -force -mode funcsim -rename_top clk_wiz_0 -prefix
+--               clk_wiz_0_ clk_wiz_0_sim_netlist.vhdl
 -- Design      : clk_wiz_0
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -22,8 +22,6 @@ entity clk_wiz_0_clk_wiz_0_clk_wiz is
     locked : out STD_LOGIC;
     clk_in1 : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of clk_wiz_0_clk_wiz_0_clk_wiz : entity is "clk_wiz_0_clk_wiz";
 end clk_wiz_0_clk_wiz_0_clk_wiz;
 
 architecture STRUCTURE of clk_wiz_0_clk_wiz_0_clk_wiz is
@@ -91,7 +89,7 @@ mmcm_adv_inst: unisim.vcomponents.MMCME2_ADV
       CLKFBOUT_USE_FINE_PS => false,
       CLKIN1_PERIOD => 10.000000,
       CLKIN2_PERIOD => 0.000000,
-      CLKOUT0_DIVIDE_F => 19.250000,
+      CLKOUT0_DIVIDE_F => 9.625000,
       CLKOUT0_DUTY_CYCLE => 0.500000,
       CLKOUT0_PHASE => 0.000000,
       CLKOUT0_USE_FINE_PS => false,

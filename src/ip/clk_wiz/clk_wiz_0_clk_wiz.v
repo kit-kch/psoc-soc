@@ -56,7 +56,7 @@
 //  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 //   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 //----------------------------------------------------------------------------
-// _clk_soc____60.000______0.000______50.0______221.451____297.349
+// _clk_soc___120.000______0.000______50.0______201.777____297.349
 // clk_adau_mclk____12.287______0.000______50.0______288.565____297.349
 //
 //----------------------------------------------------------------------------
@@ -132,7 +132,7 @@ wire clk_in2_clk_wiz_0;
     .CLKFBOUT_MULT_F      (57.750),
     .CLKFBOUT_PHASE       (0.000),
     .CLKFBOUT_USE_FINE_PS ("FALSE"),
-    .CLKOUT0_DIVIDE_F     (19.250),
+    .CLKOUT0_DIVIDE_F     (9.625),
     .CLKOUT0_PHASE        (0.000),
     .CLKOUT0_DUTY_CYCLE   (0.500),
     .CLKOUT0_USE_FINE_PS  ("FALSE"),
