@@ -45,7 +45,7 @@ foreach ram $rambs {
 
     set m1 0
     set mall {}
-    regexp -- {.*words_reg_(\d*)_\d*_\d*} $name mall m1
+    regexp -- {.*words_reg_(\d*)_\d*} $name mall m1
 
     set msb [expr $bram_slice_end + (8 * $m1)]
     set lsb [expr $bram_slice_begin + (8 * $m1)]
