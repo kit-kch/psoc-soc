@@ -1,3 +1,5 @@
+fpga_riscv_top.mmi
+
 # Swap
 [._]*.s[a-v][a-z]
 [._]*.sw[a-p]
