@@ -1,0 +1,33 @@
+clk: 1 pin
+
+spi: 7 pins
+ clk
+ mosi
+ miso
+ ss0-3
+ 
+i2c: 2 pins
+ scl
+ sda
+ 
+uart: 2 pins
+ 
+analog: 2 pins
+ left
+ right
+ 
+power: 2 pins
+ vcc
+ gnd
+ 
+ 
+gpio: 9
+  4x generic
+  5x buttons
+
+i2s: 4
+  mclk, sclk, lrclk, sdata
+ 
+29pins
+
+==> 32

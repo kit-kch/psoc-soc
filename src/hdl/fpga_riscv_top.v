@@ -13,7 +13,7 @@ module fpga_riscv_top(
         input btn_l,
         input btn_r,
         input btn_u,
-
+        
         // ADAU signals
         output ac_mclk,
 
@@ -23,7 +23,13 @@ module fpga_riscv_top(
 
         output ac_dac_sdata,
         output ac_bclk,
-        output ac_lrclk
+        output ac_lrclk,
+        
+        // parallel output
+        output [7:0] gpio_o, 
+        // UART0 
+        output uart0_txd_o,
+        input uart0_rxd_i
     );
 
     wire clk_soc;
@@ -41,6 +47,7 @@ module fpga_riscv_top(
     // stretch the reset pulse
     reg [5:0] reset_counter = 6'b111111;
     wire reset = reset_counter[5];
+
     always @(posedge clk_soc) begin
         if (btn_c == 1)
             reset_counter <= 6'b111111;
@@ -98,82 +105,127 @@ module fpga_riscv_top(
     );
 
 
-    // RAM for the CPU
-    wire [14:0] ram_addr;
-    wire [31:0] ram_wdata, ram_rdata;
-    wire ram_valid, ram_ready;
-    wire [3:0] ram_wstrb;
-
-    // This gives exactly 4MiB
-    cpu_ram #(.SIZE(13)) ram(
-        .clk(clk_soc),
-        .reset(reset),
-        .addr(ram_addr),
-        .wdata(ram_wdata),
-        .valid(ram_valid),
-        .wstrb(ram_wstrb),
-        .rdata(ram_rdata),
-        .ready(ram_ready)
-    );
-
-
-    // CPU bus logic
-    wire [31:0] bus_addr, bus_wdata, bus_rdata;
-    wire bus_valid, bus_ready;
-    wire [3:0] bus_wstrb;
-
-    cpu_bus_logic bus(
-        .clk(clk_soc),
-        .reset(reset),
-        .addr(bus_addr),
-        .wdata(bus_wdata),
-        .wstrb(bus_wstrb),
-        .rdata(bus_rdata),
-        .valid(bus_valid),
-        .ready(bus_ready),
-
-        .dip(dip),
-        .buttons({btn_c, btn_d, btn_l, btn_r, btn_u}),
-        .led(led),
-
-        .ram_addr(ram_addr),
-        .ram_wdata(ram_wdata),
-        .ram_valid(ram_valid),
-        .ram_wstrb(ram_wstrb),
-        .ram_rdata(ram_rdata),
-        .ram_ready(ram_ready),
-
-        .adau_audio_l(adau_audio_in_l),
-        .adau_audio_r(adau_audio_in_r),
-        .adau_audio_valid(adau_audio_in_valid),
-        .adau_audio_full(adau_audio_full),
-        .adau_init_done(adau_init_done)
-    );
-
-   // CPU instance
-   picorv32 #(
-        .REGS_INIT_ZERO(1),
-        .PROGADDR_RESET(32'h0000_0000),
-        .PROGADDR_IRQ(32'h0000_0010),
-        .ENABLE_MUL(1),
-        .ENABLE_IRQ(1),
-        .LATCHED_IRQ(32'hffff_ffff),
-        .MASKED_IRQ(32'hffff_ff00)
-        ) cpu (
-            .clk(clk_soc),
-            .resetn(!reset),
-            .mem_valid(bus_valid),
-            .mem_ready(bus_ready),
-            .mem_addr(bus_addr),
-            .mem_wdata(bus_wdata),
-            .mem_wstrb(bus_wstrb),
-            .mem_rdata(bus_rdata),
-            .pcpi_wr(1'b0),
-            .pcpi_rd(32'b0),
-            .pcpi_wait(1'b0),
-            .pcpi_ready(1'b0),
-            .irq({24'b0, btn_c, btn_d, btn_l, btn_r, btn_u, 3'b0})
-    );
+  // The Core Of The Problem ----------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------
+   neorv32_top #(
+   //-- Global control --
+    .CLOCK_FREQUENCY(120000000),   // clock frequency of clk_i in Hz
+    .INT_BOOTLOADER_EN(1'b1),       // boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
+    .USER_CODE(0),                    // custom user code
+    .HW_THREAD_ID(0),                // hardware thread id (hartid)
+    //-- On-Chip Debugger (OCD) --
+    .ON_CHIP_DEBUGGER_EN(1'b0),         //implement on-chip debugger
+    //-- RISC-V CPU Extensions --
+    .CPU_EXTENSION_RISCV_A(1'b0),        //implement atomic extension?
+    .CPU_EXTENSION_RISCV_C(1'b1),        //implement compressed extension?
+    .CPU_EXTENSION_RISCV_E(1'b0),       //implement embedded RF extension?
+    .CPU_EXTENSION_RISCV_M(1'b1),        //implement muld/div extension?
+    .CPU_EXTENSION_RISCV_U(1'b1),        //implement user mode extension?
+    .CPU_EXTENSION_RISCV_Zfinx(1'b0),    //implement 32-bit floating-point extension (using INT reg!)
+    .CPU_EXTENSION_RISCV_Zicsr(1'b1),    //implement CSR system?
+    .CPU_EXTENSION_RISCV_Zifencei(1'b0), //implement instruction stream sync.?
+    //-- Extension Options --
+    .FAST_MUL_EN(1'b0),                  //use DSPs for M extension's multiplier
+    .FAST_SHIFT_EN(1'b0),                //use barrel shifter for shift operations
+    .CPU_CNT_WIDTH(64),                //total width of CPU cycle and instret counters (0..64)
+    //-- Physical Memory Protection (PMP) --
+    .PMP_NUM_REGIONS(0),              //number of regions (0..64)
+    .PMP_MIN_GRANULARITY(64*1024),          //minimal region granularity in bytes, has to be a power of 2, min 8 bytes
+    //-- Hardware Performance Monitors (HPM) --
+    .HPM_NUM_CNTS(4),                 //number of implemented HPM counters (0..29)
+    .HPM_CNT_WIDTH(40),                //total size of HPM counters (0..64)
+    //-- Internal Instruction memory --
+    .MEM_INT_IMEM_EN(1'b1),              //implement processor-internal instruction memory
+    .MEM_INT_IMEM_SIZE(16*1024),            //size of processor-internal instruction memory in bytes
+    //-- Internal Data memory --
+    .MEM_INT_DMEM_EN(1'b1),              //implement processor-internal data memory
+    .MEM_INT_DMEM_SIZE(8*1024),            //size of processor-internal data memory in bytes
+    //-- Internal Cache memory --
+    .ICACHE_EN(1'b0),                    //implement instruction cache
+    .ICACHE_NUM_BLOCKS(4),            //i-cache: number of blocks (min 1), has to be a power of 2
+    .ICACHE_BLOCK_SIZE(64),            //i-cache: block size in bytes (min 4), has to be a power of 2
+    .ICACHE_ASSOCIATIVITY(1),         //i-cache: associativity / number of sets (1=direct_mapped), has to be a power of 2
+    //-- External memory interface --
+    .MEM_EXT_EN(1'b0),                   //implement external memory bus interface?
+    .MEM_EXT_TIMEOUT(0),              //cycles after a pending bus access auto-terminates (0 = disabled)
+    //-- Processor peripherals --
+    .IO_GPIO_EN(1'b1),                   // implement general purpose input/output port unit (GPIO)?
+    .IO_MTIME_EN(1'b1),                  // implement machine system timer (MTIME)?
+    .IO_UART0_EN(1'b1),                  // implement primary universal asynchronous receiver/transmitter (UART0)?
+    .IO_UART1_EN(1'b0),                  // implement secondary universal asynchronous receiver/transmitter (UART1)?
+    .IO_SPI_EN(1'b0),                    // implement serial peripheral interface (SPI)?
+    .IO_TWI_EN(1'b0),                    // implement two-wire interface (TWI)?
+    .IO_PWM_NUM_CH(1),                // number of PWM channels to implement (0..60); 0 = disabled, initial value is 0
+    .IO_WDT_EN(1'b1),                    // implement watch dog timer (WDT)?
+    .IO_TRNG_EN(1'b0),                   // implement true random number generator (TRNG)?
+    .IO_CFS_EN(1'b0),                    // implement custom functions subsystem (CFS)?
+    .IO_CFS_CONFIG(0),                // custom CFS configuration generic
+    .IO_CFS_IN_SIZE(32),               // size of CFS input conduit in bits
+    .IO_CFS_OUT_SIZE(32),              // size of CFS output conduit in bits
+    .IO_NEOLED_EN(1'b0)                 // implement NeoPixel-compatible smart LED interface (NEOLED)?
+  )
+  neorv32_top_inst (
+    //-- Global control --
+    .clk_i(clk_soc),           //-- global clock, rising edge
+    .rstn_i(~reset),          //-- global reset, low-active, async
+    //-- JTAG on-chip debugger interface (available if ON_CHIP_DEBUGGER_EN = true) --
+    .jtag_trst_i(0),          //-- low-active TAP reset (optional)
+    .jtag_tck_i(0),         //-- serial clock
+    .jtag_tdi_i(0),         //-- serial data input
+    .jtag_tdo_o(),          //-- serial data output
+    .jtag_tms_i(0),          //-- mode select
+    //-- Wishbone bus interface (available if MEM_EXT_EN = true) --
+    .wb_tag_o(),          //-- tag
+    .wb_adr_o(),            //-- address
+    .wb_dat_i(0), //-- read data {n {1'b0}} 
+    .wb_dat_o(),            //-- write data
+    .wb_we_o(),            //-- read/write
+    .wb_sel_o(),            //-- byte enable
+    .wb_stb_o(),            //-- strobe
+    .wb_cyc_o(),            //-- valid cycle
+    .wb_lock_o(),            //-- exclusive access request
+    .wb_ack_i(0),             //-- transfer acknowledge
+    .wb_err_i(0),             //-- transfer error
+    //-- Advanced memory control signals (available if MEM_EXT_EN = true) --
+    .fence_o(),            //-- indicates an executed FENCE operation
+    .fencei_o(),            //-- indicates an executed FENCEI operation
+    //-- GPIO (available if IO_GPIO_EN = true) --
+    .gpio_o(gpio_o),        //-- parallel output
+    .gpio_i(0), //-- parallel input {n {1'b0}} 
+    //-- primary UART0 (available if IO_UART0_EN = true) --
+    .uart0_txd_o(uart0_txd_o),     //-- UART0 send data
+    .uart0_rxd_i(uart0_rxd_i),     //-- UART0 receive data
+    .uart0_rts_o(),            //-- hw flow control: UART0.RX ready to receive ("RTR"), low-active, optional
+    .uart0_cts_i(0),             //-- hw flow control: UART0.TX allowed to transmit, low-active, optional
+    //-- secondary UART1 (available if IO_UART1_EN = true) --
+    .uart1_txd_o(),            //-- UART1 send data
+    .uart1_rxd_i(0),             //-- UART1 receive data
+    .uart1_rts_o(),            //-- hw flow control: UART1.RX ready to receive ("RTR"), low-active, optional
+    .uart1_cts_i(0),             //-- hw flow control: UART1.TX allowed to transmit, low-active, optional
+    //-- SPI (available if IO_SPI_EN = true) --
+    .spi_sck_o(),            //-- SPI serial clock
+    .spi_sdo_o(),            //-- controller data out, peripheral data in
+    .spi_sdi_i(0),             //-- controller data in, peripheral data out
+    .spi_csn_o(),            //-- SPI CS
+    //-- TWI (available if IO_TWI_EN = true) --
+    .twi_sda_io(),            //-- twi serial data line
+    .twi_scl_io(),            //-- twi serial clock line
+    //-- PWM (available if IO_PWM_NUM_CH > 0) --
+    .pwm_o(),            //-- pwm channels
+    //-- Custom Functions Subsystem IO --
+    .cfs_in_i(0), //-- custom inputs {n {1'b0}} 
+    .cfs_out_o(),            //-- custom outputs
+    //-- NeoPixel-compatible smart LED interface (available if IO_NEOLED_EN = true) --
+    .neoled_o(),           // -- async serial data line
+    //-- System time --
+    .mtime_i(0), //-- current system time from ext. MTIME (if IO_MTIME_EN = false) {n {1'b0}} 
+    .mtime_o(),            //-- current system time from int. MTIME (if IO_MTIME_EN = true)
+    //-- Interrupts --
+    .nm_irq_i(0),             //-- non-maskable interrupt
+    .mtime_irq_i(0),             //-- machine timer interrupt, available if IO_MTIME_EN = false
+    .msw_irq_i(0),             //-- machine software interrupt
+    .mext_irq_i(0)              //-- machine external interrupt
+  );
 
     // Debug signals
     assign debug[7:0] = {reset, ac_mclk, ac_addr0_clatch, ac_addr1_cdata, ac_scl_cclk, ac_dac_sdata, ac_bclk, ac_lrclk};
