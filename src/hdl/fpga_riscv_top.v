@@ -17,8 +17,8 @@ module fpga_riscv_top(
         // ADAU signals
         output ac_mclk,
 
-        output ac_addr0_clatch,
-        output ac_addr1_cdata,
+        //output ac_addr0_clatch,
+        //output ac_addr1_cdata,
         output ac_scl_cclk,
 
         output ac_dac_sdata,
@@ -29,8 +29,23 @@ module fpga_riscv_top(
         output [7:0] gpio_o, 
         // UART0 
         output uart0_txd_o,
-        input uart0_rxd_i
+        input uart0_rxd_i,
+        
+        // GPIO 
+        input gpio_i,
+        
+        //SPI SD
+        output spi_miso,
+        input spi_mosi,
+        output spi_sd_ss
+        
+        //PWM 
+        //output pwm_led
+        
     );
+    
+    wire ac_addr0_clatch;
+    wire ac_addr1_cdata;
 
     wire clk_soc;
     wire locked;
@@ -71,7 +86,7 @@ module fpga_riscv_top(
         .adau_init_done(adau_init_done)
     );
 
-    adau_spi_master spi(
+    /*adau_spi_master spi(
         .clk(clk_soc),
         .reset(reset),
 
@@ -79,10 +94,10 @@ module fpga_riscv_top(
         .valid(adau_command_valid),
         .ready(spi_ready),
 
-        .cdata(ac_addr1_cdata),
-        .cclk(ac_scl_cclk),
-        .clatch_n(ac_addr0_clatch)
-    );
+        .cdata(),
+        .cclk(),
+        .clatch_n()
+    );*/
 
 
     // sin <=> i2s
@@ -153,8 +168,8 @@ module fpga_riscv_top(
     .IO_MTIME_EN(1'b1),                  // implement machine system timer (MTIME)?
     .IO_UART0_EN(1'b1),                  // implement primary universal asynchronous receiver/transmitter (UART0)?
     .IO_UART1_EN(1'b0),                  // implement secondary universal asynchronous receiver/transmitter (UART1)?
-    .IO_SPI_EN(1'b0),                    // implement serial peripheral interface (SPI)?
-    .IO_TWI_EN(1'b0),                    // implement two-wire interface (TWI)?
+    .IO_SPI_EN(1'b1),                    // implement serial peripheral interface (SPI)?
+    .IO_TWI_EN(1'b1),                    // implement two-wire interface (TWI)?
     .IO_PWM_NUM_CH(1),                // number of PWM channels to implement (0..60); 0 = disabled, initial value is 0
     .IO_WDT_EN(1'b1),                    // implement watch dog timer (WDT)?
     .IO_TRNG_EN(1'b0),                   // implement true random number generator (TRNG)?
@@ -203,10 +218,11 @@ module fpga_riscv_top(
     .uart1_rts_o(),            //-- hw flow control: UART1.RX ready to receive ("RTR"), low-active, optional
     .uart1_cts_i(0),             //-- hw flow control: UART1.TX allowed to transmit, low-active, optional
     //-- SPI (available if IO_SPI_EN = true) --
-    .spi_sck_o(),            //-- SPI serial clock
-    .spi_sdo_o(),            //-- controller data out, peripheral data in
-    .spi_sdi_i(0),             //-- controller data in, peripheral data out
-    .spi_csn_o(),            //-- SPI CS
+    .spi_sck_o(ac_scl_cclk),            //-- SPI serial clock
+    .spi_sdo_o(spi_miso),            //-- controller data out, peripheral data in
+    .spi_sdi_i(spi_mosi),             //-- controller data in, peripheral data out
+    .spi_csn_o(spi_sd_ss),            //-- SPI CS
+    
     //-- TWI (available if IO_TWI_EN = true) --
     .twi_sda_io(),            //-- twi serial data line
     .twi_scl_io(),            //-- twi serial clock line

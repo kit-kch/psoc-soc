@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="38" Path="C:/Users/uceas/Documents/psoc_fpga-master/psoc_fpga.xpr">
+<Project Version="7" Minor="38" Path="C:/Users/uceas/Documents/psoc_fpga/psoc_fpga.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="5f643717c80d4e0585c4b624fa9821f7"/>
