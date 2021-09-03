@@ -35,16 +35,16 @@ set_property IOSTANDARD LVCMOS33 [get_ports {sys_clk}];
 #set_property IOSTANDARD LVCMOS33 [get_ports {ac_addr0_clatch}];
 #set_property PACKAGE_PIN AA9  [get_ports {ac_addr1_cdata}];      # "AC-ADR1" JA4
 #set_property IOSTANDARD LVCMOS33 [get_ports {ac_addr1_cdata}];
-set_property PACKAGE_PIN B20 [get_ports {ac_dac_sdata}];        # "AC-GPIO0" JB1
+#set_property PACKAGE_PIN B20 [get_ports {ac_dac_sdata}];        # "AC-GPIO0" JB1
+set_property PACKAGE_PIN AB11 [get_ports {ac_dac_sdata}];        # "AC-GPIO0" JA7 Temporary
 set_property IOSTANDARD LVCMOS33 [get_ports {ac_dac_sdata}];
 set_property PACKAGE_PIN N20 [get_ports {ac_bclk}];             # "AC-GPIO2"  I2S_SCLK   LA01_N_CC
 set_property IOSTANDARD LVCMOS33 [get_ports {ac_bclk}];
 set_property PACKAGE_PIN B19  [get_ports {ac_lrclk}];            # "AC-GPIO3" I2S_LRCLK   LA17_P_CC
 set_property IOSTANDARD LVCMOS33 [get_ports {ac_lrclk}];
-set_property PACKAGE_PIN N19 [get_ports {ac_mclk}];             # "AC-MCLK" JB2  LA01_P_CC
+#set_property PACKAGE_PIN N19 [get_ports {ac_mclk}];             # "AC-MCLK" JB2  LA01_P_CC
+set_property PACKAGE_PIN AA9 [get_ports {ac_mclk}];             # "AC-MCLK"  JA4 Temporary
 set_property IOSTANDARD LVCMOS33 [get_ports {ac_mclk}];
-set_property PACKAGE_PIN M19 [get_ports {ac_scl_cclk}];         # "AC-SCK" JB3  SPI_SCK   LA00_P_CC
-set_property IOSTANDARD LVCMOS33 [get_ports {ac_scl_cclk}];
 #set_property PACKAGE_PIN AA7 [get_ports {ac_adc_sdata}];       # "AC-GPIO1"
 #set_property IOSTANDARD LVCMOS33 [get_ports {ac_adc_sdata}];
 #set_property PACKAGE_PIN AB5 [get_ports {iic_rtl_sda_io}];     # "AC-SDA"
@@ -128,20 +128,20 @@ set_false_path -from [get_pins {reset_counter_reg[5]/C}]
 
 # GPIO
 
-set_property PACKAGE_PIN Y11 [get_ports {gpio_o[7]}];
-set_property PACKAGE_PIN AA11 [get_ports {gpio_o[6]}];
-set_property PACKAGE_PIN Y10 [get_ports {gpio_o[5]}];
-set_property PACKAGE_PIN AA9 [get_ports {gpio_o[4]}];
-set_property PACKAGE_PIN F19 [get_ports {gpio_o[3]}];        # LED LA22_N 
-set_property PACKAGE_PIN G19 [get_ports {gpio_o[2]}];        # LED LA22_P
-set_property PACKAGE_PIN G16 [get_ports {gpio_o[1]}];        # LA19_N 
-set_property PACKAGE_PIN G15 [get_ports {gpio_o[0]}];        # LA19_P
-set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[7]}];
-set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[6]}];
-set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[5]}];
-set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[4]}];
-set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[3]}];
-set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[2]}];
+#set_property PACKAGE_PIN Y11 [get_ports {gpio_o[7]}];
+#set_property PACKAGE_PIN AA11 [get_ports {gpio_o[6]}];
+#set_property PACKAGE_PIN Y10 [get_ports {gpio_o[5]}];
+#set_property PACKAGE_PIN AA9 [get_ports {gpio_o[4]}];
+set_property PACKAGE_PIN F19 [get_ports {gpio_o[1]}];        # LED LA22_N 
+set_property PACKAGE_PIN G19 [get_ports {gpio_o[0]}];        # LED LA22_P
+#set_property PACKAGE_PIN G16 [get_ports {gpio_o[1]}];        # LA19_N 
+#set_property PACKAGE_PIN G15 [get_ports {gpio_o[0]}];        # LA19_P
+#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[7]}];
+#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[6]}];
+#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[5]}];
+#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[4]}];
+#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[3]}];
+#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[2]}];
 set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[1]}];
 set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[0]}];
 
@@ -192,31 +192,23 @@ create_clock -period 10.000 -name sys_clk -waveform {0.000 5.000} [get_ports sys
 
 
 # ----------------------------------------------------------------------------
-# Bank 38
-# ----------------------------------------------------------------------------
-
-# GPIO INPUT
-
-set_property PACKAGE_PIN Y8 [get_ports gpio_i];         #GPIO0
-set_property IOSTANDARD LVCMOS33 [get_ports {gpio_i}];
-
-
-
-# ----------------------------------------------------------------------------
 # Bank 39
 # ----------------------------------------------------------------------------
 
 # SPI SD
 
-set_property PACKAGE_PIN G20 [get_ports spi_miso];      # SPI_MISO LA20_P
-set_property PACKAGE_PIN G21 [get_ports spi_mosi];      # SPI_MOSI LA20_N
+#set_property PACKAGE_PIN M19 [get_ports {spi_clk}];         # "AC-SCK" JB3  SPI_SCK   LA00_P_CC
+set_property PACKAGE_PIN Y10 [get_ports {spi_clk}];         # "AC-SCK" JA3 Temporary
+#set_property PACKAGE_PIN G20 [get_ports spi_miso];      # SPI_MISO LA20_P
+set_property PACKAGE_PIN Y11 [get_ports spi_miso];      # SPI_MISO JA1 Temporary
+#set_property PACKAGE_PIN G21 [get_ports spi_mosi];      # SPI_MOSI LA20_N
+set_property PACKAGE_PIN AA11 [get_ports spi_mosi];      # SPI_MOSI JA2 Temporary
 set_property PACKAGE_PIN T17 [get_ports spi_sd_ss];     # SPI_SD_SS LA07_N
 
 set_property IOSTANDARD LVCMOS33 [get_ports {spi_miso}];
 set_property IOSTANDARD LVCMOS33 [get_ports {spi_mosi}];
 set_property IOSTANDARD LVCMOS33 [get_ports {spi_sd_ss}];
-
-
+set_property IOSTANDARD LVCMOS33 [get_ports {spi_clk}];
 
 # ----------------------------------------------------------------------------
 # Bank 40
@@ -224,5 +216,43 @@ set_property IOSTANDARD LVCMOS33 [get_ports {spi_sd_ss}];
 
 # PWM
 
-#set_property PACKAGE_PIN 1 [get_ports pwm_led]; #PWM_LED
-#set_property IOSTANDARD LVCMOS33 [get_ports {pwm_led}];
+set_property PACKAGE_PIN A19 [get_ports pwm_led]; #PWM_LED
+set_property IOSTANDARD LVCMOS33 [get_ports {pwm_led}];
+
+
+
+# ----------------------------------------------------------------------------
+# Bank 41
+# ----------------------------------------------------------------------------
+
+#RST
+
+set_property PACKAGE_PIN P16 [get_ports btn_rst]; #PTNC Zedboard
+set_property IOSTANDARD LVCMOS33 [get_ports {btn_rst}];
+
+
+
+
+
+# ----------------------------------------------------------------------------
+# Bank 42
+# ----------------------------------------------------------------------------
+
+#SPI_FLASH_SS
+
+set_property PACKAGE_PIN T16 [get_ports spi_flash_ss]; #spi_flash_ss
+set_property IOSTANDARD LVCMOS33 [get_ports {spi_flash_ss}];
+
+
+
+
+# ----------------------------------------------------------------------------
+# Bank 43
+# ----------------------------------------------------------------------------
+
+#I2C
+
+set_property PACKAGE_PIN AB10 [get_ports i2c_sda]; #I2C_SDA JA8 Temporary
+set_property PACKAGE_PIN AB9 [get_ports i2c_scl]; #I2C_SCL JA9 Temporary
+set_property IOSTANDARD LVCMOS33 [get_ports {i2c_sda}];
+set_property IOSTANDARD LVCMOS33 [get_ports {i2c_scl}];

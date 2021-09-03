@@ -8,40 +8,42 @@ module fpga_riscv_top(
         output [7:0] led,
         input [7:0] dip,
         output [7:0] debug,
+        // Taster BTNC auf zedboard
+        input btn_rst,
+        
+        // extension board
+        
+        // ADAU signals
+        output ac_mclk,
+        output ac_dac_sdata,
+        output ac_bclk,
+        output ac_lrclk,
+        
+        // i2c signals
+        inout i2c_sda,
+        inout i2c_scl,
+        
+        // UART0 
+        output uart0_txd_o,
+        input uart0_rxd_i,
+
+        // parallel output
+        output [1:0] gpio_o, 
         input btn_c,
         input btn_d,
         input btn_l,
         input btn_r,
         input btn_u,
         
-        // ADAU signals
-        output ac_mclk,
-
-        //output ac_addr0_clatch,
-        //output ac_addr1_cdata,
-        output ac_scl_cclk,
-
-        output ac_dac_sdata,
-        output ac_bclk,
-        output ac_lrclk,
-        
-        // parallel output
-        output [7:0] gpio_o, 
-        // UART0 
-        output uart0_txd_o,
-        input uart0_rxd_i,
-        
-        // GPIO 
-        input gpio_i,
-        
         //SPI SD
-        output spi_miso,
-        input spi_mosi,
-        output spi_sd_ss
+        output spi_clk,
+        input spi_miso,
+        output spi_mosi,
+        output spi_sd_ss,
+        output spi_flash_ss,
         
         //PWM 
-        //output pwm_led
-        
+        output pwm_led
     );
     
     wire ac_addr0_clatch;
@@ -64,7 +66,7 @@ module fpga_riscv_top(
     wire reset = reset_counter[5];
 
     always @(posedge clk_soc) begin
-        if (btn_c == 1)
+        if (btn_rst == 1)
             reset_counter <= 6'b111111;
         else if(!locked)
             reset_counter <= 6'b111111;
@@ -73,10 +75,10 @@ module fpga_riscv_top(
     end
 
     // ctrl <=> spi interface
-    wire [31:0] adau_command;
-    wire adau_command_valid, spi_ready, adau_init_done;
+    //wire [31:0] adau_command;
+    //wire adau_command_valid, spi_ready, adau_init_done;
 
-    adau_command_list ctrl(
+    /*adau_command_list ctrl(
         .clk(clk_soc),
         .reset(reset),
 
@@ -84,7 +86,7 @@ module fpga_riscv_top(
         .command_valid(adau_command_valid),
         .spi_ready(spi_ready),
         .adau_init_done(adau_init_done)
-    );
+    );*/
 
     /*adau_spi_master spi(
         .clk(clk_soc),
@@ -103,6 +105,9 @@ module fpga_riscv_top(
     // sin <=> i2s
     wire [23:0] adau_audio_in_l, adau_audio_in_r;
     wire adau_audio_in_valid, adau_audio_full;
+    wire [7:0] spi_csn_o;
+    assign spi_flash_ss = spi_csn_o[0];
+    assign spi_sd_ss = spi_csn_o[1];
 
     i2s_master i2s(
         .clk_soc(clk_soc),
@@ -206,7 +211,7 @@ module fpga_riscv_top(
     .fencei_o(),            //-- indicates an executed FENCEI operation
     //-- GPIO (available if IO_GPIO_EN = true) --
     .gpio_o(gpio_o),        //-- parallel output
-    .gpio_i(0), //-- parallel input {n {1'b0}} 
+    .gpio_i({btn_c, btn_d, btn_l, btn_u, btn_r}), //-- parallel input {n {1'b0}} 
     //-- primary UART0 (available if IO_UART0_EN = true) --
     .uart0_txd_o(uart0_txd_o),     //-- UART0 send data
     .uart0_rxd_i(uart0_rxd_i),     //-- UART0 receive data
@@ -218,16 +223,16 @@ module fpga_riscv_top(
     .uart1_rts_o(),            //-- hw flow control: UART1.RX ready to receive ("RTR"), low-active, optional
     .uart1_cts_i(0),             //-- hw flow control: UART1.TX allowed to transmit, low-active, optional
     //-- SPI (available if IO_SPI_EN = true) --
-    .spi_sck_o(ac_scl_cclk),            //-- SPI serial clock
-    .spi_sdo_o(spi_miso),            //-- controller data out, peripheral data in
-    .spi_sdi_i(spi_mosi),             //-- controller data in, peripheral data out
-    .spi_csn_o(spi_sd_ss),            //-- SPI CS
+    .spi_sck_o(spi_clk),            //-- SPI serial clock
+    .spi_sdo_o(spi_mosi),            //-- controller data out, peripheral data in
+    .spi_sdi_i(spi_miso),             //-- controller data in, peripheral data out
+    .spi_csn_o(spi_csn_o),            //-- SPI CS
     
     //-- TWI (available if IO_TWI_EN = true) --
-    .twi_sda_io(),            //-- twi serial data line
-    .twi_scl_io(),            //-- twi serial clock line
+    .twi_sda_io(i2c_sda),            //-- twi serial data line
+    .twi_scl_io(i2c_scl),            //-- twi serial clock line
     //-- PWM (available if IO_PWM_NUM_CH > 0) --
-    .pwm_o(),            //-- pwm channels
+    .pwm_o({pwm_led}),            //-- pwm channels
     //-- Custom Functions Subsystem IO --
     .cfs_in_i(0), //-- custom inputs {n {1'b0}} 
     .cfs_out_o(),            //-- custom outputs
@@ -244,5 +249,5 @@ module fpga_riscv_top(
   );
 
     // Debug signals
-    assign debug[7:0] = {reset, ac_mclk, ac_addr0_clatch, ac_addr1_cdata, ac_scl_cclk, ac_dac_sdata, ac_bclk, ac_lrclk};
+    // assign debug[7:0] = {reset, ac_mclk, ac_addr0_clatch, ac_addr1_cdata, ac_scl_cclk, ac_dac_sdata, ac_bclk, ac_lrclk};
 endmodule
