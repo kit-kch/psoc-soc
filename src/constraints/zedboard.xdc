@@ -35,15 +35,15 @@ set_property IOSTANDARD LVCMOS33 [get_ports {sys_clk}];
 #set_property IOSTANDARD LVCMOS33 [get_ports {ac_addr0_clatch}];
 #set_property PACKAGE_PIN AA9  [get_ports {ac_addr1_cdata}];      # "AC-ADR1" JA4
 #set_property IOSTANDARD LVCMOS33 [get_ports {ac_addr1_cdata}];
-#set_property PACKAGE_PIN B20 [get_ports {ac_dac_sdata}];        # "AC-GPIO0" JB1
-set_property PACKAGE_PIN AB11 [get_ports {ac_dac_sdata}];        # "AC-GPIO0" JA7 Temporary
+set_property PACKAGE_PIN B20 [get_ports {ac_dac_sdata}];        # "AC-GPIO0" LA17_CC_N
+#set_property PACKAGE_PIN AB11 [get_ports {ac_dac_sdata}];        # "AC-GPIO0" JA7 Temporary
 set_property IOSTANDARD LVCMOS33 [get_ports {ac_dac_sdata}];
 set_property PACKAGE_PIN N20 [get_ports {ac_bclk}];             # "AC-GPIO2"  I2S_SCLK   LA01_N_CC
 set_property IOSTANDARD LVCMOS33 [get_ports {ac_bclk}];
 set_property PACKAGE_PIN B19  [get_ports {ac_lrclk}];            # "AC-GPIO3" I2S_LRCLK   LA17_P_CC
 set_property IOSTANDARD LVCMOS33 [get_ports {ac_lrclk}];
-#set_property PACKAGE_PIN N19 [get_ports {ac_mclk}];             # "AC-MCLK" JB2  LA01_P_CC
-set_property PACKAGE_PIN AA9 [get_ports {ac_mclk}];             # "AC-MCLK"  JA4 Temporary
+set_property PACKAGE_PIN N19 [get_ports {ac_mclk}];             # "AC-MCLK"  LA01_P_CC
+#set_property PACKAGE_PIN AA9 [get_ports {ac_mclk}];             # "AC-MCLK"  JA4 Temporary
 set_property IOSTANDARD LVCMOS33 [get_ports {ac_mclk}];
 #set_property PACKAGE_PIN AA7 [get_ports {ac_adc_sdata}];       # "AC-GPIO1"
 #set_property IOSTANDARD LVCMOS33 [get_ports {ac_adc_sdata}];
@@ -197,12 +197,12 @@ create_clock -period 10.000 -name sys_clk -waveform {0.000 5.000} [get_ports sys
 
 # SPI SD
 
-#set_property PACKAGE_PIN M19 [get_ports {spi_clk}];         # "AC-SCK" JB3  SPI_SCK   LA00_P_CC
-set_property PACKAGE_PIN Y10 [get_ports {spi_clk}];         # "AC-SCK" JA3 Temporary
-#set_property PACKAGE_PIN G20 [get_ports spi_miso];      # SPI_MISO LA20_P
-set_property PACKAGE_PIN Y11 [get_ports spi_miso];      # SPI_MISO JA1 Temporary
-#set_property PACKAGE_PIN G21 [get_ports spi_mosi];      # SPI_MOSI LA20_N
-set_property PACKAGE_PIN AA11 [get_ports spi_mosi];      # SPI_MOSI JA2 Temporary
+set_property PACKAGE_PIN M19 [get_ports {spi_clk}];         # SPI_SCK   LA00_P_CC
+#set_property PACKAGE_PIN Y10 [get_ports {spi_clk}];         # SPI_SCK JA3 Temporary
+set_property PACKAGE_PIN G20 [get_ports spi_miso];      # SPI_MISO LA20_P
+#set_property PACKAGE_PIN Y11 [get_ports spi_miso];      # SPI_MISO JA1 Temporary
+set_property PACKAGE_PIN G21 [get_ports spi_mosi];      # SPI_MOSI LA20_N
+#set_property PACKAGE_PIN AA11 [get_ports spi_mosi];      # SPI_MOSI JA2 Temporary
 set_property PACKAGE_PIN T17 [get_ports spi_sd_ss];     # SPI_SD_SS LA07_N
 
 set_property IOSTANDARD LVCMOS33 [get_ports {spi_miso}];
@@ -252,7 +252,9 @@ set_property IOSTANDARD LVCMOS33 [get_ports {spi_flash_ss}];
 
 #I2C
 
-set_property PACKAGE_PIN AB10 [get_ports i2c_sda]; #I2C_SDA JA8 Temporary
-set_property PACKAGE_PIN AB9 [get_ports i2c_scl]; #I2C_SCL JA9 Temporary
+set_property PACKAGE_PIN U7 [get_ports i2c_sda]; #I2C_SDA 
+set_property PACKAGE_PIN R7 [get_ports i2c_scl]; #I2C_SCL 
+#set_property PACKAGE_PIN AB10 [get_ports i2c_sda]; #I2C_SDA JA8 Temporary
+#set_property PACKAGE_PIN AB9 [get_ports i2c_scl]; #I2C_SCL JA9 Temporary
 set_property IOSTANDARD LVCMOS33 [get_ports {i2c_sda}];
 set_property IOSTANDARD LVCMOS33 [get_ports {i2c_scl}];
