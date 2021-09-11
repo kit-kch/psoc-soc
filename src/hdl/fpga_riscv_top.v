@@ -124,12 +124,40 @@ module fpga_riscv_top(
         .sdata(ac_dac_sdata)
     );
 
+    // CPU bus logic
+    wire [31:0] bus_addr, bus_wdata, bus_rdata;
+    wire bus_stb, bus_we, bus_stall, bus_ack;
+    wire [3:0] bus_wstrb;
 
+     wishbone_bus_logic bus(
+        .clk(clk_soc),
+        .reset(reset),
+        .i_wb_addr(bus_addr),
+        .i_data(bus_wdata),
+        .wstrb(bus_wstrb),
+        .o_wb_data(bus_rdata),
+        .i_wb_stb(bus_stb),
+        .i_wb_we(bus_we),
+        .o_wb_stall(bus_stall),
+        .o_wb_ack(bus_ack),
+        
+
+        .dip(dip),
+        .buttons({btn_c, btn_d, btn_l, btn_r, btn_u}),
+        .led(led),
+
+        .adau_audio_l(adau_audio_in_l),
+        .adau_audio_r(adau_audio_in_r),
+        .adau_audio_valid(adau_audio_in_valid),
+        .adau_audio_full(adau_audio_full),
+        .adau_init_done(adau_init_done)
+    );
+  
   // The Core Of The Problem ----------------------------------------------------------------
   // -------------------------------------------------------------------------------------------
    neorv32_top #(
    //-- Global control --
-    .CLOCK_FREQUENCY(120000000),   // clock frequency of clk_i in Hz
+    .CLOCK_FREQUENCY(80000000),   // clock frequency of clk_i in Hz
     .INT_BOOTLOADER_EN(1'b1),       // boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
     .USER_CODE(0),                    // custom user code
     .HW_THREAD_ID(0),                // hardware thread id (hartid)
@@ -196,15 +224,15 @@ module fpga_riscv_top(
     .jtag_tms_i(0),          //-- mode select
     //-- Wishbone bus interface (available if MEM_EXT_EN = true) --
     .wb_tag_o(),          //-- tag
-    .wb_adr_o(),            //-- address
-    .wb_dat_i(0), //-- read data {n {1'b0}} 
-    .wb_dat_o(),            //-- write data
-    .wb_we_o(),            //-- read/write
+    .wb_adr_o(bus_addr),            //-- address
+    .wb_dat_i(bus_rdata), //-- read data {n {1'b0}} 
+    .wb_dat_o(bus_wdata),            //-- write data
+    .wb_we_o(bus_we),            //-- read/write
     .wb_sel_o(),            //-- byte enable
-    .wb_stb_o(),            //-- strobe
+    .wb_stb_o(bus_stb),            //-- strobe
     .wb_cyc_o(),            //-- valid cycle
     .wb_lock_o(),            //-- exclusive access request
-    .wb_ack_i(0),             //-- transfer acknowledge
+    .wb_ack_i(bus_ack),             //-- transfer acknowledge
     .wb_err_i(0),             //-- transfer error
     //-- Advanced memory control signals (available if MEM_EXT_EN = true) --
     .fence_o(),            //-- indicates an executed FENCE operation
