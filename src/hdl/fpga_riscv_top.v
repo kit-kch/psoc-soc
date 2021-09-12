@@ -127,14 +127,14 @@ module fpga_riscv_top(
     // CPU bus logic
     wire [31:0] bus_addr, bus_wdata, bus_rdata;
     wire bus_stb, bus_we, bus_stall, bus_ack;
-    wire [3:0] bus_wstrb;
+    wire [3:0] bus_sel;
 
      wishbone_bus_logic bus(
         .clk(clk_soc),
         .reset(reset),
         .i_wb_addr(bus_addr),
-        .i_data(bus_wdata),
-        .wstrb(bus_wstrb),
+        .i_wb_data(bus_wdata),
+        .i_wb_sel(bus_sel),
         .o_wb_data(bus_rdata),
         .i_wb_stb(bus_stb),
         .i_wb_we(bus_we),
@@ -157,7 +157,7 @@ module fpga_riscv_top(
   // -------------------------------------------------------------------------------------------
    neorv32_top #(
    //-- Global control --
-    .CLOCK_FREQUENCY(80000000),   // clock frequency of clk_i in Hz
+    .CLOCK_FREQUENCY(120000000),   // clock frequency of clk_i in Hz
     .INT_BOOTLOADER_EN(1'b1),       // boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
     .USER_CODE(0),                    // custom user code
     .HW_THREAD_ID(0),                // hardware thread id (hartid)
@@ -228,7 +228,7 @@ module fpga_riscv_top(
     .wb_dat_i(bus_rdata), //-- read data {n {1'b0}} 
     .wb_dat_o(bus_wdata),            //-- write data
     .wb_we_o(bus_we),            //-- read/write
-    .wb_sel_o(),            //-- byte enable
+    .wb_sel_o(bus_sel),            //-- byte enable
     .wb_stb_o(bus_stb),            //-- strobe
     .wb_cyc_o(),            //-- valid cycle
     .wb_lock_o(),            //-- exclusive access request

@@ -40,9 +40,8 @@ module wishbone_bus_logic(
       input reset,
 
       // CPU connections
-      input [3:0] wstrb,
-
-      input [31:0] i_data,
+      input [3:0] i_wb_sel,
+      input [31:0] i_wb_data,
       input i_wb_addr,
       input i_wb_stb,
       input i_wb_we,
@@ -98,25 +97,25 @@ module wishbone_bus_logic(
 	        begin
              case(i_wb_addr)
                 32'h8000_0004: begin
-                   if(wstrb[0])
-                      led <= i_data[7:0];
+                   if(i_wb_sel[0])
+                      led <= i_wb_data[7:0];
                 end
                 32'h8000_0010: begin
-                   if(wstrb[2])
-                      adau_audio_l[23:16] <= i_data[23:16];
-                   if(wstrb[1])
-                      adau_audio_l[15:8] <= i_data[15:8];
-                   if(wstrb[0])
-                      adau_audio_l[7:0] <= i_data[7:0];
+                   if(i_wb_sel[2])
+                      adau_audio_l[23:16] <= i_wb_data[23:16];
+                   if(i_wb_sel[1])
+                      adau_audio_l[15:8] <= i_wb_data[15:8];
+                   if(i_wb_sel[0])
+                      adau_audio_l[7:0] <= i_wb_data[7:0];
                 end
                 32'h8000_0014: begin
-                   if(wstrb[2])
-                      adau_audio_r[23:16] <= i_data[23:16];
-                   if(wstrb[1])
-                      adau_audio_r[15:8] <= i_data[15:8];
-                   if(wstrb[0])
-                      adau_audio_r[7:0] <= i_data[7:0];
-                   if(|wstrb)
+                   if(i_wb_sel[2])
+                      adau_audio_r[23:16] <= i_wb_data[23:16];
+                   if(i_wb_sel[1])
+                      adau_audio_r[15:8] <= i_wb_data[15:8];
+                   if(i_wb_sel[0])
+                      adau_audio_r[7:0] <= i_wb_data[7:0];
+                   if(|i_wb_sel)
                      adau_audio_valid <= 1;
                 end
              endcase
