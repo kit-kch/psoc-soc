@@ -23,7 +23,6 @@ case "$COMMAND" in
         cp -v psoc_fpga.runs/impl_1/fpga_riscv_top_utilization_placed.rpt out/
         cp -v psoc_fpga.runs/synth_1/runme.log out/synthesis.log
         cp -v psoc_fpga.runs/impl_1/runme.log out/implementation.log
-        cp -v fpga_riscv_top.fix.mmi out/fpga_riscv_top.mmi
         ;;
     *)
         printf "Unknown command: '%s'\n\n" "$COMMAND" >&2
