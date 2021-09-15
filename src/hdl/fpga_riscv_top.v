@@ -210,7 +210,9 @@ module fpga_riscv_top(
     .IO_CFS_CONFIG(0),                // custom CFS configuration generic
     .IO_CFS_IN_SIZE(32),               // size of CFS input conduit in bits
     .IO_CFS_OUT_SIZE(32),              // size of CFS output conduit in bits
-    .IO_NEOLED_EN(1'b0)                 // implement NeoPixel-compatible smart LED interface (NEOLED)?
+    .IO_NEOLED_EN(1'b0),                 // implement NeoPixel-compatible smart LED interface (NEOLED)?
+    .XIRQ_NUM_CH(5),
+    .XIRQ_TRIGGER_POLARITY(32'h00000000)
   )
   neorv32_top_inst (
     //-- Global control --
@@ -273,7 +275,8 @@ module fpga_riscv_top(
     .nm_irq_i(0),             //-- non-maskable interrupt
     .mtime_irq_i(0),             //-- machine timer interrupt, available if IO_MTIME_EN = false
     .msw_irq_i(0),             //-- machine software interrupt
-    .mext_irq_i(0)              //-- machine external interrupt
+    .mext_irq_i(0),              //-- machine external interrupt
+    .xirq_i({btn_c, btn_d, btn_l, btn_u, btn_r})
   );
 
     // Debug signals
