@@ -5,7 +5,7 @@
 SET=$1
 OUTDIR=$PWD/out/
 
-source /tools/xilinx/set_xilinx2018.2.sh
+source /tools/xilinx/set_xilinx2020.2.sh
 set -x
 
 vivado -mode batch -source "ci/gen_sim_scripts.tcl" || exit 1
