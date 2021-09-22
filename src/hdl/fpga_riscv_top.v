@@ -75,10 +75,10 @@ module fpga_riscv_top(
     end
 
     // ctrl <=> spi interface
-    //wire [31:0] adau_command;
-    //wire adau_command_valid, spi_ready, adau_init_done;
+    wire [31:0] adau_command;
+    wire adau_command_valid, spi_ready, adau_init_done;
 
-    /*adau_command_list ctrl(
+    adau_command_list ctrl(
         .clk(clk_soc),
         .reset(reset),
 
@@ -86,9 +86,9 @@ module fpga_riscv_top(
         .command_valid(adau_command_valid),
         .spi_ready(spi_ready),
         .adau_init_done(adau_init_done)
-    );*/
+    );
 
-    /*adau_spi_master spi(
+    adau_spi_master spi(
         .clk(clk_soc),
         .reset(reset),
 
@@ -99,7 +99,7 @@ module fpga_riscv_top(
         .cdata(),
         .cclk(),
         .clatch_n()
-    );*/
+    );
 
 
     // sin <=> i2s

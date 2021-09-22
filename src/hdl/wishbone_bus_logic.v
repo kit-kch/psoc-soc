@@ -75,10 +75,10 @@ module wishbone_bus_logic(
 //            ram_valid = valid;
 //            ready = ram_ready;
 //         end
-         32'h8000_0000: o_wb_data = {24'b0, dip};
-         32'h8000_0004: o_wb_data = {24'b0, led};
-         32'h8000_0008: o_wb_data = {27'b0, buttons};
-         32'h8000_000c: o_wb_data = {30'b0, adau_init_done, adau_audio_full};
+         32'h9000_0000: o_wb_data = {24'b0, dip};
+         32'h9000_0004: o_wb_data = {24'b0, led};
+         32'h9000_0008: o_wb_data = {27'b0, buttons};
+         32'h9000_000c: o_wb_data = {30'b0, adau_init_done, adau_audio_full};
          default: o_wb_data = 32'h0000_0000;
       endcase
    end
@@ -96,11 +96,11 @@ module wishbone_bus_logic(
           if ((i_wb_stb)&&(i_wb_we)&&(!o_wb_stall))
 	        begin
              case(i_wb_addr)
-                32'h8000_0004: begin
+                32'h9000_0004: begin
                    if(i_wb_sel[0])
                       led <= i_wb_data[7:0];
                 end
-                32'h8000_0010: begin
+                32'h9000_0010: begin
                    if(i_wb_sel[2])
                       adau_audio_l[23:16] <= i_wb_data[23:16];
                    if(i_wb_sel[1])
@@ -108,7 +108,7 @@ module wishbone_bus_logic(
                    if(i_wb_sel[0])
                       adau_audio_l[7:0] <= i_wb_data[7:0];
                 end
-                32'h8000_0014: begin
+                32'h9000_0014: begin
                    if(i_wb_sel[2])
                       adau_audio_r[23:16] <= i_wb_data[23:16];
                    if(i_wb_sel[1])

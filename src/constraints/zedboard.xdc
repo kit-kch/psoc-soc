@@ -56,22 +56,22 @@ set_property IOSTANDARD LVCMOS33 [get_ports {ac_mclk}];
 # ----------------------------------------------------------------------------
 
 ## DIP switches
-#set_property PACKAGE_PIN M15 [get_ports {dip[7]}];              # "SW7"
-#set_property IOSTANDARD LVCMOS18 [get_ports {dip[7]}];
-#set_property PACKAGE_PIN H17 [get_ports {dip[6]}];              # "SW6"
-#set_property IOSTANDARD LVCMOS18 [get_ports {dip[6]}];
-#set_property PACKAGE_PIN H18 [get_ports {dip[5]}];              # "SW5"
-#set_property IOSTANDARD LVCMOS18 [get_ports {dip[5]}];
-#set_property PACKAGE_PIN H19 [get_ports {dip[4]}];              # "SW4"
-#set_property IOSTANDARD LVCMOS18 [get_ports {dip[4]}];
-#set_property PACKAGE_PIN F21 [get_ports {dip[3]}];              # "SW3"
-#set_property IOSTANDARD LVCMOS18 [get_ports {dip[3]}];
-#set_property PACKAGE_PIN H22 [get_ports {dip[2]}];              # "SW2"
-#set_property IOSTANDARD LVCMOS18 [get_ports {dip[2]}];
-#set_property PACKAGE_PIN G22 [get_ports {dip[1]}];              # "SW1"
-#set_property IOSTANDARD LVCMOS18 [get_ports {dip[1]}];
-#set_property PACKAGE_PIN F22 [get_ports {dip[0]}];              # "SW0"
-#set_property IOSTANDARD LVCMOS18 [get_ports {dip[0]}];
+set_property PACKAGE_PIN M15 [get_ports {dip[7]}];              # "SW7"
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[7]}];
+set_property PACKAGE_PIN H17 [get_ports {dip[6]}];              # "SW6"
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[6]}];
+set_property PACKAGE_PIN H18 [get_ports {dip[5]}];              # "SW5"
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[5]}];
+set_property PACKAGE_PIN H19 [get_ports {dip[4]}];              # "SW4"
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[4]}];
+set_property PACKAGE_PIN F21 [get_ports {dip[3]}];              # "SW3"
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[3]}];
+set_property PACKAGE_PIN H22 [get_ports {dip[2]}];              # "SW2"
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[2]}];
+set_property PACKAGE_PIN G22 [get_ports {dip[1]}];              # "SW1"
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[1]}];
+set_property PACKAGE_PIN F22 [get_ports {dip[0]}];              # "SW0"
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[0]}];
 
 
 
@@ -173,11 +173,12 @@ set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[0]}];
 
 
 # UART
-# JB3
-set_property PACKAGE_PIN P17 [get_ports uart0_rxd_i]; # LA02_N
+#set_property PACKAGE_PIN P17 [get_ports uart0_rxd_i]; # LA02_N
+set_property PACKAGE_PIN V10 [get_ports uart0_rxd_i]; # JB3 Temporary
 set_property IOSTANDARD LVCMOS33 [get_ports {uart0_rxd_i}];
-# JB2
-set_property PACKAGE_PIN P18 [get_ports uart0_txd_o]; # LA02_P
+
+#set_property PACKAGE_PIN P18 [get_ports uart0_txd_o]; # LA02_P
+set_property PACKAGE_PIN W11 [get_ports uart0_txd_o]; # JB2
 set_property IOSTANDARD LVCMOS33 [get_ports {uart0_txd_o}];
 
 
