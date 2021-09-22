@@ -18,6 +18,10 @@ module fpga_riscv_top(
         output ac_dac_sdata,
         output ac_bclk,
         output ac_lrclk,
+        //output ac_addr0_clatch,
+        //output ac_addr1_cdata,
+        //output ac_scl_cclk,
+
         
         // i2c signals
         inout i2c_sda,
@@ -96,9 +100,9 @@ module fpga_riscv_top(
         .valid(adau_command_valid),
         .ready(spi_ready),
 
-        .cdata(),
-        .cclk(),
-        .clatch_n()
+        .cdata(ac_addr1_cdata),//ac_addr1_cdata
+        .cclk(ac_scl_cclk),//ac_scl_cclk
+        .clatch_n(ac_addr0_clatch)//ac_addr0_clatch
     );
 
 

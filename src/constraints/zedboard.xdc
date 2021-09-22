@@ -32,23 +32,31 @@ set_property IOSTANDARD LVCMOS33 [get_ports {sys_clk}];
 
 # Audio Codec 
 #set_property PACKAGE_PIN T17 [get_ports {ac_addr0_clatch}];     # "AC-ADR0"  SPI_SD_SS
-#set_property IOSTANDARD LVCMOS33 [get_ports {ac_addr0_clatch}];
-#set_property PACKAGE_PIN AA9  [get_ports {ac_addr1_cdata}];      # "AC-ADR1" JA4
-#set_property IOSTANDARD LVCMOS33 [get_ports {ac_addr1_cdata}];
-set_property PACKAGE_PIN B20 [get_ports {ac_dac_sdata}];        # "AC-GPIO0" LA17_CC_N
+set_property PACKAGE_PIN AB1 [get_ports {ac_addr0_clatch}];  
+set_property IOSTANDARD LVCMOS33 [get_ports {ac_addr0_clatch}];
+#set_property PACKAGE_PIN AA9  [get_ports {ac_addr1_cdata}];      # "AC-ADR1" JA4 
+set_property PACKAGE_PIN Y5  [get_ports {ac_addr1_cdata}]; 
+set_property IOSTANDARD LVCMOS33 [get_ports {ac_addr1_cdata}];
+#set_property PACKAGE_PIN B20 [get_ports {ac_dac_sdata}];        # "AC-GPIO0" LA17_CC_N
 #set_property PACKAGE_PIN AB11 [get_ports {ac_dac_sdata}];        # "AC-GPIO0" JA7 Temporary
+set_property PACKAGE_PIN Y8  [get_ports {ac_dac_sdata}];        # "AC-GPIO0" Temporary
 set_property IOSTANDARD LVCMOS33 [get_ports {ac_dac_sdata}];
-set_property PACKAGE_PIN N20 [get_ports {ac_bclk}];             # "AC-GPIO2"  I2S_SCLK   LA01_N_CC
+#set_property PACKAGE_PIN N20 [get_ports {ac_bclk}];             # "AC-GPIO2"  I2S_SCLK   LA01_N_CC
+set_property PACKAGE_PIN AA6 [get_ports {ac_bclk}];             # "AC-GPIO2" Temporary
 set_property IOSTANDARD LVCMOS33 [get_ports {ac_bclk}];
-set_property PACKAGE_PIN B19  [get_ports {ac_lrclk}];            # "AC-GPIO3" I2S_LRCLK   LA17_P_CC
+#set_property PACKAGE_PIN B19  [get_ports {ac_lrclk}];            # "AC-GPIO3" I2S_LRCLK   LA17_P_CC
+set_property PACKAGE_PIN Y6  [get_ports {ac_lrclk}];            # "AC-GPIO3" Temporary
 set_property IOSTANDARD LVCMOS33 [get_ports {ac_lrclk}];
-set_property PACKAGE_PIN N19 [get_ports {ac_mclk}];             # "AC-MCLK"  LA01_P_CC
-#set_property PACKAGE_PIN AA9 [get_ports {ac_mclk}];             # "AC-MCLK"  JA4 Temporary
+#set_property PACKAGE_PIN N19 [get_ports {ac_mclk}];             # "AC-MCLK"  LA01_P_CC
+set_property PACKAGE_PIN AA9 [get_ports {ac_mclk}];             # "AC-MCLK"  JA4 Temporary
 set_property IOSTANDARD LVCMOS33 [get_ports {ac_mclk}];
 #set_property PACKAGE_PIN AA7 [get_ports {ac_adc_sdata}];       # "AC-GPIO1"
 #set_property IOSTANDARD LVCMOS33 [get_ports {ac_adc_sdata}];
 #set_property PACKAGE_PIN AB5 [get_ports {iic_rtl_sda_io}];     # "AC-SDA"
 #set_property IOSTANDARD LVCMOS33 [get_ports {iic_rtl_sda_io}];
+set_property PACKAGE_PIN AB4 [get_ports {ac_scl_cclk}];         # "AC-SCK"
+set_property IOSTANDARD LVCMOS33 [get_ports {ac_scl_cclk}];
+
 
 
 # ----------------------------------------------------------------------------
