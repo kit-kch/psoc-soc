@@ -42,7 +42,7 @@ module wishbone_bus_logic(
       // CPU connections
       input [3:0] i_wb_sel,
       input [31:0] i_wb_data,
-      input i_wb_addr,
+      input [31:0] i_wb_addr,
       input i_wb_stb,
       input i_wb_we,
       output o_wb_stall,
@@ -62,7 +62,9 @@ module wishbone_bus_logic(
       input adau_init_done
    );
 
-
+    assign o_wb_stall = 1'b0;
+    reg adau_word_complete;
+    
    // read logic
    always @(posedge clk) begin
 //      ram_valid = 0;
@@ -78,7 +80,7 @@ module wishbone_bus_logic(
          32'h9000_0000: o_wb_data = {24'b0, dip};
          32'h9000_0004: o_wb_data = {24'b0, led};
          32'h9000_0008: o_wb_data = {27'b0, buttons};
-         32'h9000_000c: o_wb_data = {30'b0, adau_init_done, adau_audio_full};
+         32'h9000_000c: o_wb_data = {30'b0, adau_init_done, adau_word_complete};
          default: o_wb_data = 32'h0000_0000;
       endcase
    end
@@ -89,9 +91,14 @@ module wishbone_bus_logic(
          led <= 8'h00;
          adau_audio_l <= 24'h000000;
          adau_audio_r <= 24'h000000;
+         adau_word_complete <= 1'b0;
       end else begin
-          if (!adau_audio_full && adau_audio_valid)
-              adau_audio_valid <= 0;
+          adau_audio_valid <= 0;
+          if (!adau_audio_full && adau_word_complete)
+          begin
+              adau_audio_valid <= 1;
+              adau_word_complete <= 0;
+          end
 
           if ((i_wb_stb)&&(i_wb_we)&&(!o_wb_stall))
 	        begin
@@ -116,7 +123,7 @@ module wishbone_bus_logic(
                    if(i_wb_sel[0])
                       adau_audio_r[7:0] <= i_wb_data[7:0];
                    if(|i_wb_sel)
-                     adau_audio_valid <= 1;
+                     adau_word_complete <= 1;
                 end
              endcase
          end

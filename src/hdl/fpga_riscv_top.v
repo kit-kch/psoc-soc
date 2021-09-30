@@ -18,9 +18,9 @@ module fpga_riscv_top(
         output ac_dac_sdata,
         output ac_bclk,
         output ac_lrclk,
-        //output ac_addr0_clatch,
-        //output ac_addr1_cdata,
-        //output ac_scl_cclk,
+        output ac_addr0_clatch,
+        output ac_addr1_cdata,
+        output ac_scl_cclk,
 
         
         // i2c signals
@@ -50,8 +50,6 @@ module fpga_riscv_top(
         output pwm_led
     );
     
-    wire ac_addr0_clatch;
-    wire ac_addr1_cdata;
 
     wire clk_soc;
     wire locked;
@@ -284,5 +282,5 @@ module fpga_riscv_top(
   );
 
     // Debug signals
-    // assign debug[7:0] = {reset, ac_mclk, ac_addr0_clatch, ac_addr1_cdata, ac_scl_cclk, ac_dac_sdata, ac_bclk, ac_lrclk};
+    assign debug[7:0] = {ac_mclk, ac_bclk, ac_lrclk, ac_dac_sdata, ac_scl_cclk, ac_addr1_cdata, ac_addr0_clatch, reset};
 endmodule
