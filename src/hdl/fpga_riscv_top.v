@@ -47,7 +47,14 @@ module fpga_riscv_top(
         output spi_flash_ss,
         
         //PWM 
-        output pwm_led
+        output pwm_led,
+
+        //JTAG
+        input jtag_trst_i,
+        input jtag_tck_i,
+        input jtag_tdi_i,
+        output jtag_tdo_o,
+        input jtag_tms_i
     );
     
 
@@ -164,7 +171,7 @@ module fpga_riscv_top(
     .USER_CODE(0),                    // custom user code
     .HW_THREAD_ID(0),                // hardware thread id (hartid)
     //-- On-Chip Debugger (OCD) --
-    .ON_CHIP_DEBUGGER_EN(1'b0),         //implement on-chip debugger
+    .ON_CHIP_DEBUGGER_EN(1'b1),         //implement on-chip debugger
     //-- RISC-V CPU Extensions --
     .CPU_EXTENSION_RISCV_A(1'b0),        //implement atomic extension?
     .CPU_EXTENSION_RISCV_C(1'b1),        //implement compressed extension?
@@ -221,11 +228,11 @@ module fpga_riscv_top(
     .clk_i(clk_soc),           //-- global clock, rising edge
     .rstn_i(~reset),          //-- global reset, low-active, async
     //-- JTAG on-chip debugger interface (available if ON_CHIP_DEBUGGER_EN = true) --
-    .jtag_trst_i(0),          //-- low-active TAP reset (optional)
-    .jtag_tck_i(0),         //-- serial clock
-    .jtag_tdi_i(0),         //-- serial data input
-    .jtag_tdo_o(),          //-- serial data output
-    .jtag_tms_i(0),          //-- mode select
+    .jtag_trst_i(jtag_trst_i),          //-- low-active TAP reset (optional)
+    .jtag_tck_i(jtag_tck_i),         //-- serial clock
+    .jtag_tdi_i(jtag_tdi_i),         //-- serial data input
+    .jtag_tdo_o(jtag_tdo_o),          //-- serial data output
+    .jtag_tms_i(jtag_tms_i),          //-- mode select
     //-- Wishbone bus interface (available if MEM_EXT_EN = true) --
     .wb_tag_o(),          //-- tag
     .wb_adr_o(bus_addr),            //-- address

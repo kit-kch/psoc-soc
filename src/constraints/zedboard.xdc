@@ -1,21 +1,46 @@
 # Debug PMOD pins
 # ----------------------------------------------------------------------------
+# "JD2_N"
 set_property PACKAGE_PIN V4 [get_ports {debug[7]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {debug[7]}]
+# "JD2_P"
 set_property PACKAGE_PIN V5 [get_ports {debug[6]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {debug[6]}]
+# "JD1_N"
 set_property PACKAGE_PIN W7 [get_ports {debug[5]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {debug[5]}]
+# "JD1_P"
 set_property PACKAGE_PIN V7 [get_ports {debug[4]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {debug[4]}]
+# "JC2_N"
 set_property PACKAGE_PIN AA4 [get_ports {debug[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {debug[3]}]
+# "JC2_P"
 set_property PACKAGE_PIN Y4 [get_ports {debug[2]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {debug[2]}]
+# "JC1_N"
 set_property PACKAGE_PIN AB6 [get_ports {debug[1]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {debug[1]}]
+# "JC1_P"
 set_property PACKAGE_PIN AB7 [get_ports {debug[0]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {debug[0]}]
+
+# JTAG Pins: JD/JC PMOD
+# "JC3_N"
+set_property PACKAGE_PIN T6 [get_ports {jtag_trst_i}]
+set_property IOSTANDARD LVCMOS33 [get_ports {jtag_trst_i}]
+# "JC3_P"
+set_property PACKAGE_PIN R6 [get_ports {jtag_tck_i}]
+set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tck_i}]
+# "JC4_N"
+set_property PACKAGE_PIN U4 [get_ports {jtag_tdi_i}]
+set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tdi_i}]
+# "JC4_P"
+set_property PACKAGE_PIN T4 [get_ports {jtag_tdo_o}]
+set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tdo_o}]
+# "JD3_N"
+set_property PACKAGE_PIN W5 [get_ports {jtag_tms_i}]
+set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tms_i}]
 
 # ----------------------------------------------------------------------------
 # Bank 13
@@ -180,7 +205,7 @@ set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[0]}]
 # ----------------------------------------------------------------------------
 
 
-# UART
+# UART: PMOD JB1
 #set_property PACKAGE_PIN P17 [get_ports uart0_rxd_i]; # LA02_N
 set_property PACKAGE_PIN V10 [get_ports uart0_rxd_i]
 set_property IOSTANDARD LVCMOS33 [get_ports uart0_rxd_i]
