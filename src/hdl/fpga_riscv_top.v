@@ -166,7 +166,7 @@ module fpga_riscv_top(
   // -------------------------------------------------------------------------------------------
    neorv32_top #(
    //-- Global control --
-    .CLOCK_FREQUENCY(120000000),   // clock frequency of clk_i in Hz
+    .CLOCK_FREQUENCY(100000000),   // clock frequency of clk_i in Hz
     .INT_BOOTLOADER_EN(1'b1),       // boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
     .USER_CODE(0),                    // custom user code
     .HW_THREAD_ID(0),                // hardware thread id (hartid)
