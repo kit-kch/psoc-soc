@@ -193,10 +193,10 @@ module fpga_riscv_top(
     .HPM_CNT_WIDTH(40),                //total size of HPM counters (0..64)
     //-- Internal Instruction memory --
     .MEM_INT_IMEM_EN(1'b1),              //implement processor-internal instruction memory
-    .MEM_INT_IMEM_SIZE(256*1024),            //size of processor-internal instruction memory in bytes
+    .MEM_INT_IMEM_SIZE(224*1024),            //size of processor-internal instruction memory in bytes
     //-- Internal Data memory --
     .MEM_INT_DMEM_EN(1'b1),              //implement processor-internal data memory
-    .MEM_INT_DMEM_SIZE(32*1024),            //size of processor-internal data memory in bytes
+    .MEM_INT_DMEM_SIZE(64*1024),            //size of processor-internal data memory in bytes
     //-- Internal Cache memory --
     .ICACHE_EN(1'b0),                    //implement instruction cache
     .ICACHE_NUM_BLOCKS(4),            //i-cache: number of blocks (min 1), has to be a power of 2
