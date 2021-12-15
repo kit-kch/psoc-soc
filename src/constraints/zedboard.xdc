@@ -206,12 +206,12 @@ set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[0]}]
 
 
 # UART: PMOD JB1
-#set_property PACKAGE_PIN P17 [get_ports uart0_rxd_i]; # LA02_N
-set_property PACKAGE_PIN V10 [get_ports uart0_rxd_i]
+set_property PACKAGE_PIN P17 [get_ports uart0_rxd_i]; # LA02_N
+#set_property PACKAGE_PIN V10 [get_ports uart0_rxd_i]
 set_property IOSTANDARD LVCMOS33 [get_ports uart0_rxd_i]
 
-#set_property PACKAGE_PIN P18 [get_ports uart0_txd_o]; # LA02_P
-set_property PACKAGE_PIN W11 [get_ports uart0_txd_o]
+set_property PACKAGE_PIN P18 [get_ports uart0_txd_o]; # LA02_P
+#set_property PACKAGE_PIN W11 [get_ports uart0_txd_o]
 set_property IOSTANDARD LVCMOS33 [get_ports uart0_txd_o]
 
 
