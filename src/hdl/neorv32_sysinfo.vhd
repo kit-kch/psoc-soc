@@ -6,7 +6,7 @@
 -- # ********************************************************************************************* #
 -- # BSD 3-Clause License                                                                          #
 -- #                                                                                               #
--- # Copyright (c) 2021, Stephan Nolting. All rights reserved.                                     #
+-- # Copyright (c) 2022, Stephan Nolting. All rights reserved.                                     #
 -- #                                                                                               #
 -- # Redistribution and use in source and binary forms, with or without modification, are          #
 -- # permitted provided that the following conditions are met:                                     #
@@ -47,7 +47,8 @@ entity neorv32_sysinfo is
     -- General --
     CLOCK_FREQUENCY      : natural; -- clock frequency of clk_i in Hz
     INT_BOOTLOADER_EN    : boolean; -- boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
-    USER_CODE            : std_ulogic_vector(31 downto 0) := x"00000000"; -- custom user code
+    -- Physical memory protection (PMP) --
+    PMP_NUM_REGIONS      : natural; -- number of regions (0..64)
     -- Internal Instruction memory --
     MEM_INT_IMEM_EN      : boolean; -- implement processor-internal instruction memory
     MEM_INT_IMEM_SIZE    : natural; -- size of processor-internal instruction memory in bytes
@@ -77,15 +78,19 @@ entity neorv32_sysinfo is
     IO_CFS_EN            : boolean; -- implement custom functions subsystem (CFS)?
     IO_SLINK_EN          : boolean; -- implement stream link interface?
     IO_NEOLED_EN         : boolean; -- implement NeoPixel-compatible smart LED interface (NEOLED)?
-    IO_XIRQ_NUM_CH       : natural  -- number of external interrupt (XIRQ) channels to implement
+    IO_XIRQ_NUM_CH       : natural; -- number of external interrupt (XIRQ) channels to implement
+    IO_GPTMR_EN          : boolean; -- implement general purpose timer (GPTMR)?
+    IO_XIP_EN            : boolean  -- implement execute in place module (XIP)?
   );
   port (
     -- host access --
     clk_i  : in  std_ulogic; -- global clock line
     addr_i : in  std_ulogic_vector(31 downto 0); -- address
     rden_i : in  std_ulogic; -- read enable
+    wren_i : in  std_ulogic; -- write enable
     data_o : out std_ulogic_vector(31 downto 0); -- data out
-    ack_o  : out std_ulogic  -- transfer acknowledge
+    ack_o  : out std_ulogic; -- transfer acknowledge
+    err_o  : out std_ulogic  -- transfer error
   );
 end neorv32_sysinfo;
 
@@ -96,10 +101,10 @@ architecture neorv32_sysinfo_rtl of neorv32_sysinfo is
   constant lo_abb_c : natural := index_size_f(sysinfo_size_c); -- low address boundary bit
 
   -- access control --
-  signal acc_en    : std_ulogic; -- module access enable
-  signal addr      : std_ulogic_vector(31 downto 0);
-  signal rden      : std_ulogic;
-  signal info_addr : std_ulogic_vector(02 downto 0);
+  signal acc_en : std_ulogic; -- module access enable
+  signal rden   : std_ulogic;
+  signal wren   : std_ulogic;
+  signal addr   : std_ulogic_vector(2 downto 0);
 
   -- system information ROM --
   type info_mem_t is array (0 to 7) of std_ulogic_vector(31 downto 0);
@@ -109,32 +114,32 @@ begin
 
   -- Access Control -------------------------------------------------------------------------
   -- -------------------------------------------------------------------------------------------
-  acc_en    <= '1' when (addr_i(hi_abb_c downto lo_abb_c) = sysinfo_base_c(hi_abb_c downto lo_abb_c)) else '0';
-  rden      <= acc_en and rden_i; -- valid read access
-  addr      <= sysinfo_base_c(31 downto lo_abb_c) & addr_i(lo_abb_c-1 downto 2) & "00"; -- word aligned
-  info_addr <= addr(index_size_f(sysinfo_size_c)-1 downto 2);
+  acc_en <= '1' when (addr_i(hi_abb_c downto lo_abb_c) = sysinfo_base_c(hi_abb_c downto lo_abb_c)) else '0';
+  rden   <= acc_en and rden_i; -- read access
+  wren   <= acc_en and wren_i; -- write access
+  addr   <= addr_i(index_size_f(sysinfo_size_c)-1 downto 2);
 
 
   -- Construct Info ROM ---------------------------------------------------------------------
   -- -------------------------------------------------------------------------------------------
-
   -- SYSINFO(0): Processor (primary) clock frequency --
   sysinfo_mem(0) <= std_ulogic_vector(to_unsigned(CLOCK_FREQUENCY, 32));
 
-  -- SYSINFO(1): Custom user code/ID --
-  sysinfo_mem(1) <= USER_CODE;
+  -- SYSINFO(1): reserved --
+  sysinfo_mem(1) <= (others => '0'); -- reserved
 
   -- SYSINFO(2): Implemented processor devices/features --
   -- Memory --
   sysinfo_mem(2)(00) <= bool_to_ulogic_f(INT_BOOTLOADER_EN); -- processor-internal bootloader implemented?
   sysinfo_mem(2)(01) <= bool_to_ulogic_f(MEM_EXT_EN);        -- external memory bus interface implemented?
-  sysinfo_mem(2)(02) <= bool_to_ulogic_f(MEM_INT_IMEM_EN);   -- processor-internal instruction memory implemented?
-  sysinfo_mem(2)(03) <= bool_to_ulogic_f(MEM_INT_DMEM_EN);   -- processor-internal data memory implemented?
+  sysinfo_mem(2)(02) <= bool_to_ulogic_f(MEM_INT_IMEM_EN) and bool_to_ulogic_f(boolean(MEM_INT_IMEM_SIZE > 0)); -- processor-internal instruction memory implemented?
+  sysinfo_mem(2)(03) <= bool_to_ulogic_f(MEM_INT_DMEM_EN) and bool_to_ulogic_f(boolean(MEM_INT_DMEM_SIZE > 0)); -- processor-internal data memory implemented?
   sysinfo_mem(2)(04) <= bool_to_ulogic_f(MEM_EXT_BIG_ENDIAN); -- is external memory bus interface using BIG-endian byte-order?
   sysinfo_mem(2)(05) <= bool_to_ulogic_f(ICACHE_EN);         -- processor-internal instruction cache implemented?
   --
-  sysinfo_mem(2)(13 downto 06) <= (others => '0'); -- reserved
+  sysinfo_mem(2)(12 downto 06) <= (others => '0'); -- reserved
   -- Misc --
+  sysinfo_mem(2)(13) <= bool_to_ulogic_f(is_simulation_c);     -- is this a simulation?
   sysinfo_mem(2)(14) <= bool_to_ulogic_f(ON_CHIP_DEBUGGER_EN); -- on-chip debugger implemented?
   sysinfo_mem(2)(15) <= bool_to_ulogic_f(dedicated_reset_c);   -- dedicated hardware reset of all core registers?
   -- IO --
@@ -151,8 +156,10 @@ begin
   sysinfo_mem(2)(26) <= bool_to_ulogic_f(IO_UART1_EN);  -- secondary universal asynchronous receiver/transmitter (UART1) implemented?
   sysinfo_mem(2)(27) <= bool_to_ulogic_f(IO_NEOLED_EN); -- NeoPixel-compatible smart LED interface (NEOLED) implemented?
   sysinfo_mem(2)(28) <= bool_to_ulogic_f(boolean(IO_XIRQ_NUM_CH > 0)); -- external interrupt controller (XIRQ) implemented?
+  sysinfo_mem(2)(29) <= bool_to_ulogic_f(IO_GPTMR_EN);  -- general purpose timer (GPTMR) implemented?
+  sysinfo_mem(2)(30) <= bool_to_ulogic_f(IO_XIP_EN);    -- execute in place module (XIP) implemented?
   --
-  sysinfo_mem(2)(31 downto 29) <= (others => '0'); -- reserved
+  sysinfo_mem(2)(31) <= '0'; -- reserved
 
   -- SYSINFO(3): Cache configuration --
   sysinfo_mem(3)(03 downto 00) <= std_ulogic_vector(to_unsigned(index_size_f(ICACHE_BLOCK_SIZE),    4)) when (ICACHE_EN = true) else (others => '0'); -- i-cache: log2(block_size_in_bytes)
@@ -183,10 +190,12 @@ begin
   read_access: process(clk_i)
   begin
     if rising_edge(clk_i) then
-      ack_o  <= rden;
-      data_o <= (others => '0');
+      ack_o <= rden;
+      err_o <= wren; -- read-only!
       if (rden = '1') then
-        data_o <= sysinfo_mem(to_integer(unsigned(info_addr)));
+        data_o <= sysinfo_mem(to_integer(unsigned(addr)));
+      else
+        data_o <= (others => '0');
       end if;
     end if;
   end process read_access;

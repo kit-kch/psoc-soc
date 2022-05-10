@@ -1,11 +1,12 @@
 -- #################################################################################################
 -- # << NEORV32 - General Purpose Parallel Input/Output Port (GPIO) >>                             #
 -- # ********************************************************************************************* #
--- # 64-bit general purpose parallel input & output port unit.                                     #
+-- # 64-bit general purpose parallel input & output port unit. Input/outputs are split into two    #
+-- # 32-bit memory-mapped registers each.                                                          #
 -- # ********************************************************************************************* #
 -- # BSD 3-Clause License                                                                          #
 -- #                                                                                               #
--- # Copyright (c) 2021, Stephan Nolting. All rights reserved.                                     #
+-- # Copyright (c) 2022, Stephan Nolting. All rights reserved.                                     #
 -- #                                                                                               #
 -- # Redistribution and use in source and binary forms, with or without modification, are          #
 -- # permitted provided that the following conditions are met:                                     #
@@ -51,6 +52,7 @@ entity neorv32_gpio is
     data_i : in  std_ulogic_vector(31 downto 0); -- data in
     data_o : out std_ulogic_vector(31 downto 0); -- data out
     ack_o  : out std_ulogic; -- transfer acknowledge
+    err_o  : out std_ulogic; -- transfer error
     -- parallel io --
     gpio_o : out std_ulogic_vector(63 downto 0);
     gpio_i : in  std_ulogic_vector(63 downto 0)
@@ -66,10 +68,12 @@ architecture neorv32_gpio_rtl of neorv32_gpio is
   -- access control --
   signal acc_en : std_ulogic; -- module access enable
   signal addr   : std_ulogic_vector(31 downto 0); -- access address
+  signal wren   : std_ulogic; -- word write enable
+  signal rden   : std_ulogic; -- read enable
 
   -- accessible regs --
-  signal din_lo,  din_hi  : std_ulogic_vector(31 downto 0); -- r/-
-  signal dout_lo, dout_hi : std_ulogic_vector(31 downto 0); -- r/w
+  signal din_hi,  din_lo  : std_ulogic_vector(31 downto 0); -- r/-: parallel input hi/lo
+  signal dout_hi, dout_lo : std_ulogic_vector(31 downto 0); -- r/w: parallel output hi/lo
 
 begin
 
@@ -77,6 +81,8 @@ begin
   -- -------------------------------------------------------------------------------------------
   acc_en <= '1' when (addr_i(hi_abb_c downto lo_abb_c) = gpio_base_c(hi_abb_c downto lo_abb_c)) else '0';
   addr   <= gpio_base_c(31 downto lo_abb_c) & addr_i(lo_abb_c-1 downto 2) & "00"; -- word aligned
+  wren   <= acc_en and wren_i;
+  rden   <= acc_en and rden_i;
 
 
   -- Read/Write Access ----------------------------------------------------------------------
@@ -85,10 +91,11 @@ begin
   begin
     if rising_edge(clk_i) then
       -- bus handshake --
-      ack_o <= acc_en and (rden_i or wren_i);
+      ack_o <= (wren and addr(3)) or rden;
+      err_o <= wren and (not addr(3)); -- INPUT registers are read only!
 
       -- write access --
-      if ((acc_en and wren_i) = '1') then
+      if (wren = '1') then
         if (addr = gpio_out_lo_addr_c) then
           dout_lo <= data_i;
         end if;
@@ -97,19 +104,18 @@ begin
         end if;
       end if;
 
-      -- input buffer --
+      -- input buffer (prevent metastability) --
       din_lo <= gpio_i(31 downto 00);
       din_hi <= gpio_i(63 downto 32);
 
       -- read access --
       data_o <= (others => '0');
-      if ((acc_en and rden_i) = '1') then
-        case addr is
-          when gpio_in_lo_addr_c  => data_o <= din_lo;
-          when gpio_in_hi_addr_c  => data_o <= din_hi;
-          when gpio_out_lo_addr_c => data_o <= dout_lo;
-          when gpio_out_hi_addr_c => data_o <= dout_hi;
-          when others             => data_o <= (others => '0');
+      if (rden = '1') then
+        case addr(3 downto 2) is
+          when "00"   => data_o <= din_lo;
+          when "01"   => data_o <= din_hi;
+          when "10"   => data_o <= dout_lo;
+          when others => data_o <= dout_hi;
         end case;
       end if;
 

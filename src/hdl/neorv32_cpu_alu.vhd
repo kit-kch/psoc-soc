@@ -1,11 +1,11 @@
 -- #################################################################################################
 -- # << NEORV32 - Arithmetical/Logical Unit >>                                                     #
 -- # ********************************************************************************************* #
--- # Main data and address ALU and co-processor interface/arbiter.                                 #
+-- # Main data/address ALU and ALU co-processors (= multi-cycle function units).                   #
 -- # ********************************************************************************************* #
 -- # BSD 3-Clause License                                                                          #
 -- #                                                                                               #
--- # Copyright (c) 2021, Stephan Nolting. All rights reserved.                                     #
+-- # Copyright (c) 2022, Stephan Nolting. All rights reserved.                                     #
 -- #                                                                                               #
 -- # Redistribution and use in source and binary forms, with or without modification, are          #
 -- # permitted provided that the following conditions are met:                                     #
@@ -44,9 +44,11 @@ use neorv32.neorv32_package.all;
 entity neorv32_cpu_alu is
   generic (
     -- RISC-V CPU Extensions --
+    CPU_EXTENSION_RISCV_B     : boolean; -- implement bit-manipulation extension?
     CPU_EXTENSION_RISCV_M     : boolean; -- implement mul/div extension?
     CPU_EXTENSION_RISCV_Zmmul : boolean; -- implement multiply-only M sub-extension?
     CPU_EXTENSION_RISCV_Zfinx : boolean; -- implement 32-bit floating-point extension (using INT reg!)
+    CPU_EXTENSION_RISCV_Zxcfu : boolean; -- implement custom (instr.) functions unit?
     -- Extension Options --
     FAST_MUL_EN               : boolean; -- use DSPs for M extension's multiplier
     FAST_SHIFT_EN             : boolean  -- use barrel shifter for shift operations
@@ -59,11 +61,10 @@ entity neorv32_cpu_alu is
     -- data input --
     rs1_i       : in  std_ulogic_vector(data_width_c-1 downto 0); -- rf source 1
     rs2_i       : in  std_ulogic_vector(data_width_c-1 downto 0); -- rf source 2
-    pc2_i       : in  std_ulogic_vector(data_width_c-1 downto 0); -- delayed PC
+    pc_i        : in  std_ulogic_vector(data_width_c-1 downto 0); -- current PC
     imm_i       : in  std_ulogic_vector(data_width_c-1 downto 0); -- immediate
-    csr_i       : in  std_ulogic_vector(data_width_c-1 downto 0); -- CSR read data
-    cmp_i       : in  std_ulogic_vector(1 downto 0); -- comparator status
     -- data output --
+    cmp_o       : out std_ulogic_vector(1 downto 0); -- comparator status
     res_o       : out std_ulogic_vector(data_width_c-1 downto 0); -- ALU result
     add_o       : out std_ulogic_vector(data_width_c-1 downto 0); -- address computation result
     fpu_flags_o : out std_ulogic_vector(4 downto 0); -- FPU exception flags
@@ -74,180 +75,126 @@ end neorv32_cpu_alu;
 
 architecture neorv32_cpu_cpu_rtl of neorv32_cpu_alu is
 
+  -- comparator --
+  signal cmp_opx : std_ulogic_vector(data_width_c downto 0);
+  signal cmp_opy : std_ulogic_vector(data_width_c downto 0);
+  signal cmp     : std_ulogic_vector(1 downto 0); -- comparator status
+
   -- operands --
   signal opa, opb : std_ulogic_vector(data_width_c-1 downto 0);
 
-  -- results --
+  -- intermediate results --
   signal addsub_res : std_ulogic_vector(data_width_c downto 0);
-  --
   signal cp_res     : std_ulogic_vector(data_width_c-1 downto 0);
-  signal arith_res  : std_ulogic_vector(data_width_c-1 downto 0);
-  signal logic_res  : std_ulogic_vector(data_width_c-1 downto 0);
-
-  -- co-processor arbiter and interface --
-  type cp_ctrl_t is record
-    cmd     : std_ulogic;
-    cmd_ff  : std_ulogic;
-    start   : std_ulogic;
-    busy    : std_ulogic;
-    timeout : std_ulogic_vector(9 downto 0);
-  end record;
-  signal cp_ctrl : cp_ctrl_t;
 
   -- co-processor interface --
-  signal cp_start  : std_ulogic_vector(3 downto 0); -- trigger co-processor i
-  signal cp_valid  : std_ulogic_vector(3 downto 0); -- co-processor i done
-  signal cp_result : cp_data_if_t; -- co-processor result
+  type cp_data_if_t  is array (0 to 5) of std_ulogic_vector(data_width_c-1 downto 0);
+  signal cp_result : cp_data_if_t; -- co-processor i result
+  signal cp_start  : std_ulogic_vector(5 downto 0); -- trigger co-processor i
+  signal cp_valid  : std_ulogic_vector(5 downto 0); -- co-processor i done
 
 begin
 
-  -- Operand Mux ----------------------------------------------------------------------------
+  -- Comparator Unit (for conditional branches) ---------------------------------------------
   -- -------------------------------------------------------------------------------------------
-  opa <= pc2_i when (ctrl_i(ctrl_alu_opa_mux_c) = '1') else rs1_i; -- operand a (first ALU input operand), only required for arithmetic ops
-  opb <= imm_i when (ctrl_i(ctrl_alu_opb_mux_c) = '1') else rs2_i; -- operand b (second ALU input operand)
+  cmp_opx <= (rs1_i(rs1_i'left) and (not ctrl_i(ctrl_alu_unsigned_c))) & rs1_i;
+  cmp_opy <= (rs2_i(rs2_i'left) and (not ctrl_i(ctrl_alu_unsigned_c))) & rs2_i;
+
+  cmp(cmp_equal_c) <= '1' when (rs1_i = rs2_i) else '0';
+  cmp(cmp_less_c)  <= '1' when (signed(cmp_opx) < signed(cmp_opy)) else '0'; -- signed or unsigned comparison
+  cmp_o            <= cmp;
 
 
-  -- Binary Adder/Subtracter ----------------------------------------------------------------
+  -- ALU Input Operand Select ---------------------------------------------------------------
   -- -------------------------------------------------------------------------------------------
-  binary_arithmetic_core: process(ctrl_i, opa, opb)
-    variable cin_v  : std_ulogic_vector(0 downto 0);
-    variable op_a_v : std_ulogic_vector(data_width_c downto 0);
-    variable op_b_v : std_ulogic_vector(data_width_c downto 0);
-    variable op_y_v : std_ulogic_vector(data_width_c downto 0);
-    variable res_v  : std_ulogic_vector(data_width_c downto 0);
+  opa <= pc_i  when (ctrl_i(ctrl_alu_opa_mux_c) = '1') else rs1_i;
+  opb <= imm_i when (ctrl_i(ctrl_alu_opb_mux_c) = '1') else rs2_i;
+
+
+  -- Adder/Subtracter Core ------------------------------------------------------------------
+  -- -------------------------------------------------------------------------------------------
+  arithmetic_core: process(ctrl_i, opa, opb)
+    variable cin_v : std_ulogic_vector(0 downto 0);
+    variable opa_v : std_ulogic_vector(data_width_c downto 0);
+    variable opb_v : std_ulogic_vector(data_width_c downto 0);
+    variable opy_v : std_ulogic_vector(data_width_c downto 0);
   begin
     -- operand sign-extension --
-    op_a_v := (opa(opa'left) and (not ctrl_i(ctrl_alu_unsigned_c))) & opa;
-    op_b_v := (opb(opb'left) and (not ctrl_i(ctrl_alu_unsigned_c))) & opb;
+    opa_v := (opa(opa'left) and (not ctrl_i(ctrl_alu_unsigned_c))) & opa;
+    opb_v := (opb(opb'left) and (not ctrl_i(ctrl_alu_unsigned_c))) & opb;
     -- add/sub(slt) select --
-    if (ctrl_i(ctrl_alu_addsub_c) = '1') then -- subtraction
-      op_y_v   := not op_b_v;
+    if (ctrl_i(ctrl_alu_op0_c) = '1') then -- subtraction
+      opy_v    := not opb_v;
       cin_v(0) := '1';
     else -- addition
-      op_y_v   := op_b_v;
+      opy_v    := opb_v;
       cin_v(0) := '0';
     end if;
-    -- adder core (result + carry/borrow) --
-    addsub_res <= std_ulogic_vector(unsigned(op_a_v) + unsigned(op_y_v) + unsigned(cin_v(0 downto 0)));
-  end process binary_arithmetic_core;
-
-  -- direct output of address result --
-  add_o <= addsub_res(data_width_c-1 downto 0);
-
-  -- ALU arithmetic logic core --
-  arithmetic_core: process(ctrl_i, addsub_res)
-  begin
-    if (ctrl_i(ctrl_alu_arith_c) = alu_arith_cmd_addsub_c) then -- ADD/SUB
-      arith_res <= addsub_res(data_width_c-1 downto 0);
-    else -- SLT
-      arith_res <= (others => '0');
-      arith_res(0) <= addsub_res(addsub_res'left); -- => carry/borrow
-    end if;
+    -- adder core --
+    addsub_res <= std_ulogic_vector(unsigned(opa_v) + unsigned(opy_v) + unsigned(cin_v(0 downto 0)));
   end process arithmetic_core;
 
+  -- direct output of adder result --
+  add_o <= addsub_res(data_width_c-1 downto 0);
 
-  -- Co-Processor Arbiter -------------------------------------------------------------------
+
+  -- ALU Operation Select -------------------------------------------------------------------
   -- -------------------------------------------------------------------------------------------
-  -- Interface:
-  -- Co-processor "valid" signal has to be asserted (for one cycle) one cycle before asserting output data
-  -- Co-processor "output data" has to be always zero unless co-processor was explicitly triggered
-  cp_arbiter: process(rstn_i, clk_i)
+  alu_core: process(ctrl_i, addsub_res, cp_res, rs1_i, opb)
   begin
-    if (rstn_i = '0') then
-      cp_ctrl.cmd_ff  <= '0';
-      cp_ctrl.busy    <= '0';
-      cp_ctrl.timeout <= (others => '0');
-    elsif rising_edge(clk_i) then
-      cp_ctrl.cmd_ff <= cp_ctrl.cmd;
-      -- timeout counter --
-      if (cp_ctrl.start = '1') then
-        cp_ctrl.busy <= '1';
-      elsif (or_reduce_f(cp_valid) = '1') then
-        cp_ctrl.busy <= '0';
-      end if;
-      if (cp_ctrl.busy = '1') and (cp_timeout_en_c = true) then
-        cp_ctrl.timeout <= std_ulogic_vector(unsigned(cp_ctrl.timeout) + 1);
-      else
-        cp_ctrl.timeout <= (others => '0');
-      end if;
-      if (cp_ctrl.timeout(cp_ctrl.timeout'left) = '1') and (cp_timeout_en_c = true) then -- timeout
-        assert false report "NEORV32 CPU CO-PROCESSOR TIMEOUT ERROR!" severity warning;
-      end if;
-    end if;
-  end process cp_arbiter;
+    case ctrl_i(ctrl_alu_op2_c downto ctrl_alu_op0_c) is
+      when alu_op_add_c  => res_o <= addsub_res(data_width_c-1 downto 0); -- default
+      when alu_op_sub_c  => res_o <= addsub_res(data_width_c-1 downto 0);
+      when alu_op_cp_c   => res_o <= cp_res;
+      when alu_op_slt_c  => res_o <= (others => '0'); res_o(0) <= addsub_res(addsub_res'left); -- carry/borrow
+      when alu_op_movb_c => res_o <= opb;
+      when alu_op_xor_c  => res_o <= rs1_i xor opb; -- only rs1 required for logic ops (opa would also contain pc)
+      when alu_op_or_c   => res_o <= rs1_i or  opb;
+      when alu_op_and_c  => res_o <= rs1_i and opb;
+      when others        => res_o <= addsub_res(data_width_c-1 downto 0); -- don't care
+    end case;
+  end process alu_core;
 
-  -- is co-processor operation? --
-  cp_ctrl.cmd   <= '1' when (ctrl_i(ctrl_alu_func1_c downto ctrl_alu_func0_c) = alu_func_cmd_copro_c) else '0';
-  cp_ctrl.start <= '1' when (cp_ctrl.cmd = '1') and (cp_ctrl.cmd_ff = '0') else '0';
 
-  -- co-processor select / star trigger --
-  cp_start(0) <= '1' when (cp_ctrl.start = '1') and (ctrl_i(ctrl_cp_id_msb_c downto ctrl_cp_id_lsb_c) = "00") else '0';
-  cp_start(1) <= '1' when (cp_ctrl.start = '1') and (ctrl_i(ctrl_cp_id_msb_c downto ctrl_cp_id_lsb_c) = "01") else '0';
-  cp_start(2) <= '1' when (cp_ctrl.start = '1') and (ctrl_i(ctrl_cp_id_msb_c downto ctrl_cp_id_lsb_c) = "10") else '0';
-  cp_start(3) <= '1' when (cp_ctrl.start = '1') and (ctrl_i(ctrl_cp_id_msb_c downto ctrl_cp_id_lsb_c) = "11") else '0';
+  -- **************************************************************************************************************************
+  -- ALU Co-Processors
+  -- **************************************************************************************************************************
+
+  -- co-processor select / start trigger --
+  -- > "cp_start" is high for one cycle to trigger operation of the according co-processor
+  cp_start(5 downto 0) <= ctrl_i(ctrl_cp_trig5_c downto ctrl_cp_trig0_c);
 
   -- co-processor operation done? --
-  idone_o <= or_reduce_f(cp_valid);
+  -- > "cp_valid" signal has to be set (for one cycle) one cycle before output data (cp_result) is valid
+  idone_o <= cp_valid(0) or cp_valid(1) or cp_valid(2) or cp_valid(3) or cp_valid(4) or cp_valid(5);
 
-  -- co-processor result - only the *actually selected* co-processor may output data != 0 --
-  cp_res <= cp_result(0) or cp_result(1) or cp_result(2) or cp_result(3);
+  -- co-processor result --
+  -- > "cp_result" data has to be always zero unless co-processor was actually triggered
+  cp_res <= cp_result(0) or cp_result(1) or cp_result(2) or cp_result(3) or cp_result(4) or cp_result(5);
 
 
-  -- ALU Logic Core -------------------------------------------------------------------------
+  -- Co-Processor 0: Shifter Unit (CPU Base ISA) --------------------------------------------
   -- -------------------------------------------------------------------------------------------
-  alu_logic_core: process(ctrl_i, rs1_i, opb)
-  begin
-    case ctrl_i(ctrl_alu_logic1_c downto ctrl_alu_logic0_c) is
-      when alu_logic_cmd_movb_c => logic_res <= opb; -- (default)
-      when alu_logic_cmd_xor_c  => logic_res <= rs1_i xor opb; -- only rs1 required for logic ops (opa would also contain pc)
-      when alu_logic_cmd_or_c   => logic_res <= rs1_i or  opb;
-      when alu_logic_cmd_and_c  => logic_res <= rs1_i and opb;
-      when others               => logic_res <= opb; -- undefined
-    end case;
-  end process alu_logic_core;
+  neorv32_cpu_cp_shifter_inst: neorv32_cpu_cp_shifter
+  generic map (
+    FAST_SHIFT_EN => FAST_SHIFT_EN -- use barrel shifter for shift operations
+  )
+  port map (
+    -- global control --
+    clk_i   => clk_i,        -- global clock, rising edge
+    rstn_i  => rstn_i,       -- global reset, low-active, async
+    ctrl_i  => ctrl_i,       -- main control bus
+    start_i => cp_start(0),  -- trigger operation
+    -- data input --
+    rs1_i   => rs1_i,        -- rf source 1
+    shamt_i => opb(index_size_f(data_width_c)-1 downto 0), -- shift amount
+    -- result and status --
+    res_o   => cp_result(0), -- operation result
+    valid_o => cp_valid(0)   -- data output valid
+  );
 
 
-  -- ALU Function Select --------------------------------------------------------------------
-  -- -------------------------------------------------------------------------------------------
-  alu_function_mux: process(ctrl_i, arith_res, logic_res, csr_i, cp_res)
-  begin
-    case ctrl_i(ctrl_alu_func1_c downto ctrl_alu_func0_c) is
-      when alu_func_cmd_arith_c => res_o <= arith_res; -- (default)
-      when alu_func_cmd_logic_c => res_o <= logic_res;
-      when alu_func_cmd_csrr_c  => res_o <= csr_i;
-      when alu_func_cmd_copro_c => res_o <= cp_res;
-      when others               => res_o <= arith_res; -- undefined
-    end case;
-  end process alu_function_mux;
-
-
-  -- **************************************************************************************************************************
-  -- Co-Processors
-  -- **************************************************************************************************************************
-
-  -- Co-Processor 0: Shifter (CPU Core ISA) --------------------------------------------------
-  -- -------------------------------------------------------------------------------------------
-    neorv32_cpu_cp_shifter_inst: neorv32_cpu_cp_shifter
-    generic map (
-      FAST_SHIFT_EN => FAST_SHIFT_EN -- use barrel shifter for shift operations
-    )
-    port map (
-      -- global control --
-      clk_i   => clk_i,           -- global clock, rising edge
-      rstn_i  => rstn_i,          -- global reset, low-active, async
-      ctrl_i  => ctrl_i,          -- main control bus
-      start_i => cp_start(0),     -- trigger operation
-      -- data input --
-      rs1_i   => rs1_i,           -- rf source 1
-      rs2_i   => rs2_i,           -- rf source 2
-      imm_i   => imm_i,           -- immediate
-      -- result and status --
-      res_o   => cp_result(0),    -- operation result
-      valid_o => cp_valid(0)      -- data output valid
-    );
-
-
-  -- Co-Processor 1: Integer Multiplication/Division ('M' Extension) ------------------------
+  -- Co-Processor 1: Integer Multiplication/Division Unit ('M' Extension) -------------------
   -- -------------------------------------------------------------------------------------------
   neorv32_cpu_cp_muldiv_inst_true:
   if (CPU_EXTENSION_RISCV_M = true) or (CPU_EXTENSION_RISCV_Zmmul = true) generate
@@ -258,30 +205,56 @@ begin
     )
     port map (
       -- global control --
-      clk_i   => clk_i,           -- global clock, rising edge
-      rstn_i  => rstn_i,          -- global reset, low-active, async
-      ctrl_i  => ctrl_i,          -- main control bus
-      start_i => cp_start(1),     -- trigger operation
+      clk_i   => clk_i,        -- global clock, rising edge
+      rstn_i  => rstn_i,       -- global reset, low-active, async
+      ctrl_i  => ctrl_i,       -- main control bus
+      start_i => cp_start(1),  -- trigger operation
       -- data input --
-      rs1_i   => rs1_i,           -- rf source 1
-      rs2_i   => rs2_i,           -- rf source 2
+      rs1_i   => rs1_i,        -- rf source 1
+      rs2_i   => rs2_i,        -- rf source 2
       -- result and status --
-      res_o   => cp_result(1),    -- operation result
-      valid_o => cp_valid(1)      -- data output valid
+      res_o   => cp_result(1), -- operation result
+      valid_o => cp_valid(1)   -- data output valid
     );
   end generate;
 
   neorv32_cpu_cp_muldiv_inst_false:
   if (CPU_EXTENSION_RISCV_M = false) and (CPU_EXTENSION_RISCV_Zmmul = false) generate
     cp_result(1) <= (others => '0');
-    cp_valid(1)  <= cp_start(1); -- to make sure CPU does not get stalled if there is an accidental access
+    cp_valid(1)  <= '0';
   end generate;
 
 
-  -- Co-Processor 2: reserved ---------------------------------------------------------------
+  -- Co-Processor 2: Bit-Manipulation Unit ('B' Extension) ----------------------------------
   -- -------------------------------------------------------------------------------------------
-  cp_result(2) <= (others => '0');
-  cp_valid(2)  <= cp_start(2); -- to make sure CPU does not get stalled if there is an accidental access
+  neorv32_cpu_cp_bitmanip_inst_true:
+  if (CPU_EXTENSION_RISCV_B = true) generate
+    neorv32_cpu_cp_bitmanip_inst: neorv32_cpu_cp_bitmanip
+    generic map (
+      FAST_SHIFT_EN => FAST_SHIFT_EN -- use barrel shifter for shift operations
+    )
+    port map (
+      -- global control --
+      clk_i   => clk_i,        -- global clock, rising edge
+      rstn_i  => rstn_i,       -- global reset, low-active, async
+      ctrl_i  => ctrl_i,       -- main control bus
+      start_i => cp_start(2),  -- trigger operation
+      -- data input --
+      cmp_i   => cmp,          -- comparator status
+      rs1_i   => rs1_i,        -- rf source 1
+      rs2_i   => rs2_i,        -- rf source 2
+      shamt_i => opb(index_size_f(data_width_c)-1 downto 0), -- shift amount
+      -- result and status --
+      res_o   => cp_result(2), -- operation result
+      valid_o => cp_valid(2)   -- data output valid
+    );
+  end generate;
+
+  neorv32_cpu_cp_bitmanip_inst_false:
+  if (CPU_EXTENSION_RISCV_B = false) generate
+    cp_result(2) <= (others => '0');
+    cp_valid(2)  <= '0';
+  end generate;
 
 
   -- Co-Processor 3: Single-Precision Floating-Point Unit ('Zfinx' Extension) ---------------
@@ -291,12 +264,12 @@ begin
     neorv32_cpu_cp_fpu_inst: neorv32_cpu_cp_fpu
     port map (
       -- global control --
-      clk_i    => clk_i,        -- global clock, rising edge
+      clk_i    => clk_i,        -- global clock, rising edge  
       rstn_i   => rstn_i,       -- global reset, low-active, async
       ctrl_i   => ctrl_i,       -- main control bus
       start_i  => cp_start(3),  -- trigger operation
       -- data input --
-      cmp_i    => cmp_i,        -- comparator status
+      cmp_i    => cmp,          -- comparator status
       rs1_i    => rs1_i,        -- rf source 1
       rs2_i    => rs2_i,        -- rf source 2
       -- result and status --
@@ -310,8 +283,41 @@ begin
   if (CPU_EXTENSION_RISCV_Zfinx = false) generate
     cp_result(3) <= (others => '0');
     fpu_flags_o  <= (others => '0');
-    cp_valid(3)  <= cp_start(3); -- to make sure CPU does not get stalled if there is an accidental access
+    cp_valid(3)  <= '0';
   end generate;
+
+
+  -- Co-Processor 4: Custom (Instructions) Functions Unit ('Zxcfu' Extension) ---------------
+  -- -------------------------------------------------------------------------------------------
+  neorv32_cpu_cp_cfu_inst_true:
+  if (CPU_EXTENSION_RISCV_Zxcfu = true) generate
+    neorv32_cpu_cp_cfu_inst: neorv32_cpu_cp_cfu
+    port map (
+      -- global control --
+      clk_i   => clk_i,        -- global clock, rising edge
+      rstn_i  => rstn_i,       -- global reset, low-active, async
+      ctrl_i  => ctrl_i,       -- main control bus
+      start_i => cp_start(4),  -- trigger operation
+      -- data input --
+      rs1_i   => rs1_i,        -- rf source 1
+      rs2_i   => rs2_i,        -- rf source 2
+      -- result and status --
+      res_o   => cp_result(4), -- operation result
+      valid_o => cp_valid(4)   -- data output valid
+    );
+  end generate;
+
+  neorv32_cpu_cp_cfu_inst_false:
+  if (CPU_EXTENSION_RISCV_Zxcfu = false) generate
+    cp_result(4) <= (others => '0');
+    cp_valid(4)  <= '0';
+  end generate;
+
+
+  -- Co-Processor 5: Reserved ---------------------------------------------------------------
+  -- -------------------------------------------------------------------------------------------
+  cp_result(5) <= (others => '0');
+  cp_valid(5)  <= '0';
 
 
 end neorv32_cpu_cpu_rtl;

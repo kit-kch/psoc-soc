@@ -3,7 +3,7 @@
 -- # ********************************************************************************************* #
 -- # BSD 3-Clause License                                                                          #
 -- #                                                                                               #
--- # Copyright (c) 2021, Stephan Nolting. All rights reserved.                                     #
+-- # Copyright (c) 2022, Stephan Nolting. All rights reserved.                                     #
 -- #                                                                                               #
 -- # Redistribution and use in source and binary forms, with or without modification, are          #
 -- # permitted provided that the following conditions are met:                                     #
@@ -52,6 +52,7 @@ entity neorv32_fifo is
     rstn_i  : in  std_ulogic; -- async reset, low-active
     clear_i : in  std_ulogic; -- sync reset, high-active
     level_o : out std_ulogic_vector(index_size_f(FIFO_DEPTH) downto 0); -- fill level
+    half_o  : out std_ulogic; -- FIFO is at least half full
     -- write port --
     wdata_i : in  std_ulogic_vector(FIFO_WIDTH-1 downto 0); -- write data
     we_i    : in  std_ulogic; -- write enable
@@ -83,6 +84,8 @@ architecture neorv32_fifo_rtl of neorv32_fifo is
   end record;
   signal fifo : fifo_t;
 
+  signal level_diff : std_ulogic_vector(index_size_f(FIFO_DEPTH) downto 0);
+
 begin
 
   -- Sanity Checks --------------------------------------------------------------------------
@@ -93,8 +96,8 @@ begin
 
   -- Access Control -------------------------------------------------------------------------
   -- -------------------------------------------------------------------------------------------
-  fifo.re <= re_i when (FIFO_SAFE = false) else (re_i and fifo.avail);
-  fifo.we <= we_i when (FIFO_SAFE = false) else (we_i and fifo.free);
+  fifo.re <= re_i when (FIFO_SAFE = false) else (re_i and fifo.avail); -- SAFE = read only if data available
+  fifo.we <= we_i when (FIFO_SAFE = false) else (we_i and fifo.free); -- SAFE = write only if space left
 
 
   -- FIFO Control ---------------------------------------------------------------------------
@@ -126,12 +129,23 @@ begin
   fifo.empty <= '1' when (fifo.r_pnt(fifo.r_pnt'left)  = fifo.w_pnt(fifo.w_pnt'left)) and (fifo.match = '1') else '0';
   fifo.free  <= not fifo.full;
   fifo.avail <= not fifo.empty;
-  fifo.level <= std_ulogic_vector(to_unsigned(FIFO_DEPTH, fifo.level'length)) when (fifo.full = '1') else std_ulogic_vector(unsigned(fifo.w_pnt) - unsigned(fifo.r_pnt));
+  level_diff <= std_ulogic_vector(unsigned(fifo.w_pnt) - unsigned(fifo.r_pnt));
+  fifo.level <= std_ulogic_vector(to_unsigned(FIFO_DEPTH, fifo.level'length)) when (fifo.full = '1') else level_diff;
 
   -- status output --
   level_o <= fifo.level;
   free_o  <= fifo.free;
   avail_o <= fifo.avail;
+
+  fifo_half_level:
+  if (FIFO_DEPTH > 1) generate
+    half_o <= level_diff(level_diff'left-1) or fifo.full;
+  end generate;
+
+  fifo_half_level_simple:
+  if (FIFO_DEPTH = 1) generate
+    half_o <= fifo.full;
+  end generate;
 
 
   -- FIFO Memory ----------------------------------------------------------------------------
@@ -149,7 +163,7 @@ begin
     end if;
   end process fifo_memory_write;
 
-  -- asynchronous read --
+  -- "asynchronous" read --
   fifo_read_async:
   if (FIFO_RSYNC = false) generate
     rdata_o <= fifo.datas when (FIFO_DEPTH = 1) else fifo.data(to_integer(unsigned(fifo.r_pnt(fifo.r_pnt'left-1 downto 0))));
@@ -161,12 +175,10 @@ begin
     fifo_memory_read: process(clk_i)
     begin
       if rising_edge(clk_i) then
-        if (fifo.re = '1') then
-          if (FIFO_DEPTH = 1) then
-            rdata_o <= fifo.datas;
-          else
-            rdata_o <= fifo.data(to_integer(unsigned(fifo.r_pnt(fifo.r_pnt'left-1 downto 0))));
-          end if;
+        if (FIFO_DEPTH = 1) then
+          rdata_o <= fifo.datas;
+        else
+          rdata_o <= fifo.data(to_integer(unsigned(fifo.r_pnt(fifo.r_pnt'left-1 downto 0))));
         end if;
       end if;
     end process fifo_memory_read;

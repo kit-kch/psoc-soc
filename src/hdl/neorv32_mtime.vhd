@@ -6,7 +6,7 @@
 -- # ********************************************************************************************* #
 -- # BSD 3-Clause License                                                                          #
 -- #                                                                                               #
--- # Copyright (c) 2021, Stephan Nolting. All rights reserved.                                     #
+-- # Copyright (c) 2022, Stephan Nolting. All rights reserved.                                     #
 -- #                                                                                               #
 -- # Redistribution and use in source and binary forms, with or without modification, are          #
 -- # permitted provided that the following conditions are met:                                     #
@@ -69,6 +69,7 @@ architecture neorv32_mtime_rtl of neorv32_mtime is
   signal acc_en : std_ulogic; -- module access enable
   signal addr   : std_ulogic_vector(31 downto 0); -- access address
   signal wren   : std_ulogic; -- module access enable
+  signal rden   : std_ulogic; -- read enable
 
   -- time write access buffer --
   signal mtime_lo_we : std_ulogic;
@@ -82,11 +83,11 @@ architecture neorv32_mtime_rtl of neorv32_mtime is
   signal mtime_lo_ovfl : std_ulogic_vector(00 downto 0);
   signal mtime_hi      : std_ulogic_vector(31 downto 0);
 
-  -- comparator and IRQ trigger --
-  signal cmp_lo       : std_ulogic;
-  signal cmp_lo_ff    : std_ulogic;
-  signal cmp_hi       : std_ulogic;
-  signal cmp_match_ff : std_ulogic;
+  -- comparators --
+  signal cmp_lo_ge    : std_ulogic;
+  signal cmp_lo_ge_ff : std_ulogic;
+  signal cmp_hi_eq    : std_ulogic;
+  signal cmp_hi_gt    : std_ulogic;
 
 begin
 
@@ -95,6 +96,7 @@ begin
   acc_en <= '1' when (addr_i(hi_abb_c downto lo_abb_c) = mtime_base_c(hi_abb_c downto lo_abb_c)) else '0';
   addr   <= mtime_base_c(31 downto lo_abb_c) & addr_i(lo_abb_c-1 downto 2) & "00"; -- word aligned
   wren   <= acc_en and wren_i;
+  rden   <= acc_en and rden_i;
 
 
   -- Write Access ---------------------------------------------------------------------------
@@ -102,6 +104,9 @@ begin
   wr_access: process(clk_i)
   begin
     if rising_edge(clk_i) then
+      -- bus handshake --
+      ack_o <= rden or wren;
+
       -- mtimecmp --
       if (wren = '1') then
         if (addr = mtime_cmp_lo_addr_c) then
@@ -112,10 +117,18 @@ begin
         end if;
       end if;
 
-      -- mtime access buffer --
---    wdata_buf   <= data_i; -- not required, CPU wdata is stable until transfer is acknowledged
-      mtime_lo_we <= wren and bool_to_ulogic_f(boolean(addr = mtime_time_lo_addr_c));
-      mtime_hi_we <= wren and bool_to_ulogic_f(boolean(addr = mtime_time_hi_addr_c));
+      -- mtime write access buffer --
+      if (wren = '1') and (addr = mtime_time_lo_addr_c) then
+        mtime_lo_we <= '1';
+      else
+        mtime_lo_we <= '0';
+      end if;
+      --
+      if (wren = '1') and (addr = mtime_time_hi_addr_c) then
+        mtime_hi_we <= '1';
+      else
+        mtime_hi_we <= '0';
+      end if;
 
       -- mtime low --
       if (mtime_lo_we = '1') then -- write access
@@ -143,25 +156,20 @@ begin
   rd_access: process(clk_i)
   begin
     if rising_edge(clk_i) then
-      ack_o  <= acc_en and (rden_i or wren_i);
       data_o <= (others => '0'); -- default
-      if (rden_i = '1') and (acc_en = '1') then
-        case addr is
-          when mtime_time_lo_addr_c => -- mtime LOW
-            data_o <= mtime_lo;
-          when mtime_time_hi_addr_c => -- mtime HIGH
-            data_o <= mtime_hi;
-          when mtime_cmp_lo_addr_c => -- mtimecmp LOW
-            data_o <= mtimecmp_lo;
-          when others => -- mtime_cmp_hi_addr_c -- mtimecmp HIGH
-            data_o <= mtimecmp_hi;
+      if (rden = '1') then
+        case addr(3 downto 2) is
+          when "00"   => data_o <= mtime_lo; -- mtime low
+          when "01"   => data_o <= mtime_hi; -- mtime high
+          when "10"   => data_o <= mtimecmp_lo; -- mtimecmp low
+          when others => data_o <= mtimecmp_hi; -- mtimecmp high
         end case;
       end if;
     end if;
   end process rd_access;
 
   -- system time output for cpu --
-  time_o <= mtime_hi & mtime_lo;
+  time_o <= mtime_hi & mtime_lo; -- NOTE: low and high words are not synchronized here!
 
 
   -- Comparator -----------------------------------------------------------------------------
@@ -169,15 +177,15 @@ begin
   cmp_sync: process(clk_i)
   begin
     if rising_edge(clk_i) then
-      cmp_lo_ff    <= cmp_lo;
-      cmp_match_ff <= cmp_lo_ff and cmp_hi;
-      irq_o        <= cmp_lo_ff and cmp_hi and (not cmp_match_ff);
+      cmp_lo_ge_ff <= cmp_lo_ge; -- there is one cycle delay between low (earlier) and high (later) word
+      irq_o        <= cmp_hi_gt or (cmp_hi_eq and cmp_lo_ge_ff);
     end if;
   end process cmp_sync;
 
-  -- test words --
-  cmp_lo <= '1' when (unsigned(mtime_lo) >= unsigned(mtimecmp_lo)) else '0';
-  cmp_hi <= '1' when (unsigned(mtime_hi) >= unsigned(mtimecmp_hi)) else '0';
+  -- sub-word comparators --
+  cmp_lo_ge <= '1' when (unsigned(mtime_lo) >= unsigned(mtimecmp_lo)) else '0'; -- low-word: greater than or equal
+  cmp_hi_eq <= '1' when (unsigned(mtime_hi) =  unsigned(mtimecmp_hi)) else '0'; -- high-word: equal
+  cmp_hi_gt <= '1' when (unsigned(mtime_hi) >  unsigned(mtimecmp_hi)) else '0'; -- high-word: greater than
 
 
 end neorv32_mtime_rtl;

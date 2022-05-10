@@ -1,5 +1,19 @@
-# Debug PMOD pins
-# ----------------------------------------------------------------------------
+# Clock domain crossing for reset signal
+set_false_path -from [get_pins {reset_counter_reg[5]/C}]
+create_clock -period 10.000 -name sys_clk -waveform {0.000 5.000} [get_ports sys_clk]
+
+# RST button
+# ------------------------------------------------------
+set_property PACKAGE_PIN P16 [get_ports btn_rst]
+set_property IOSTANDARD LVCMOS33 [get_ports btn_rst]
+
+# Zedboard Clock GCLK
+# ------------------------------------------------------
+set_property PACKAGE_PIN Y9 [get_ports sys_clk]
+set_property IOSTANDARD LVCMOS33 [get_ports sys_clk]
+
+# Debug Pins on a PMOD
+# ------------------------------------------------------
 # "JD2_N"
 set_property PACKAGE_PIN V4 [get_ports {debug[7]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {debug[7]}]
@@ -25,37 +39,78 @@ set_property IOSTANDARD LVCMOS33 [get_ports {debug[1]}]
 set_property PACKAGE_PIN AB7 [get_ports {debug[0]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {debug[0]}]
 
-# JTAG Pins: JD/JC PMOD
-# "JC3_N"
-set_property PACKAGE_PIN T6 [get_ports {jtag_trst_i}]
+# DIP switches
+# ------------------------------------------------------
+set_property PACKAGE_PIN M15 [get_ports {dip[7]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[7]}]
+set_property PACKAGE_PIN H17 [get_ports {dip[6]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[6]}]
+set_property PACKAGE_PIN H18 [get_ports {dip[5]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[5]}]
+set_property PACKAGE_PIN H19 [get_ports {dip[4]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[4]}]
+set_property PACKAGE_PIN F21 [get_ports {dip[3]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[3]}]
+set_property PACKAGE_PIN H22 [get_ports {dip[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[2]}]
+set_property PACKAGE_PIN G22 [get_ports {dip[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[1]}]
+set_property PACKAGE_PIN F22 [get_ports {dip[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dip[0]}]
+
+# LED outputs
+# ------------------------------------------------------
+set_property PACKAGE_PIN U14 [get_ports {led[7]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {led[7]}]
+set_property PACKAGE_PIN U19 [get_ports {led[6]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {led[6]}]
+set_property PACKAGE_PIN W22 [get_ports {led[5]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {led[5]}]
+set_property PACKAGE_PIN V22 [get_ports {led[4]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {led[4]}]
+set_property PACKAGE_PIN U21 [get_ports {led[3]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {led[3]}]
+set_property PACKAGE_PIN U22 [get_ports {led[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {led[2]}]
+set_property PACKAGE_PIN T21 [get_ports {led[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {led[1]}]
+set_property PACKAGE_PIN T22 [get_ports {led[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {led[0]}]
+
+
+
+
+# ======================================================
+# FMC Pins for PSOC Boards
+# ======================================================
+
+# JTAG
+# ------------------------------------------------------
+# LA14_P, Bank 34
+set_property PACKAGE_PIN K19 [get_ports {jtag_trst_i}]
 set_property IOSTANDARD LVCMOS33 [get_ports {jtag_trst_i}]
-# "JC3_P"
-set_property PACKAGE_PIN R6 [get_ports {jtag_tck_i}]
+# LA06_P, Bank 34
+set_property PACKAGE_PIN L21 [get_ports {jtag_tck_i}]
 set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tck_i}]
-# "JC4_N"
-set_property PACKAGE_PIN U4 [get_ports {jtag_tdi_i}]
+# LA06_N, Bank 34
+set_property PACKAGE_PIN L22 [get_ports {jtag_tdi_i}]
 set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tdi_i}]
-# "JC4_P"
-set_property PACKAGE_PIN T4 [get_ports {jtag_tdo_o}]
+# LA26_N, Bank 35
+set_property PACKAGE_PIN E18 [get_ports {jtag_tdo_o}]
 set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tdo_o}]
-# "JD3_N"
-set_property PACKAGE_PIN W5 [get_ports {jtag_tms_i}]
+# LA26_P, Bank 35
+set_property PACKAGE_PIN F18 [get_ports {jtag_tms_i}]
 set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tms_i}]
 
-# ----------------------------------------------------------------------------
-# Bank 13
-# Note that the bank voltage for IO Bank 13 is fixed to 3.3V on ZedBoard.
-# ----------------------------------------------------------------------------
-
-
-# Clock source
-# set_property PACKAGE_PIN L18  [get_ports {sys_clk}];
-set_property PACKAGE_PIN Y9 [get_ports sys_clk]
-set_property IOSTANDARD LVCMOS33 [get_ports sys_clk]
-
-
+# Clock Oscillator
+# ------------------------------------------------------
+# CLK0_M2C_P, Bank 34
+#set_property PACKAGE_PIN L18 [get_ports {sys_clk}];
+#set_property IOSTANDARD LVCMOS33 [get_ports {sys_clk}]
 
 # Audio Codec
+# ------------------------------------------------------
+# FIXME: This is the zedboard!
 #set_property PACKAGE_PIN T17 [get_ports {ac_addr0_clatch}];     # "AC-ADR0"  SPI_SD_SS
 set_property PACKAGE_PIN AB1 [get_ports ac_addr0_clatch]
 set_property IOSTANDARD LVCMOS33 [get_ports ac_addr0_clatch]
@@ -82,241 +137,119 @@ set_property IOSTANDARD LVCMOS33 [get_ports ac_mclk]
 set_property PACKAGE_PIN AB4 [get_ports ac_scl_cclk]
 set_property IOSTANDARD LVCMOS33 [get_ports ac_scl_cclk]
 
-
-
-# ----------------------------------------------------------------------------
-# Bank 35
-# ----------------------------------------------------------------------------
-
-## DIP switches
-set_property PACKAGE_PIN M15 [get_ports {dip[7]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {dip[7]}]
-set_property PACKAGE_PIN H17 [get_ports {dip[6]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {dip[6]}]
-set_property PACKAGE_PIN H18 [get_ports {dip[5]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {dip[5]}]
-set_property PACKAGE_PIN H19 [get_ports {dip[4]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {dip[4]}]
-set_property PACKAGE_PIN F21 [get_ports {dip[3]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {dip[3]}]
-set_property PACKAGE_PIN H22 [get_ports {dip[2]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {dip[2]}]
-set_property PACKAGE_PIN G22 [get_ports {dip[1]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {dip[1]}]
-set_property PACKAGE_PIN F22 [get_ports {dip[0]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {dip[0]}]
-
-
-
-# ----------------------------------------------------------------------------
-# Bank 33
-# Note that the bank voltage for IO Bank 33 is fixed to 3.3V on ZedBoard.
-# ----------------------------------------------------------------------------
-
-# LED outputs
-set_property PACKAGE_PIN U14 [get_ports {led[7]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {led[7]}]
-set_property PACKAGE_PIN U19 [get_ports {led[6]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {led[6]}]
-set_property PACKAGE_PIN W22 [get_ports {led[5]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {led[5]}]
-set_property PACKAGE_PIN V22 [get_ports {led[4]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {led[4]}]
-set_property PACKAGE_PIN U21 [get_ports {led[3]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {led[3]}]
-set_property PACKAGE_PIN U22 [get_ports {led[2]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {led[2]}]
-set_property PACKAGE_PIN T21 [get_ports {led[1]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {led[1]}]
-set_property PACKAGE_PIN T22 [get_ports {led[0]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {led[0]}]
-
-
-
-# ----------------------------------------------------------------------------
-# Bank 34
-# ----------------------------------------------------------------------------
-
-# Push buttons
-
-set_property PACKAGE_PIN A18 [get_ports btn_c]
-set_property IOSTANDARD LVCMOS33 [get_ports btn_c]
-set_property PACKAGE_PIN E20 [get_ports btn_d]
-set_property IOSTANDARD LVCMOS33 [get_ports btn_d]
-set_property PACKAGE_PIN E19 [get_ports btn_l]
-set_property IOSTANDARD LVCMOS33 [get_ports btn_l]
-set_property PACKAGE_PIN C22 [get_ports btn_r]
-set_property IOSTANDARD LVCMOS33 [get_ports btn_r]
-set_property PACKAGE_PIN D22 [get_ports btn_u]
-set_property IOSTANDARD LVCMOS33 [get_ports btn_u]
-
-# Clock domain crossing for reset signal
-set_false_path -from [get_pins {reset_counter_reg[5]/C}]
-
-
-# ----------------------------------------------------------------------------
-# Bank 35
-# NeoRV32
-# ----------------------------------------------------------------------------
+# These are on the extension board:
+# LA01_CC_P, Bank 34
+#set_property PACKAGE_PIN N19 [get_ports ac_mclk]
+#set_property IOSTANDARD LVCMOS33 [get_ports ac_mclk]
+# LA01_CC_N, Bank 34
+#set_property PACKAGE_PIN N20 [get_ports ac_bclk]
+#set_property IOSTANDARD LVCMOS33 [get_ports ac_bclk]
+# LA17_CC_P, Bank 35
+#set_property PACKAGE_PIN B19 [get_ports ac_lrclk]
+#set_property IOSTANDARD LVCMOS33 [get_ports ac_lrclk]
+# LA17_CC_N, Bank 35
+#set_property PACKAGE_PIN B20 [get_ports ac_dac_sdata]
+#set_property IOSTANDARD LVCMOS33 [get_ports ac_dac_sdata]
 
 # GPIO
-
-#set_property PACKAGE_PIN Y11 [get_ports {gpio_o[7]}];
-#set_property PACKAGE_PIN AA11 [get_ports {gpio_o[6]}];
-#set_property PACKAGE_PIN Y10 [get_ports {gpio_o[5]}];
-#set_property PACKAGE_PIN AA9 [get_ports {gpio_o[4]}];
-set_property PACKAGE_PIN F19 [get_ports {gpio_o[1]}]
-set_property PACKAGE_PIN G19 [get_ports {gpio_o[0]}]
-#set_property PACKAGE_PIN G16 [get_ports {gpio_o[1]}];        # LA19_N
-#set_property PACKAGE_PIN G15 [get_ports {gpio_o[0]}];        # LA19_P
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[7]}];
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[6]}];
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[5]}];
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[4]}];
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[3]}];
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[2]}];
-set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[1]}]
+# ------------------------------------------------------
+# GPIO2, LA03_N, Bank 34
+set_property PACKAGE_PIN P22 [get_ports {gpio_o[0]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[0]}]
+# GPIO3, LA03_P, Bank 34
+set_property PACKAGE_PIN N22 [get_ports {gpio_o[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[1]}]
+# GPIO0, LA19_P, Bank 35
+set_property PACKAGE_PIN G15 [get_ports {gpio_i[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {gpio_i[0]}]
+# GPIO1, LA19_N, Bank 35
+set_property PACKAGE_PIN G16 [get_ports {gpio_i[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {gpio_i[1]}]
 
+# PWM LED
+# ------------------------------------------------------
+# LA21_P, Bank 35
+set_property PACKAGE_PIN E19 [get_ports {pwm_led}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pwm_led}]
 
-## GPIO Temporary
+# QSPI / XIP
+# ------------------------------------------------------
+# QSPI_Q0 (FLASH DI), LA20_P, Bank 35
+set_property PACKAGE_PIN G20 [get_ports {xip_sdo_o}]
+set_property IOSTANDARD LVCMOS33 [get_ports {xip_sdo_o}]
+# QSPI_Q1 (FLASH DO), LA20_N, Bank 35
+set_property PACKAGE_PIN G21 [get_ports {xip_sdi_i}]
+set_property IOSTANDARD LVCMOS33 [get_ports {xip_sdi_i}]
+# QSPI_Q2, LA12_P, Bank 34
+set_property PACKAGE_PIN P20 [get_ports {xip_q2}]
+set_property IOSTANDARD LVCMOS33 [get_ports {xip_q2}]
+# QSPI_Q3, LA12_N, Bank 34
+set_property PACKAGE_PIN P21 [get_ports {xip_q3}]
+set_property IOSTANDARD LVCMOS33 [get_ports {xip_q3}]
+# QSPI_SCK, LA00_CC_P, Bank 34
+set_property PACKAGE_PIN M19 [get_ports {xip_clk_o}]
+set_property IOSTANDARD LVCMOS33 [get_ports {xip_clk_o}]
 
-#set_property PACKAGE_PIN AA8 [get_ports {gpio_o[7]}] #JA10
-#set_property PACKAGE_PIN AB9 [get_ports {gpio_o[6]}] #JA9
-#set_property PACKAGE_PIN AB10 [get_ports {gpio_o[5]}] #JA8
-#set_property PACKAGE_PIN AB11 [get_ports {gpio_o[4]}] #JA7
-#set_property PACKAGE_PIN LA22_N [get_ports {gpio_o[3]}]
-#set_property PACKAGE_PIN LA22_P [get_ports {gpio_o[2]}]
-#set_property PACKAGE_PIN AA11 [get_ports {gpio_o[1]}] #JA2
-#set_property PACKAGE_PIN Y11 [get_ports {gpio_o[0]}] #JA1
+# QSPI_SS, LA30_P, Bank 35
+#set_property PACKAGE_PIN C15 [get_ports {xip_csn_o}]
+#set_property IOSTANDARD LVCMOS33 [get_ports {xip_csn_o}]
+# FIXME PMOD
+set_property PACKAGE_PIN AA9 [get_ports {xip_csn_o}]
+set_property IOSTANDARD LVCMOS33 [get_ports {xip_csn_o}]
 
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[7]}]
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[6]}]
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[5]}]
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[4]}]
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[3]}]
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[2]}]
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[1]}]
-#set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[0]}]
-
-# ----------------------------------------------------------------------------
-# Bank 36
-# NeoRV32
-# ----------------------------------------------------------------------------
-
-
-# UART: PMOD JB1
-set_property PACKAGE_PIN P17 [get_ports uart0_rxd_i]; # LA02_N
-#set_property PACKAGE_PIN V10 [get_ports uart0_rxd_i]
+# UART
+# ------------------------------------------------------
+# UART_TX, LA02_P, Bank 35
+set_property PACKAGE_PIN P17 [get_ports uart0_rxd_i];
 set_property IOSTANDARD LVCMOS33 [get_ports uart0_rxd_i]
-
-set_property PACKAGE_PIN P18 [get_ports uart0_txd_o]; # LA02_P
-#set_property PACKAGE_PIN W11 [get_ports uart0_txd_o]
+# UART_RX, LA02_N, Bank 35
+set_property PACKAGE_PIN P18 [get_ports uart0_txd_o];
 set_property IOSTANDARD LVCMOS33 [get_ports uart0_txd_o]
 
-
-# ----------------------------------------------------------------------------
-# Bank 37
-# ----------------------------------------------------------------------------
-
-# CLK
-
-#create_clock -period 8.30 -name sys_clk -waveform {0.000 4.2} [get_ports sys_clk]
-create_clock -period 10.000 -name sys_clk -waveform {0.000 5.000} [get_ports sys_clk]
-
-
-# ----------------------------------------------------------------------------
-# Bank 39
-# ----------------------------------------------------------------------------
-
-# SPI SD
-
-set_property PACKAGE_PIN M19 [get_ports spi_clk]
-#set_property PACKAGE_PIN Y10 [get_ports {spi_clk}];         # SPI_SCK JA3 Temporary
-set_property PACKAGE_PIN G20 [get_ports spi_miso]
-#set_property PACKAGE_PIN Y11 [get_ports spi_miso];      # SPI_MISO JA1 Temporary
-set_property PACKAGE_PIN G21 [get_ports spi_mosi]
-#set_property PACKAGE_PIN AA11 [get_ports spi_mosi];      # SPI_MOSI JA2 Temporary
-set_property PACKAGE_PIN T17 [get_ports spi_sd_ss]
-
-set_property IOSTANDARD LVCMOS33 [get_ports spi_miso]
-set_property IOSTANDARD LVCMOS33 [get_ports spi_mosi]
-set_property IOSTANDARD LVCMOS33 [get_ports spi_sd_ss]
-set_property IOSTANDARD LVCMOS33 [get_ports spi_clk]
-
-# ----------------------------------------------------------------------------
-# Bank 40
-# ----------------------------------------------------------------------------
-
-# PWM
-
-set_property PACKAGE_PIN A19 [get_ports pwm_led]
-set_property IOSTANDARD LVCMOS33 [get_ports pwm_led]
-
-
-
-# ----------------------------------------------------------------------------
-# Bank 41
-# ----------------------------------------------------------------------------
-
-#RST
-
-set_property PACKAGE_PIN P16 [get_ports btn_rst]
-set_property IOSTANDARD LVCMOS33 [get_ports btn_rst]
-
-
-
-
-
-# ----------------------------------------------------------------------------
-# Bank 42
-# ----------------------------------------------------------------------------
-
-#SPI_FLASH_SS
-
-set_property PACKAGE_PIN T16 [get_ports spi_flash_ss]
-set_property IOSTANDARD LVCMOS33 [get_ports spi_flash_ss]
-
-
-
-
-# ----------------------------------------------------------------------------
-# Bank 43
-# ----------------------------------------------------------------------------
-
-#I2C
-
-set_property PACKAGE_PIN U7 [get_ports i2c_sda]
-set_property PACKAGE_PIN R7 [get_ports i2c_scl]
-#set_property PACKAGE_PIN AB10 [get_ports i2c_sda]; #I2C_SDA JA8 Temporary
-#set_property PACKAGE_PIN AB9 [get_ports i2c_scl]; #I2C_SCL JA9 Temporary
-set_property IOSTANDARD LVCMOS33 [get_ports i2c_sda]
+# I2C
+# ------------------------------------------------------
+# I2C_SCL, I2C_SCL_F, FMC-SCL, Bank 13
+set_property PACKAGE_PIN R7 [get_ports i2c_scl];
 set_property IOSTANDARD LVCMOS33 [get_ports i2c_scl]
+# I2C_SDA, I2C_SDA_F, FMC-SDA, Bank 13
+set_property PACKAGE_PIN U7 [get_ports i2c_sda];
+set_property IOSTANDARD LVCMOS33 [get_ports i2c_sda]
 
+# Buttons
+# ------------------------------------------------------
+# GPIO_BTNA, LA30_N, Bank 35
+set_property PACKAGE_PIN B15 [get_ports btn_l];
+set_property IOSTANDARD LVCMOS33 [get_ports btn_l]
+# GPIO_BTNB, LA22_N, Bank 35
+set_property PACKAGE_PIN F19 [get_ports btn_u];
+set_property IOSTANDARD LVCMOS33 [get_ports btn_u]
+# GPIO_BTNC, LA25_P, Bank 35
+set_property PACKAGE_PIN D22 [get_ports btn_d];
+set_property IOSTANDARD LVCMOS33 [get_ports btn_d]
+# GPIO_BTND, LA22_P, Bank 35
+set_property PACKAGE_PIN G19 [get_ports btn_r];
+set_property IOSTANDARD LVCMOS33 [get_ports btn_r]
+# GPIO_BTNCE, LA25_N, Bank 13
+set_property PACKAGE_PIN C22 [get_ports btn_c];
+set_property IOSTANDARD LVCMOS33 [get_ports btn_c]
 
-create_debug_core u_ila_0 ila
-set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
-set_property ALL_PROBE_SAME_MU_CNT 1 [get_debug_cores u_ila_0]
-set_property C_ADV_TRIGGER false [get_debug_cores u_ila_0]
-set_property C_DATA_DEPTH 32768 [get_debug_cores u_ila_0]
-set_property C_EN_STRG_QUAL false [get_debug_cores u_ila_0]
-set_property C_INPUT_PIPE_STAGES 0 [get_debug_cores u_ila_0]
-set_property C_TRIGIN_EN false [get_debug_cores u_ila_0]
-set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
-set_property port_width 1 [get_debug_ports u_ila_0/clk]
-connect_debug_port u_ila_0/clk [get_nets [list pll/inst/clk_soc]]
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
-set_property port_width 48 [get_debug_ports u_ila_0/probe0]
-connect_debug_port u_ila_0/probe0 [get_nets [list {i2s/audio_data_fifo/din[0]} {i2s/audio_data_fifo/din[1]} {i2s/audio_data_fifo/din[2]} {i2s/audio_data_fifo/din[3]} {i2s/audio_data_fifo/din[4]} {i2s/audio_data_fifo/din[5]} {i2s/audio_data_fifo/din[6]} {i2s/audio_data_fifo/din[7]} {i2s/audio_data_fifo/din[8]} {i2s/audio_data_fifo/din[9]} {i2s/audio_data_fifo/din[10]} {i2s/audio_data_fifo/din[11]} {i2s/audio_data_fifo/din[12]} {i2s/audio_data_fifo/din[13]} {i2s/audio_data_fifo/din[14]} {i2s/audio_data_fifo/din[15]} {i2s/audio_data_fifo/din[16]} {i2s/audio_data_fifo/din[17]} {i2s/audio_data_fifo/din[18]} {i2s/audio_data_fifo/din[19]} {i2s/audio_data_fifo/din[20]} {i2s/audio_data_fifo/din[21]} {i2s/audio_data_fifo/din[22]} {i2s/audio_data_fifo/din[23]} {i2s/audio_data_fifo/din[24]} {i2s/audio_data_fifo/din[25]} {i2s/audio_data_fifo/din[26]} {i2s/audio_data_fifo/din[27]} {i2s/audio_data_fifo/din[28]} {i2s/audio_data_fifo/din[29]} {i2s/audio_data_fifo/din[30]} {i2s/audio_data_fifo/din[31]} {i2s/audio_data_fifo/din[32]} {i2s/audio_data_fifo/din[33]} {i2s/audio_data_fifo/din[34]} {i2s/audio_data_fifo/din[35]} {i2s/audio_data_fifo/din[36]} {i2s/audio_data_fifo/din[37]} {i2s/audio_data_fifo/din[38]} {i2s/audio_data_fifo/din[39]} {i2s/audio_data_fifo/din[40]} {i2s/audio_data_fifo/din[41]} {i2s/audio_data_fifo/din[42]} {i2s/audio_data_fifo/din[43]} {i2s/audio_data_fifo/din[44]} {i2s/audio_data_fifo/din[45]} {i2s/audio_data_fifo/din[46]} {i2s/audio_data_fifo/din[47]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
-set_property port_width 1 [get_debug_ports u_ila_0/probe1]
-connect_debug_port u_ila_0/probe1 [get_nets [list i2s/audio_data_fifo/full]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
-set_property port_width 1 [get_debug_ports u_ila_0/probe2]
-connect_debug_port u_ila_0/probe2 [get_nets [list i2s/audio_data_fifo/wr_en]]
-set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
-set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
-set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
-connect_debug_port dbg_hub/clk [get_nets clk_soc]
+# SPI
+# ------------------------------------------------------
+# SPI_MISO, LA10_P, Bank 34
+set_property PACKAGE_PIN R19 [get_ports spi_miso];
+set_property IOSTANDARD LVCMOS33 [get_ports spi_miso]
+# SPI_MOSI, LA10_N, Bank 34
+set_property PACKAGE_PIN T19 [get_ports spi_mosi];
+set_property IOSTANDARD LVCMOS33 [get_ports spi_mosi]
+# SPI_SCK, LA14_N, Bank 34
+set_property PACKAGE_PIN K20 [get_ports spi_clk];
+set_property IOSTANDARD LVCMOS33 [get_ports spi_clk]
+# SPI_SD_SS, LA21_N, Bank 35
+set_property PACKAGE_PIN E20 [get_ports spi_sd_ss];
+set_property IOSTANDARD LVCMOS33 [get_ports spi_sd_ss]
+# SPI_03_SS, LA04_P, Bank 34
+set_property PACKAGE_PIN M21 [get_ports spi_flash_ss];
+set_property IOSTANDARD LVCMOS33 [get_ports spi_flash_ss]
+# SPI_04_SS, LA04_N, Bank 34
+set_property PACKAGE_PIN M22 [get_ports spi_flash_ss];
+set_property IOSTANDARD LVCMOS33 [get_ports spi_flash_ss]

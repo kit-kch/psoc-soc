@@ -1,19 +1,20 @@
 -- #################################################################################################
 -- # << NEORV32 - CPU General Purpose Data Register File >>                                        #
 -- # ********************************************************************************************* #
--- # General purpose data register file. 32 entries (= 1024 bit) for normal mode (RV32I),          #
--- # 16 entries (= 512 bit) for embedded mode (RV32E) when RISC-V "E" extension is enabled.        #
+-- # Data register file. 32 entries (= 1024 bit) for RV32I ISA (default), 16 entries (= 512 bit)   #
+-- # for RV32E ISA (when RISC-V "E" extension is enabled).                                         #
 -- #                                                                                               #
--- # Register zero (r0/x0) is a "normal" physical reg that has to be initialized to zero by the    #
--- # CPU control system. For normal operations register zero cannot be written.                    #
+-- # Register zero (x0) is a "normal" physical register that is set to zero by the CPU control     #
+-- # hardware. This is not required for non-BRAM-based register files where x0 is hardwired to     #
+-- # zero. Set <reset_x0_c> to 'false' in this case.                                               #
 -- #                                                                                               #
 -- # The register file uses synchronous read accesses and a *single* (multiplexed) address port    #
--- # for writing and reading rs1 and a single read-only port for rs2. Therefore, the whole         #
--- # register file can be mapped to a single true dual-port block RAM.                             #
+-- # for writing and reading rd/rs1 and a single read-only port for rs2. Therefore, the whole      #
+-- # register file can be mapped to a single true-dual-port block RAM.                             #
 -- # ********************************************************************************************* #
 -- # BSD 3-Clause License                                                                          #
 -- #                                                                                               #
--- # Copyright (c) 2021, Stephan Nolting. All rights reserved.                                     #
+-- # Copyright (c) 2022, Stephan Nolting. All rights reserved.                                     #
 -- #                                                                                               #
 -- # Redistribution and use in source and binary forms, with or without modification, are          #
 -- # permitted provided that the following conditions are met:                                     #
@@ -58,12 +59,13 @@ entity neorv32_cpu_regfile is
     clk_i  : in  std_ulogic; -- global clock, rising edge
     ctrl_i : in  std_ulogic_vector(ctrl_width_c-1 downto 0); -- main control bus
     -- data input --
-    mem_i  : in  std_ulogic_vector(data_width_c-1 downto 0); -- memory read data
     alu_i  : in  std_ulogic_vector(data_width_c-1 downto 0); -- ALU result
+    mem_i  : in  std_ulogic_vector(data_width_c-1 downto 0); -- memory read data
+    csr_i  : in  std_ulogic_vector(data_width_c-1 downto 0); -- CSR read data
+    pc2_i  : in  std_ulogic_vector(data_width_c-1 downto 0); -- next PC
     -- data output --
     rs1_o  : out std_ulogic_vector(data_width_c-1 downto 0); -- operand 1
-    rs2_o  : out std_ulogic_vector(data_width_c-1 downto 0); -- operand 2
-    cmp_o  : out std_ulogic_vector(1 downto 0) -- comparator status
+    rs2_o  : out std_ulogic_vector(data_width_c-1 downto 0)  -- operand 2
   );
 end neorv32_cpu_regfile;
 
@@ -74,70 +76,71 @@ architecture neorv32_cpu_regfile_rtl of neorv32_cpu_regfile is
   type   reg_file_emb_t is array (15 downto 0) of std_ulogic_vector(data_width_c-1 downto 0);
   signal reg_file     : reg_file_t;
   signal reg_file_emb : reg_file_emb_t;
-  signal rf_wdata     : std_ulogic_vector(data_width_c-1 downto 0); -- actual write-back data
-  signal rd_is_r0     : std_ulogic; -- writing to r0?
-  signal rf_we        : std_ulogic;
-  signal dst_addr     : std_ulogic_vector(4 downto 0); -- destination address
-  signal opa_addr     : std_ulogic_vector(4 downto 0); -- rs1/dst address
-  signal opb_addr     : std_ulogic_vector(4 downto 0); -- rs2 address
-  signal rs1, rs2     : std_ulogic_vector(data_width_c-1 downto 0);
 
-  -- comparator --
-  signal cmp_opx : std_ulogic_vector(data_width_c downto 0);
-  signal cmp_opy : std_ulogic_vector(data_width_c downto 0);
+  -- access --
+  signal rf_wdata : std_ulogic_vector(data_width_c-1 downto 0); -- actual write-back data
+  signal rf_we    : std_ulogic; -- write enable
+  signal rd_zero  : std_ulogic; -- writing to x0?
+  signal opa_addr : std_ulogic_vector(4 downto 0); -- rs1/dst address
+  signal opb_addr : std_ulogic_vector(4 downto 0); -- rs2 address
 
 begin
 
-  -- Data Input Mux -------------------------------------------------------------------------
+  -- Data Write-Back Select -----------------------------------------------------------------
   -- -------------------------------------------------------------------------------------------
-  rf_wdata <= alu_i when (ctrl_i(ctrl_rf_in_mux_c) = '0') else mem_i;
+  wb_select: process(ctrl_i, alu_i, mem_i, csr_i, pc2_i)
+  begin
+    case ctrl_i(ctrl_rf_mux1_c downto ctrl_rf_mux0_c) is
+      when rf_mux_alu_c => rf_wdata <= alu_i; -- ALU result
+      when rf_mux_mem_c => rf_wdata <= mem_i; -- memory read data
+      when rf_mux_csr_c => rf_wdata <= csr_i; -- CSR read data
+      when rf_mux_npc_c => rf_wdata <= pc2_i; -- next PC (branch return/link address)
+      when others       => rf_wdata <= alu_i; -- don't care
+    end case;
+  end process wb_select;
 
 
   -- Register File Access -------------------------------------------------------------------
   -- -------------------------------------------------------------------------------------------
-  rf_access: process(clk_i)
-  begin
-    if rising_edge(clk_i) then -- sync read and write
-      if (CPU_EXTENSION_RISCV_E = false) then -- normal register file with 32 entries
+  -- "normal" (RV32I) register file with 32 registers --
+  reg_file_rv32i:
+  if (CPU_EXTENSION_RISCV_E = false) generate
+    rf_access: process(clk_i)
+    begin
+      if rising_edge(clk_i) then -- sync read and write
         if (rf_we = '1') then
           reg_file(to_integer(unsigned(opa_addr(4 downto 0)))) <= rf_wdata;
         end if;
-        rs1 <= reg_file(to_integer(unsigned(opa_addr(4 downto 0))));
-        rs2 <= reg_file(to_integer(unsigned(opb_addr(4 downto 0))));
-      else -- embedded register file with 16 entries
+        rs1_o <= reg_file(to_integer(unsigned(opa_addr(4 downto 0))));
+        rs2_o <= reg_file(to_integer(unsigned(opb_addr(4 downto 0))));
+      end if;
+    end process rf_access;
+  end generate;
+
+  -- "embedded" (RV32E) register file with 16 registers --
+  reg_file_rv32e:
+  if (CPU_EXTENSION_RISCV_E = true) generate
+    rf_access: process(clk_i)
+    begin
+      if rising_edge(clk_i) then -- sync read and write
         if (rf_we = '1') then
           reg_file_emb(to_integer(unsigned(opa_addr(3 downto 0)))) <= rf_wdata;
         end if;
-        rs1 <= reg_file_emb(to_integer(unsigned(opa_addr(3 downto 0))));
-        rs2 <= reg_file_emb(to_integer(unsigned(opb_addr(3 downto 0))));
+        rs1_o <= reg_file_emb(to_integer(unsigned(opa_addr(3 downto 0))));
+        rs2_o <= reg_file_emb(to_integer(unsigned(opb_addr(3 downto 0))));
       end if;
-    end if;
-  end process rf_access;
+    end process rf_access;
+  end generate;
 
-  -- check if we are writing to x0 --
-  rd_is_r0 <= not or_reduce_f(ctrl_i(ctrl_rf_rd_adr4_c downto ctrl_rf_rd_adr0_c)) when (CPU_EXTENSION_RISCV_E = false) else
-              not or_reduce_f(ctrl_i(ctrl_rf_rd_adr3_c downto ctrl_rf_rd_adr0_c));
-
-  -- valid RF write access? --
-  rf_we <= (ctrl_i(ctrl_rf_wb_en_c) and (not rd_is_r0)) or ctrl_i(ctrl_rf_r0_we_c);
+  -- write enable --
+  rd_zero <= '1' when (ctrl_i(ctrl_rf_rd_adr4_c downto ctrl_rf_rd_adr0_c) = "00000") else '0';
+  rf_we   <= (ctrl_i(ctrl_rf_wb_en_c) and (not rd_zero)) or ctrl_i(ctrl_rf_zero_we_c); -- do not write to x0 unless explicitly forced
 
   -- access addresses --
-  dst_addr <= ctrl_i(ctrl_rf_rd_adr4_c downto ctrl_rf_rd_adr0_c) when (ctrl_i(ctrl_rf_r0_we_c) = '0') else (others => '0'); -- force dst=r0?
-  opa_addr <= dst_addr when (rf_we = '1') else ctrl_i(ctrl_rf_rs1_adr4_c downto ctrl_rf_rs1_adr0_c); -- rd/rs1
+  opa_addr <= "00000" when (ctrl_i(ctrl_rf_zero_we_c) = '1') else -- force rd = zero
+              ctrl_i(ctrl_rf_rd_adr4_c downto ctrl_rf_rd_adr0_c) when (ctrl_i(ctrl_rf_wb_en_c) = '1') else -- rd
+              ctrl_i(ctrl_rf_rs1_adr4_c downto ctrl_rf_rs1_adr0_c); -- rs1
   opb_addr <= ctrl_i(ctrl_rf_rs2_adr4_c downto ctrl_rf_rs2_adr0_c); -- rs2
-
-  -- data output --
-  rs1_o <= rs1;
-  rs2_o <= rs2;
-
-
-  -- Comparator Unit (for conditional branches) ---------------------------------------------
-  -- -------------------------------------------------------------------------------------------
-  cmp_opx <= (rs1(rs1'left) and (not ctrl_i(ctrl_alu_unsigned_c))) & rs1;
-  cmp_opy <= (rs2(rs2'left) and (not ctrl_i(ctrl_alu_unsigned_c))) & rs2;
-
-  cmp_o(cmp_equal_c) <= '1' when (rs1 = rs2) else '0';
-  cmp_o(cmp_less_c)  <= '1' when (signed(cmp_opx) < signed(cmp_opy)) else '0';
 
 
 end neorv32_cpu_regfile_rtl;

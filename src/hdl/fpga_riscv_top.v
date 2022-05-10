@@ -33,6 +33,7 @@ module fpga_riscv_top(
 
         // parallel output
         output [1:0] gpio_o, 
+        input [1:0] gpio_i, 
         input btn_c,
         input btn_d,
         input btn_l,
@@ -54,7 +55,15 @@ module fpga_riscv_top(
         input jtag_tck_i,
         input jtag_tdi_i,
         output jtag_tdo_o,
-        input jtag_tms_i
+        input jtag_tms_i,
+
+        //XIP
+        output xip_csn_o,
+        output xip_clk_o,
+        input xip_sdi_i,
+        output xip_sdo_o,
+        output xip_q2,
+        output xip_q3
     );
     
 
@@ -220,6 +229,7 @@ module fpga_riscv_top(
     .IO_CFS_IN_SIZE(32),               // size of CFS input conduit in bits
     .IO_CFS_OUT_SIZE(32),              // size of CFS output conduit in bits
     .IO_NEOLED_EN(1'b0),                 // implement NeoPixel-compatible smart LED interface (NEOLED)?
+    .IO_XIP_EN(1'b1),                    // implement execute in place module (XIP)?
     .XIRQ_NUM_CH(5),
     .XIRQ_TRIGGER_POLARITY(32'h00000000)
   )
@@ -242,7 +252,6 @@ module fpga_riscv_top(
     .wb_sel_o(bus_sel),            //-- byte enable
     .wb_stb_o(bus_stb),            //-- strobe
     .wb_cyc_o(),            //-- valid cycle
-    .wb_lock_o(),            //-- exclusive access request
     .wb_ack_i(bus_ack),             //-- transfer acknowledge
     .wb_err_i(0),             //-- transfer error
     //-- Advanced memory control signals (available if MEM_EXT_EN = true) --
@@ -250,7 +259,7 @@ module fpga_riscv_top(
     .fencei_o(),            //-- indicates an executed FENCEI operation
     //-- GPIO (available if IO_GPIO_EN = true) --
     .gpio_o(gpio_o),        //-- parallel output
-    .gpio_i({btn_c, btn_d, btn_l, btn_u, btn_r}), //-- parallel input {n {1'b0}} 
+    .gpio_i({btn_c, btn_d, btn_l, btn_u, btn_r, gpio_i[0], gpio_i[1]}), //-- parallel input {n {1'b0}} 
     //-- primary UART0 (available if IO_UART0_EN = true) --
     .uart0_txd_o(uart0_txd_o),     //-- UART0 send data
     .uart0_rxd_i(uart0_rxd_i),     //-- UART0 receive data
@@ -262,10 +271,10 @@ module fpga_riscv_top(
     .uart1_rts_o(),            //-- hw flow control: UART1.RX ready to receive ("RTR"), low-active, optional
     .uart1_cts_i(0),             //-- hw flow control: UART1.TX allowed to transmit, low-active, optional
     //-- SPI (available if IO_SPI_EN = true) --
-    .spi_sck_o(spi_clk),            //-- SPI serial clock
-    .spi_sdo_o(spi_mosi),            //-- controller data out, peripheral data in
-    .spi_sdi_i(spi_miso),             //-- controller data in, peripheral data out
-    .spi_csn_o(spi_csn_o),            //-- SPI CS
+    .spi_sck_o(xip_clk_o),            //-- SPI serial clock spi_clk
+    .spi_sdo_o(xip_sdo_o),            //-- controller data out, peripheral data in spi_mosi
+    .spi_sdi_i(xip_sdi_i),             //-- controller data in, peripheral data out spi_miso
+    .spi_csn_o(xip_csn_o),            //-- SPI CS spi_csn_o
     
     //-- TWI (available if IO_TWI_EN = true) --
     .twi_sda_io(i2c_sda),            //-- twi serial data line
@@ -281,13 +290,20 @@ module fpga_riscv_top(
     .mtime_i(0), //-- current system time from ext. MTIME (if IO_MTIME_EN = false) {n {1'b0}} 
     .mtime_o(),            //-- current system time from int. MTIME (if IO_MTIME_EN = true)
     //-- Interrupts --
-    .nm_irq_i(0),             //-- non-maskable interrupt
     .mtime_irq_i(0),             //-- machine timer interrupt, available if IO_MTIME_EN = false
     .msw_irq_i(0),             //-- machine software interrupt
     .mext_irq_i(0),              //-- machine external interrupt
-    .xirq_i({btn_c, btn_d, btn_l, btn_u, btn_r})
+    .xirq_i({btn_c, btn_d, btn_l, btn_u, btn_r}),
+    .xip_csn_o(), //xip_csn_o
+    .xip_clk_o(), //xip_clk_o
+    .xip_sdi_i(1'b0), //xip_sdi_i
+    .xip_sdo_o() //xip_sdo_o
   );
-
+  // NeoRV32 does not support QSPI yet.
+  // In normal SPI mode, xip_q2 is nWP and xip_q3 is nRESET
+  assign xip_q2 = 1'b1;
+  assign xip_q3 = 1'b1;
+  
     // Debug signals
     assign debug[7:0] = {ac_mclk, ac_bclk, ac_lrclk, ac_dac_sdata, ac_scl_cclk, ac_addr1_cdata, ac_addr0_clatch, reset};
 endmodule
