@@ -248,8 +248,8 @@ set_property IOSTANDARD LVCMOS33 [get_ports spi_clk]
 set_property PACKAGE_PIN E20 [get_ports spi_sd_ss];
 set_property IOSTANDARD LVCMOS33 [get_ports spi_sd_ss]
 # SPI_03_SS, LA04_P, Bank 34
-set_property PACKAGE_PIN M21 [get_ports spi_flash_ss];
-set_property IOSTANDARD LVCMOS33 [get_ports spi_flash_ss]
+set_property PACKAGE_PIN M21 [get_ports spi_ss_2];
+set_property IOSTANDARD LVCMOS33 [get_ports spi_ss_2]
 # SPI_04_SS, LA04_N, Bank 34
-set_property PACKAGE_PIN M22 [get_ports spi_flash_ss];
-set_property IOSTANDARD LVCMOS33 [get_ports spi_flash_ss]
+set_property PACKAGE_PIN M22 [get_ports spi_ss_3];
+set_property IOSTANDARD LVCMOS33 [get_ports spi_ss_3]

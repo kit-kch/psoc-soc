@@ -45,7 +45,8 @@ module fpga_riscv_top(
         input spi_miso,
         output spi_mosi,
         output spi_sd_ss,
-        output spi_flash_ss,
+        output spi_ss_2,
+        output spi_ss_3,
         
         //PWM 
         output pwm_led,
@@ -124,8 +125,9 @@ module fpga_riscv_top(
     wire [23:0] adau_audio_in_l, adau_audio_in_r;
     wire adau_audio_in_valid, adau_audio_full;
     wire [7:0] spi_csn_o;
-    assign spi_flash_ss = spi_csn_o[0];
     assign spi_sd_ss = spi_csn_o[1];
+    assign spi_ss_2 = spi_csn_o[2];
+    assign spi_ss_3 = spi_csn_o[3];
 
     i2s_master i2s(
         .clk_soc(clk_soc),
@@ -271,10 +273,10 @@ module fpga_riscv_top(
     .uart1_rts_o(),            //-- hw flow control: UART1.RX ready to receive ("RTR"), low-active, optional
     .uart1_cts_i(0),             //-- hw flow control: UART1.TX allowed to transmit, low-active, optional
     //-- SPI (available if IO_SPI_EN = true) --
-    .spi_sck_o(xip_clk_o),            //-- SPI serial clock spi_clk
-    .spi_sdo_o(xip_sdo_o),            //-- controller data out, peripheral data in spi_mosi
-    .spi_sdi_i(xip_sdi_i),             //-- controller data in, peripheral data out spi_miso
-    .spi_csn_o(xip_csn_o),            //-- SPI CS spi_csn_o
+    .spi_sck_o(spi_clk),            //-- SPI serial clock spi_clk
+    .spi_sdo_o(spi_mosi),            //-- controller data out, peripheral data in spi_mosi
+    .spi_sdi_i(spi_miso),             //-- controller data in, peripheral data out spi_miso
+    .spi_csn_o(spi_csn_o),            //-- SPI CS spi_csn_o
     
     //-- TWI (available if IO_TWI_EN = true) --
     .twi_sda_io(i2c_sda),            //-- twi serial data line
@@ -294,10 +296,10 @@ module fpga_riscv_top(
     .msw_irq_i(0),             //-- machine software interrupt
     .mext_irq_i(0),              //-- machine external interrupt
     .xirq_i({btn_c, btn_d, btn_l, btn_u, btn_r}),
-    .xip_csn_o(), //xip_csn_o
-    .xip_clk_o(), //xip_clk_o
-    .xip_sdi_i(1'b0), //xip_sdi_i
-    .xip_sdo_o() //xip_sdo_o
+    .xip_csn_o(xip_csn_o), //xip_csn_o
+    .xip_clk_o(xip_clk_o), //xip_clk_o
+    .xip_sdi_i(xip_sdi_i), //xip_sdi_i
+    .xip_sdo_o(xip_sdo_o) //xip_sdo_o
   );
   // NeoRV32 does not support QSPI yet.
   // In normal SPI mode, xip_q2 is nWP and xip_q3 is nRESET
