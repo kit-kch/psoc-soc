@@ -179,12 +179,10 @@ module fpga_riscv_top(
    //-- Global control --
     .CLOCK_FREQUENCY(100000000),   // clock frequency of clk_i in Hz
     .INT_BOOTLOADER_EN(1'b1),       // boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
-    .USER_CODE(0),                    // custom user code
     .HW_THREAD_ID(0),                // hardware thread id (hartid)
     //-- On-Chip Debugger (OCD) --
     .ON_CHIP_DEBUGGER_EN(1'b1),         //implement on-chip debugger
     //-- RISC-V CPU Extensions --
-    .CPU_EXTENSION_RISCV_A(1'b0),        //implement atomic extension?
     .CPU_EXTENSION_RISCV_C(1'b1),        //implement compressed extension?
     .CPU_EXTENSION_RISCV_E(1'b0),       //implement embedded RF extension?
     .CPU_EXTENSION_RISCV_M(1'b1),        //implement muld/div extension?
