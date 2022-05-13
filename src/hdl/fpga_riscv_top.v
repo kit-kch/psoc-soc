@@ -189,7 +189,7 @@ module fpga_riscv_top(
     .CPU_EXTENSION_RISCV_U(1'b1),        //implement user mode extension?
     .CPU_EXTENSION_RISCV_Zfinx(1'b0),    //implement 32-bit floating-point extension (using INT reg!)
     .CPU_EXTENSION_RISCV_Zicsr(1'b1),    //implement CSR system?
-    .CPU_EXTENSION_RISCV_Zifencei(1'b0), //implement instruction stream sync.?
+    .CPU_EXTENSION_RISCV_Zifencei(1'b1), //implement instruction stream sync.?
     //-- Extension Options --
     .FAST_MUL_EN(1'b0),                  //use DSPs for M extension's multiplier
     .FAST_SHIFT_EN(1'b0),                //use barrel shifter for shift operations
