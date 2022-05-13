@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_riscv_top_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="neorv32_application_image" />
+            <top_module name="neorv32_bootloader_image" />
+            <top_module name="neorv32_package" />
+            <top_module name="tb_riscv_top" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="9480000000001fs"></ZoomEndTime>
+      <Cursor1Time time="2000000000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="179"></NameColumnWidth>
+      <ValueColumnWidth column_width="275"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="30" />
+   <wvobject type="logic" fp_name="/tb_riscv_top/sys_clk">
+      <obj_property name="ElementShortName">sys_clk</obj_property>
+      <obj_property name="ObjectShortName">sys_clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider5" type="divider">
+      <obj_property name="label">Boot Rom</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_boot_rom_inst_true/neorv32_boot_rom_inst/clk_i">
+      <obj_property name="ElementShortName">clk_i</obj_property>
+      <obj_property name="ObjectShortName">clk_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_boot_rom_inst_true/neorv32_boot_rom_inst/rden_i">
+      <obj_property name="ElementShortName">rden_i</obj_property>
+      <obj_property name="ObjectShortName">rden_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_boot_rom_inst_true/neorv32_boot_rom_inst/wren_i">
+      <obj_property name="ElementShortName">wren_i</obj_property>
+      <obj_property name="ObjectShortName">wren_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_boot_rom_inst_true/neorv32_boot_rom_inst/acc_en">
+      <obj_property name="ElementShortName">acc_en</obj_property>
+      <obj_property name="ObjectShortName">acc_en</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_boot_rom_inst_true/neorv32_boot_rom_inst/addr_i">
+      <obj_property name="ElementShortName">addr_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_boot_rom_inst_true/neorv32_boot_rom_inst/data_o">
+      <obj_property name="ElementShortName">data_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_boot_rom_inst_true/neorv32_boot_rom_inst/ack_o">
+      <obj_property name="ElementShortName">ack_o</obj_property>
+      <obj_property name="ObjectShortName">ack_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_boot_rom_inst_true/neorv32_boot_rom_inst/err_o">
+      <obj_property name="ElementShortName">err_o</obj_property>
+      <obj_property name="ObjectShortName">err_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider13" type="divider">
+      <obj_property name="label">Main Bus</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/i_bus_addr_o">
+      <obj_property name="ElementShortName">i_bus_addr_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i_bus_addr_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/i_bus_rdata_i">
+      <obj_property name="ElementShortName">i_bus_rdata_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i_bus_rdata_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/i_bus_re_o">
+      <obj_property name="ElementShortName">i_bus_re_o</obj_property>
+      <obj_property name="ObjectShortName">i_bus_re_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/i_bus_ack_i">
+      <obj_property name="ElementShortName">i_bus_ack_i</obj_property>
+      <obj_property name="ObjectShortName">i_bus_ack_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/i_bus_err_i">
+      <obj_property name="ElementShortName">i_bus_err_i</obj_property>
+      <obj_property name="ObjectShortName">i_bus_err_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/i_bus_fence_o">
+      <obj_property name="ElementShortName">i_bus_fence_o</obj_property>
+      <obj_property name="ObjectShortName">i_bus_fence_o</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/d_bus_addr_o">
+      <obj_property name="ElementShortName">d_bus_addr_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">d_bus_addr_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/d_bus_rdata_i">
+      <obj_property name="ElementShortName">d_bus_rdata_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">d_bus_rdata_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/d_bus_wdata_o">
+      <obj_property name="ElementShortName">d_bus_wdata_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">d_bus_wdata_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/d_bus_ben_o">
+      <obj_property name="ElementShortName">d_bus_ben_o[3:0]</obj_property>
+      <obj_property name="ObjectShortName">d_bus_ben_o[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/d_bus_we_o">
+      <obj_property name="ElementShortName">d_bus_we_o</obj_property>
+      <obj_property name="ObjectShortName">d_bus_we_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/d_bus_re_o">
+      <obj_property name="ElementShortName">d_bus_re_o</obj_property>
+      <obj_property name="ObjectShortName">d_bus_re_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/d_bus_ack_i">
+      <obj_property name="ElementShortName">d_bus_ack_i</obj_property>
+      <obj_property name="ObjectShortName">d_bus_ack_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/d_bus_err_i">
+      <obj_property name="ElementShortName">d_bus_err_i</obj_property>
+      <obj_property name="ObjectShortName">d_bus_err_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/neorv32_cpu_inst/d_bus_fence_o">
+      <obj_property name="ElementShortName">d_bus_fence_o</obj_property>
+      <obj_property name="ObjectShortName">d_bus_fence_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/uart0_txd_o">
+      <obj_property name="ElementShortName">uart0_txd_o</obj_property>
+      <obj_property name="ObjectShortName">uart0_txd_o</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/uart0_rxd_i">
+      <obj_property name="ElementShortName">uart0_rxd_i</obj_property>
+      <obj_property name="ObjectShortName">uart0_rxd_i</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_riscv_top/uut/neorv32_top_inst/gpio_o[0]">
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="ElementShortName">[0]</obj_property>
+      <obj_property name="ObjectShortName">[0]</obj_property>
+      <obj_property name="label">gpio_o[0]</obj_property>
+   </wvobject>
+</wave_config>

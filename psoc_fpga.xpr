@@ -18,8 +18,7 @@
     <Option Name="CompiledLibDirRiviera" Val="$PCACHEDIR/compile_simlib/riviera"/>
     <Option Name="CompiledLibDirActivehdl" Val="$PCACHEDIR/compile_simlib/activehdl"/>
     <Option Name="BoardPart" Val="em.avnet.com:zed:part0:1.4"/>
-    <Option Name="SourceMgmtMode" Val="DisplayOnly"/>
-    <Option Name="ActiveSimSet" Val="spi_master_tests"/>
+    <Option Name="ActiveSimSet" Val="riscv_sim"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
     <Option Name="ProjectType" Val="Default"/>
     <Option Name="IPOutputRepo" Val="$PCACHEDIR/ip"/>
@@ -35,7 +34,7 @@
     <Option Name="DSAVendor" Val="xilinx"/>
     <Option Name="DSABoardId" Val="zed"/>
     <Option Name="DSANumComputeUnits" Val="60"/>
-    <Option Name="WTXSimLaunchSim" Val="161"/>
+    <Option Name="WTXSimLaunchSim" Val="199"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -84,82 +83,14 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/src/hdl/sine_generator.v">
+      <File Path="$PPRDIR/src/hdl/wishbone_bus_logic.v">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/src/hdl/fpga_standalone_top.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/fpga_riscv_top.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/sin_lut_90x24.mem">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/firmware.mem">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_twi.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_icache.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_cpu_cp_fpu.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_bus_keeper.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_fifo.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_slink.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_uart.vhd">
+      <File Path="$PPRDIR/src/hdl/neorv32_package.vhd">
         <FileInfo>
           <Attr Name="Library" Val="neorv32"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -180,7 +111,14 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_xirq.vhd">
+      <File Path="$PPRDIR/src/hdl/neorv32_boot_rom.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_bus_keeper.vhd">
         <FileInfo>
           <Attr Name="Library" Val="neorv32"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -194,77 +132,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_cpu_alu.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_gpio.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_wishbone.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/src/hdl/neorv32_cfs.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_cpu_bus.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_debug_dm.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_trng.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_pwm.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_wdt.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_cpu_control.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_neoled.vhd">
         <FileInfo>
           <Attr Name="Library" Val="neorv32"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -278,112 +146,21 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_sysinfo.vhd">
+      <File Path="$PPRDIR/src/hdl/neorv32_cpu_alu.vhd">
         <FileInfo>
           <Attr Name="Library" Val="neorv32"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_boot_rom.vhd">
+      <File Path="$PPRDIR/src/hdl/neorv32_cpu_bus.vhd">
         <FileInfo>
           <Attr Name="Library" Val="neorv32"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_cpu_decompressor.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_top.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_cpu_cp_muldiv.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_spi.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_debug_dtm.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_package.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_mtime.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_cpu_regfile.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_imem.default.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_dmem.default.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_cpu_cp_shifter.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/wishbone_bus_logic.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_imem.entity.vhd">
-        <FileInfo>
-          <Attr Name="Library" Val="neorv32"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_dmem.entity.vhd">
+      <File Path="$PPRDIR/src/hdl/neorv32_cpu_control.vhd">
         <FileInfo>
           <Attr Name="Library" Val="neorv32"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -397,7 +174,77 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/src/hdl/neorv32_xip.vhd">
+      <File Path="$PPRDIR/src/hdl/neorv32_cpu_cp_fpu.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_cpu_cp_muldiv.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_cpu_cp_shifter.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_cpu_decompressor.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_cpu_regfile.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_debug_dm.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_debug_dtm.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_dmem.entity.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_dmem.default.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_fifo.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_gpio.vhd">
         <FileInfo>
           <Attr Name="Library" Val="neorv32"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -407,6 +254,160 @@
       <File Path="$PPRDIR/src/hdl/neorv32_gptmr.vhd">
         <FileInfo>
           <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_icache.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_imem.entity.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_imem.default.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_mtime.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_neoled.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_pwm.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_slink.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_spi.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_sysinfo.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_top.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_trng.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_twi.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_uart.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_wdt.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_wishbone.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_xip.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/neorv32_xirq.vhd">
+        <FileInfo>
+          <Attr Name="Library" Val="neorv32"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/fpga_riscv_top.v">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/sine_generator.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/hdl/fpga_standalone_top.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/sin_lut_90x24.mem">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/src/firmware.mem">
+        <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -593,6 +594,31 @@
       <Config>
         <Option Name="TopModule" Val="clk_wiz_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="riscv_sim" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/riscv_sim">
+      <Filter Type="Srcs"/>
+      <File Path="$PPRDIR/src/sim/tb_riscv_top.v">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/tb_riscv_top_behav.wcfg">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="DesignMode" Val="RTL"/>
+        <Option Name="TopModule" Val="tb_riscv_top"/>
+        <Option Name="TopLib" Val="xil_defaultlib"/>
+        <Option Name="TransportPathDelay" Val="0"/>
+        <Option Name="TransportIntDelay" Val="0"/>
+        <Option Name="SrcSet" Val="sources_1"/>
+        <Option Name="XSimWcfgFile" Val="$PPRDIR/tb_riscv_top_behav.wcfg"/>
+        <Option Name="xsim.simulate.runtime" Val="2.2 ms"/>
       </Config>
     </FileSet>
   </FileSets>
