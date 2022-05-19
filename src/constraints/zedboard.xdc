@@ -90,17 +90,34 @@ set_property IOSTANDARD LVCMOS33 [get_ports {led[0]}]
 set_property PACKAGE_PIN K19 [get_ports {jtag_trst_i}]
 set_property IOSTANDARD LVCMOS33 [get_ports {jtag_trst_i}]
 # LA06_P, Bank 34
-set_property PACKAGE_PIN L21 [get_ports {jtag_tck_i}]
-set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tck_i}]
+#set_property PACKAGE_PIN L21 [get_ports {jtag_tck_i}]
+#set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tck_i}]
 # LA06_N, Bank 34
-set_property PACKAGE_PIN L22 [get_ports {jtag_tdi_i}]
-set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tdi_i}]
+#set_property PACKAGE_PIN L22 [get_ports {jtag_tdi_i}]
+#set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tdi_i}]
 # LA26_N, Bank 35
-set_property PACKAGE_PIN E18 [get_ports {jtag_tdo_o}]
-set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tdo_o}]
+#set_property PACKAGE_PIN E18 [get_ports {jtag_tdo_o}]
+#set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tdo_o}]
 # LA26_P, Bank 35
-set_property PACKAGE_PIN F18 [get_ports {jtag_tms_i}]
+#set_property PACKAGE_PIN F18 [get_ports {jtag_tms_i}]
+#set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tms_i}]
+
+# JTAG on PMOD
+#set_property PACKAGE_PIN K19 [get_ports {jtag_trst_i}]
+#set_property IOSTANDARD LVCMOS33 [get_ports {jtag_trst_i}]
+#
+set_property PACKAGE_PIN W8 [get_ports {jtag_tck_i}]
+set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tck_i}]
+#
+set_property PACKAGE_PIN V10 [get_ports {jtag_tdo_o}]
+set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tdo_o}]
+#
+set_property PACKAGE_PIN W11 [get_ports {jtag_tdi_i}]
+set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tdi_i}]
+#
+set_property PACKAGE_PIN W12 [get_ports {jtag_tms_i}]
 set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tms_i}]
+
 
 # Clock Oscillator
 # ------------------------------------------------------
