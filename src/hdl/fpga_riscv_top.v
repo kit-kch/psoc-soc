@@ -201,16 +201,16 @@ module fpga_riscv_top(
     .HPM_NUM_CNTS(4),                 //number of implemented HPM counters (0..29)
     .HPM_CNT_WIDTH(40),                //total size of HPM counters (0..64)
     //-- Internal Instruction memory --
-    .MEM_INT_IMEM_EN(1'b1),              //implement processor-internal instruction memory
+    .MEM_INT_IMEM_EN(1'b0),              //implement processor-internal instruction memory
     .MEM_INT_IMEM_SIZE(192*1024),            //size of processor-internal instruction memory in bytes
     //-- Internal Data memory --
     .MEM_INT_DMEM_EN(1'b1),              //implement processor-internal data memory
     .MEM_INT_DMEM_SIZE(96*1024),            //size of processor-internal data memory in bytes
     //-- Internal Cache memory --
-    .ICACHE_EN(1'b0),                    //implement instruction cache
-    .ICACHE_NUM_BLOCKS(4),            //i-cache: number of blocks (min 1), has to be a power of 2
+    .ICACHE_EN(1'b1),                    //implement instruction cache
+    .ICACHE_NUM_BLOCKS(8),            //i-cache: number of blocks (min 1), has to be a power of 2
     .ICACHE_BLOCK_SIZE(64),            //i-cache: block size in bytes (min 4), has to be a power of 2
-    .ICACHE_ASSOCIATIVITY(1),         //i-cache: associativity / number of sets (1=direct_mapped), has to be a power of 2
+    .ICACHE_ASSOCIATIVITY(2),         //i-cache: associativity / number of sets (1=direct_mapped), has to be a power of 2
     //-- External memory interface --
     .MEM_EXT_EN(1'b1),                   //implement external memory bus interface?
     .MEM_EXT_TIMEOUT(0),              //cycles after a pending bus access auto-terminates (0 = disabled)
