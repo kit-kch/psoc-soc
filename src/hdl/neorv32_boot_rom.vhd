@@ -56,6 +56,7 @@ entity neorv32_boot_rom is
 end neorv32_boot_rom;
 
 architecture neorv32_boot_rom_rtl of neorv32_boot_rom is
+
   -- determine required ROM size in bytes (expand to next power of two) --
   constant boot_rom_size_index_c : natural := index_size_f((bootloader_init_image'length)); -- address with (32-bit entries)
   constant boot_rom_size_c       : natural := (2**boot_rom_size_index_c)*4; -- size in bytes

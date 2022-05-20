@@ -47,8 +47,8 @@ package neorv32_package is
   -- if register x0 is implemented as actual physical register is has to be set to zero by the CPU hardware --
   constant reset_x0_c : boolean := true; -- has to be 'true' for the default register file rtl description (BRAM-based)
 
-  -- use dedicated hardware reset value for UNCRITICAL CPU registers --
-  -- FALSE=reset value is irrelevant (might simplify HW), default; TRUE=defined LOW reset value
+  -- use dedicated hardware reset value for UNCRITICAL CPU registers (like pipeline buffers) --
+  -- FALSE = no hardware reset (might simplify HW), default; TRUE = reset to zero
   constant dedicated_reset_c : boolean := false;
 
   -- "critical" number of implemented PMP regions --
@@ -68,7 +68,7 @@ package neorv32_package is
   -- Architecture Constants (do not modify!) ------------------------------------------------
   -- -------------------------------------------------------------------------------------------
   constant data_width_c : natural := 32; -- native data path width - do not change!
-  constant hw_version_c : std_ulogic_vector(31 downto 0) := x"01070102"; -- NEORV32 version - no touchy!
+  constant hw_version_c : std_ulogic_vector(31 downto 0) := x"01070108"; -- NEORV32 version - no touchy!
   constant archid_c     : natural := 19; -- official NEORV32 architecture ID - hands off!
 
   -- Check if we're inside the Matrix -------------------------------------------------------
@@ -1010,6 +1010,7 @@ package neorv32_package is
       IO_PWM_NUM_CH                : natural := 0;      -- number of PWM channels to implement (0..60); 0 = disabled
       IO_WDT_EN                    : boolean := false;  -- implement watch dog timer (WDT)?
       IO_TRNG_EN                   : boolean := false;  -- implement true random number generator (TRNG)?
+      IO_TRNG_FIFO                 : natural := 1;      -- TRNG fifo depth, has to be a power of two, min 1
       IO_CFS_EN                    : boolean := false;  -- implement custom functions subsystem (CFS)?
       IO_CFS_CONFIG                : std_ulogic_vector(31 downto 0) := x"00000000"; -- custom CFS configuration generic
       IO_CFS_IN_SIZE               : positive := 32;    -- size of CFS input conduit in bits
@@ -1789,6 +1790,9 @@ package neorv32_package is
   -- Component: True Random Number Generator (TRNG) -----------------------------------------
   -- -------------------------------------------------------------------------------------------
   component neorv32_trng
+    generic (
+      IO_TRNG_FIFO : natural := 1 -- RND fifo depth, has to be a power of two, min 1
+    );
     port (
       -- host access --
       clk_i  : in  std_ulogic; -- global clock line
