@@ -1,6 +1,5 @@
 # Clock domain crossing for reset signal
 set_false_path -from [get_pins {reset_counter_reg[5]/C}]
-create_clock -period 10.000 -name sys_clk -waveform {0.000 5.000} [get_ports sys_clk]
 
 # RST button
 # ------------------------------------------------------
@@ -9,8 +8,8 @@ set_property IOSTANDARD LVCMOS33 [get_ports btn_rst]
 
 # Zedboard Clock GCLK
 # ------------------------------------------------------
-set_property PACKAGE_PIN Y9 [get_ports sys_clk]
-set_property IOSTANDARD LVCMOS33 [get_ports sys_clk]
+#set_property PACKAGE_PIN Y9 [get_ports sys_clk]
+#set_property IOSTANDARD LVCMOS33 [get_ports sys_clk]
 
 # Debug Pins on a PMOD
 # ------------------------------------------------------
@@ -122,51 +121,23 @@ set_property IOSTANDARD LVCMOS33 [get_ports {jtag_tms_i}]
 # Clock Oscillator
 # ------------------------------------------------------
 # CLK0_M2C_P, Bank 34
-#set_property PACKAGE_PIN L18 [get_ports {sys_clk}];
-#set_property IOSTANDARD LVCMOS33 [get_ports {sys_clk}]
+set_property PACKAGE_PIN L18 [get_ports {sys_clk}];
+set_property IOSTANDARD LVCMOS33 [get_ports {sys_clk}]
 
 # Audio Codec
 # ------------------------------------------------------
-# FIXME: This is the zedboard!
-#set_property PACKAGE_PIN T17 [get_ports {ac_addr0_clatch}];     # "AC-ADR0"  SPI_SD_SS
-set_property PACKAGE_PIN AB1 [get_ports ac_addr0_clatch]
-set_property IOSTANDARD LVCMOS33 [get_ports ac_addr0_clatch]
-#set_property PACKAGE_PIN AA9  [get_ports {ac_addr1_cdata}];      # "AC-ADR1" JA4
-set_property PACKAGE_PIN Y5 [get_ports ac_addr1_cdata]
-set_property IOSTANDARD LVCMOS33 [get_ports ac_addr1_cdata]
-#set_property PACKAGE_PIN B20 [get_ports {ac_dac_sdata}];        # "AC-GPIO0" LA17_CC_N
-#set_property PACKAGE_PIN AB11 [get_ports {ac_dac_sdata}];        # "AC-GPIO0" JA7 Temporary
-set_property PACKAGE_PIN Y8 [get_ports ac_dac_sdata]
-set_property IOSTANDARD LVCMOS33 [get_ports ac_dac_sdata]
-#set_property PACKAGE_PIN N20 [get_ports {ac_bclk}];             # "AC-GPIO2"  I2S_SCLK   LA01_N_CC
-set_property PACKAGE_PIN AA6 [get_ports ac_bclk]
-set_property IOSTANDARD LVCMOS33 [get_ports ac_bclk]
-#set_property PACKAGE_PIN B19  [get_ports {ac_lrclk}];            # "AC-GPIO3" I2S_LRCLK   LA17_P_CC
-set_property PACKAGE_PIN Y6 [get_ports ac_lrclk]
-set_property IOSTANDARD LVCMOS33 [get_ports ac_lrclk]
-#set_property PACKAGE_PIN N19 [get_ports {ac_mclk}];             # "AC-MCLK"  LA01_P_CC
-set_property PACKAGE_PIN AB2 [get_ports ac_mclk]
-set_property IOSTANDARD LVCMOS33 [get_ports ac_mclk]
-#set_property PACKAGE_PIN AA7 [get_ports {ac_adc_sdata}];       # "AC-GPIO1"
-#set_property IOSTANDARD LVCMOS33 [get_ports {ac_adc_sdata}];
-#set_property PACKAGE_PIN AB5 [get_ports {iic_rtl_sda_io}];     # "AC-SDA"
-#set_property IOSTANDARD LVCMOS33 [get_ports {iic_rtl_sda_io}];
-set_property PACKAGE_PIN AB4 [get_ports ac_scl_cclk]
-set_property IOSTANDARD LVCMOS33 [get_ports ac_scl_cclk]
-
-# These are on the extension board:
 # LA01_CC_P, Bank 34
-#set_property PACKAGE_PIN N19 [get_ports ac_mclk]
-#set_property IOSTANDARD LVCMOS33 [get_ports ac_mclk]
+set_property PACKAGE_PIN N19 [get_ports ac_mclk]
+set_property IOSTANDARD LVCMOS33 [get_ports ac_mclk]
 # LA01_CC_N, Bank 34
-#set_property PACKAGE_PIN N20 [get_ports ac_bclk]
-#set_property IOSTANDARD LVCMOS33 [get_ports ac_bclk]
+set_property PACKAGE_PIN N20 [get_ports ac_bclk]
+set_property IOSTANDARD LVCMOS33 [get_ports ac_bclk]
 # LA17_CC_P, Bank 35
-#set_property PACKAGE_PIN B19 [get_ports ac_lrclk]
-#set_property IOSTANDARD LVCMOS33 [get_ports ac_lrclk]
+set_property PACKAGE_PIN B19 [get_ports ac_lrclk]
+set_property IOSTANDARD LVCMOS33 [get_ports ac_lrclk]
 # LA17_CC_N, Bank 35
-#set_property PACKAGE_PIN B20 [get_ports ac_dac_sdata]
-#set_property IOSTANDARD LVCMOS33 [get_ports ac_dac_sdata]
+set_property PACKAGE_PIN B20 [get_ports ac_dac_sdata]
+set_property IOSTANDARD LVCMOS33 [get_ports ac_dac_sdata]
 
 # GPIO
 # ------------------------------------------------------
@@ -226,11 +197,20 @@ set_property IOSTANDARD LVCMOS33 [get_ports uart0_txd_o]
 # I2C
 # ------------------------------------------------------
 # I2C_SCL, I2C_SCL_F, FMC-SCL, Bank 13
-set_property PACKAGE_PIN R7 [get_ports i2c_scl];
+#set_property PACKAGE_PIN R7 [get_ports i2c_scl];
+#set_property IOSTANDARD LVCMOS33 [get_ports i2c_scl]
+# I2C_SDA, I2C_SDA_F, FMC-SDA, Bank 13
+#set_property PACKAGE_PIN U7 [get_ports i2c_sda];
+#set_property IOSTANDARD LVCMOS33 [get_ports i2c_sda]
+
+## Bug for Rev RC1
+# I2C_SCL, I2C_SCL_F, FMC-SCL, Bank 13
+set_property PACKAGE_PIN U7 [get_ports i2c_scl];
 set_property IOSTANDARD LVCMOS33 [get_ports i2c_scl]
 # I2C_SDA, I2C_SDA_F, FMC-SDA, Bank 13
-set_property PACKAGE_PIN U7 [get_ports i2c_sda];
+set_property PACKAGE_PIN R7 [get_ports i2c_sda];
 set_property IOSTANDARD LVCMOS33 [get_ports i2c_sda]
+
 
 # Buttons
 # ------------------------------------------------------
@@ -270,3 +250,16 @@ set_property IOSTANDARD LVCMOS33 [get_ports spi_ss_2]
 # SPI_04_SS, LA04_N, Bank 34
 set_property PACKAGE_PIN M22 [get_ports spi_ss_3];
 set_property IOSTANDARD LVCMOS33 [get_ports spi_ss_3]
+
+
+# PHONE_L / PHONE_R
+# ------------------------------------------------------
+# PHONE_L, LA11_P, Bank 34
+set_property PACKAGE_PIN N17 [get_ports phone_l];
+set_property IOSTANDARD LVCMOS33 [get_ports phone_l]
+# PHONE_R, LA11_N, Bank 34
+set_property PACKAGE_PIN N18 [get_ports phone_r];
+set_property IOSTANDARD LVCMOS33 [get_ports phone_r]
+
+
+create_clock -period 10.173 -name sys_clk -waveform {0.000 5.0865} [get_ports sys_clk]

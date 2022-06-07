@@ -18,9 +18,9 @@ module fpga_riscv_top(
         output ac_dac_sdata,
         output ac_bclk,
         output ac_lrclk,
-        output ac_addr0_clatch,
-        output ac_addr1_cdata,
-        output ac_scl_cclk,
+        
+        output phone_l,
+        output phone_r,
 
         
         // i2c signals
@@ -93,33 +93,6 @@ module fpga_riscv_top(
             reset_counter <= reset_counter - 1;
     end
 
-    // ctrl <=> spi interface
-    wire [31:0] adau_command;
-    wire adau_command_valid, spi_ready, adau_init_done;
-
-    adau_command_list ctrl(
-        .clk(clk_soc),
-        .reset(reset),
-
-        .command(adau_command),
-        .command_valid(adau_command_valid),
-        .spi_ready(spi_ready),
-        .adau_init_done(adau_init_done)
-    );
-
-    adau_spi_master spi(
-        .clk(clk_soc),
-        .reset(reset),
-
-        .data_in(adau_command),
-        .valid(adau_command_valid),
-        .ready(spi_ready),
-
-        .cdata(ac_addr1_cdata),//ac_addr1_cdata
-        .cclk(ac_scl_cclk),//ac_scl_cclk
-        .clatch_n(ac_addr0_clatch)//ac_addr0_clatch
-    );
-
 
     // sin <=> i2s
     wire [23:0] adau_audio_in_l, adau_audio_in_r;
@@ -170,14 +143,14 @@ module fpga_riscv_top(
         .adau_audio_r(adau_audio_in_r),
         .adau_audio_valid(adau_audio_in_valid),
         .adau_audio_full(adau_audio_full),
-        .adau_init_done(adau_init_done)
+        .adau_init_done(1'b1)
     );
   
   // The Core Of The Problem ----------------------------------------------------------------
   // -------------------------------------------------------------------------------------------
    neorv32_top #(
    //-- Global control --
-    .CLOCK_FREQUENCY(100000000),   // clock frequency of clk_i in Hz
+    .CLOCK_FREQUENCY(99304000),   // clock frequency of clk_i in Hz
     .INT_BOOTLOADER_EN(1'b1),       // boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
     .HW_THREAD_ID(0),                // hardware thread id (hartid)
     //-- On-Chip Debugger (OCD) --
@@ -258,7 +231,7 @@ module fpga_riscv_top(
     .fence_o(),            //-- indicates an executed FENCE operation
     .fencei_o(),            //-- indicates an executed FENCEI operation
     //-- GPIO (available if IO_GPIO_EN = true) --
-    .gpio_o(gpio_o),        //-- parallel output
+    .gpio_o({phone_l, phone_r, gpio_o}),        //-- parallel output
     .gpio_i({btn_c, btn_d, btn_l, btn_u, btn_r, gpio_i[0], gpio_i[1]}), //-- parallel input {n {1'b0}} 
     //-- primary UART0 (available if IO_UART0_EN = true) --
     .uart0_txd_o(uart0_txd_o),     //-- UART0 send data
@@ -305,5 +278,5 @@ module fpga_riscv_top(
   assign xip_q3 = 1'b1;
   
     // Debug signals
-    assign debug[7:0] = {ac_mclk, ac_bclk, ac_lrclk, ac_dac_sdata, ac_scl_cclk, ac_addr1_cdata, ac_addr0_clatch, reset};
+    assign debug[7:0] = {ac_mclk, ac_bclk, ac_lrclk, ac_dac_sdata, 1'b0, 1'b0, 1'b0, reset};
 endmodule

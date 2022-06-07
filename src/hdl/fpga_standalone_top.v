@@ -24,11 +24,6 @@ module fpga_standalone_top(
 
         // ADAU signals
         output ac_mclk,
-
-        output ac_addr0_clatch,
-        output ac_addr1_cdata,
-        output ac_scl_cclk,
-
         output ac_dac_sdata,
         output ac_bclk,
         output ac_lrclk
@@ -58,35 +53,6 @@ module fpga_standalone_top(
         else if(|reset_counter)
             reset_counter <= reset_counter - 1;
     end
-
-
-    // ctrl <=> spi interface
-    wire [31:0] adau_command;
-    wire adau_command_valid, spi_ready, adau_init_done;
-
-    adau_command_list ctrl(
-        .clk(clk_soc),
-        .reset(reset),
-
-        .command(adau_command),
-        .command_valid(adau_command_valid),
-        .spi_ready(spi_ready),
-        .adau_init_done(adau_init_done)
-    );
-
-    adau_spi_master spi(
-        .clk(clk_soc),
-        .reset(reset),
-
-        .data_in(adau_command),
-        .valid(adau_command_valid),
-        .ready(spi_ready),
-
-        .cdata(ac_addr1_cdata),
-        .cclk(ac_scl_cclk),
-        .clatch_n(ac_addr0_clatch)
-    );
-
 
     // sin <=> i2s
     wire [23:0] sine_generator_out;
@@ -119,6 +85,6 @@ module fpga_standalone_top(
 
     // Default LED outputs for debugging signals
     assign led = dip & {3'b111, btn_c, btn_d, btn_l, btn_r, btn_u};
-    assign debug[7:0] = {reset, ac_mclk, ac_addr0_clatch, ac_addr1_cdata, ac_scl_cclk, ac_dac_sdata, ac_bclk, ac_lrclk};
+    assign debug[7:0] = {reset, ac_mclk, 1'b0, 1'b0, 1'b0, ac_dac_sdata, ac_bclk, ac_lrclk};
 
  endmodule
