@@ -31,6 +31,7 @@ bitstream: standalone.bit soc.bit
 
 clean:
 	rm -rvf build
+	rm -rvf out
 
 # Project and UI
 project: $(XPR_FILE)
@@ -43,14 +44,33 @@ ui: $(XPR_FILE)
 	cd build && $(VIVADO) ../$(XPR_FILE)
 
 # Bitstreams
-standalone.bit: out/standalone.bit
-out/standalone.bit: $(XPR_FILE)
-	echo "Not implemented"
+# Always phony: we want to rebuild whenever this target is invoked
+# Otherwise we'd have to add dependencies on all source files
+standalone.bit: $(XPR_FILE)
+	mkdir -p out
+	cd build && $(VIVADO) -mode batch -source ../prj/standalone_bit.tcl -nojournal -log ../out/fpga_standalone.log
+	cp -v build/psoc/psoc.runs/synth_1/runme.log out/synthesis.log
+	cp -v build/psoc/psoc.runs/impl_1/runme.log out/implementation.log
+	cp -v build/psoc/psoc.runs/impl_1/fpga_standalone_top_timing_summary_routed.rpt out/
+	cp -v build/psoc/psoc.runs/impl_1/fpga_standalone_top_utilization_placed.rpt out/
+	cp -v build/psoc/psoc.runs/impl_1/fpga_standalone_top.bit out/standalone.bit
 
-soc.bit: out/soc.bit
-out/soc.bit:
-	echo "Not implemented"
+soc.bit: $(XPR_FILE)
+	mkdir -p out
+	cd build && $(VIVADO) -mode batch -source ../prj/soc_bit.tcl -nojournal -log ../out/fpga_soc.log
+	cp -v build/psoc/psoc.runs/synth_1/runme.log out/synthesis.log
+	cp -v build/psoc/psoc.runs/impl_1/runme.log out/implementation.log
+	cp -v build/psoc/psoc.runs/impl_1/fpga_riscv_top_timing_summary_routed.rpt out/
+	cp -v build/psoc/psoc.runs/impl_1/fpga_riscv_top_utilization_placed.rpt out/
+	cp -v build/psoc/psoc.runs/impl_1/fpga_riscv_top.bit out/soc.bit
 
 # Simulation
-%.sim:
-	echo "Not implemented"
+%.sim: $(XPR_FILE)
+	mkdir -p out
+	cd build && $(VIVADO) -mode batch -source ../prj/gen_sim.tcl -nojournal -log ../out/gen_sim.log
+	cd build/psoc/psoc.sim/$*/behav/xsim && \
+		./compile.sh && \
+		/elaborate.sh && \
+		./simulate.sh
+	cp -v build/psoc/psoc.sim/$*/behav/xsim/simulate.log out/$*.sim.log
+	grep -q 'Test OK' out/$*.sim.log
