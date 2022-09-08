@@ -10,16 +10,6 @@ module fpga_standalone_top(
         // system clock
         input clk,
 
-        // for debugging
-        output [7:0] led,
-        input [7:0] dip,
-        output [7:0] debug,
-        input btn_c,
-        input btn_d,
-        input btn_l,
-        input btn_r,
-        input btn_u,
-
         // I2S signals
         output i2s_mclk,
         output i2s_sdata,
@@ -31,7 +21,7 @@ module fpga_standalone_top(
     wire clk;
 
     // stretch the reset pulse
-    reg [5:0] reset_counter = 6'b111111;
+    /*reg [5:0] reset_counter = 6'b111111;
     wire reset = reset_counter[5];
     always @(posedge clk_soc) begin
         if (btn_c == 1)
@@ -40,7 +30,7 @@ module fpga_standalone_top(
             reset_counter <= 6'b111111;
         else if(|reset_counter)
             reset_counter <= reset_counter - 1;
-    end
+    end*/
 
     wire clk_en_4;
     wire clk_en_16;
@@ -99,9 +89,4 @@ module fpga_standalone_top(
         .ready(!fifo_full),
         .out(sin_data)
     );
-
-    // Default LED outputs for debugging signals
-    assign led = dip & {3'b111, btn_c, btn_d, btn_l, btn_r, btn_u};
-    assign debug[7:0] = {reset, ac_mclk, 1'b0, 1'b0, 1'b0, ac_dac_sdata, ac_bclk, ac_lrclk};
-
  endmodule
