@@ -34,7 +34,7 @@ module fpga_standalone_top(
 
     assign fifo_data = {sin_data, sin_data};
 
-    reset_logic rest_logic(
+    reset_logic reset_logic(
         .clk(clk),
         .arst(arst),
         .rst(rst)
@@ -64,7 +64,7 @@ module fpga_standalone_top(
         .clk(clk),
         .mclk_en(clk_en_4),
         .sclk_en(clk_en_16),
-        .reset(rst),
+        .rst(rst),
 
         .fifo_data(i2s_data),
         .fifo_valid(!fifo_empty),
