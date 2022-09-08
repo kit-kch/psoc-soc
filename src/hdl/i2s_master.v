@@ -11,12 +11,12 @@ module i2s_master(
         output reg lrclk,
         output sdata,
 
-        input [63:0] fifo_data,
+        input [47:0] fifo_data,
         input fifo_valid,
         output reg fifo_ready
     );
 
-    reg [63:0] fifo_reg;
+    reg [47:0] fifo_reg;
     reg [5:0] sclk_counter;
     reg [63:0] buffer;
     assign sdata = buffer[63];
@@ -66,7 +66,7 @@ module i2s_master(
             if(sclk == 1) begin
                 if(sclk_counter == 0) begin
                     lrclk <= 0;
-                    buffer[63:40] = fifo_reg[55:32];
+                    buffer[63:40] = fifo_reg[47:24];
                     buffer[39:32] = 8'b00000000;
                     buffer[31:8] = fifo_reg[23:0];
                     buffer[7:0] = 8'b00000000;
@@ -87,7 +87,7 @@ module i2s_master(
 
     always @(posedge clk) begin
         if(rst == 1)
-            fifo_reg <= 64'h0000000000000000;
+            fifo_reg <= 48'h000000000000;
         else if(fifo_valid == 1) begin
             if(request_fifo == 1) begin
                 fifo_reg <= fifo_data;

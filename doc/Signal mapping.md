@@ -1,13 +1,13 @@
 | Signal | FPGA | FMC | Schematic |
 |--------|------|-----|-----------|
 | System |
-| btn_rst | P16 | n/a | n/a |
-| sys_clk | L18 | CLK0_M2C_P | CLK_IN |
+| arst | P16 | n/a | n/a |
+| clk | L18 | CLK0_M2C_P | CLK_IN |
 | Audio codec |
-| ac_mclk | N19 | LA01_CC_P | I2S_MCLK |
-| ac_bclk | N20 | LA01_CC_N | I2S_SCLK |
-| ac_lrclk | B19 | LA17_CC_P | I2S_LRCLK |
-| ac_dac_sdata | B20 | LA17_CC_N | I2S_SDIN |
+| i2s_mclk | N19 | LA01_CC_P | I2S_MCLK |
+| i2s_bclk | N20 | LA01_CC_N | I2S_SCLK |
+| i2s_lrclk | B19 | LA17_CC_P | I2S_LRCLK |
+| i2s_sdata | B20 | LA17_CC_N | I2S_SDIN |
 | GPIO |
 | gpio_i[0] | G15 | LA19_P | GPIO0 |
 | gpio_i[1] | G16 | LA19_N | GPIO1 |

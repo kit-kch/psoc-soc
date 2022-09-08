@@ -9,6 +9,7 @@
 module fpga_standalone_top(
         // system clock
         input clk,
+        input arst,
 
         // I2S signals
         output i2s_mclk,
@@ -17,23 +18,27 @@ module fpga_standalone_top(
         output i2s_lrclk
     );
 
-    // global fast clock
-    wire clk;
-
-    // stretch the reset pulse
-    /*reg [5:0] reset_counter = 6'b111111;
-    wire reset = reset_counter[5];
-    always @(posedge clk_soc) begin
-        if (btn_c == 1)
-            reset_counter <= 6'b111111;
-        else if(!locked)
-            reset_counter <= 6'b111111;
-        else if(|reset_counter)
-            reset_counter <= reset_counter - 1;
-    end*/
+    wire rst;
 
     wire clk_en_4;
     wire clk_en_16;
+
+    // sin <=> FIFO
+    wire [23:0] sin_data;
+    wire [48:0] fifo_data;
+    wire sin_valid;
+    wire fifo_full;
+    wire [48:0] i2s_data;
+    wire fifo_empty;
+    wire i2s_ready;
+
+    assign fifo_data = {sin_data, sin_data};
+
+    reset_logic rest_logic(
+        .clk(clk),
+        .arst(arst),
+        .rst(rst)
+    );
 
     clock_generator clk_gen(
         .clk(clk),
@@ -44,18 +49,7 @@ module fpga_standalone_top(
         .clk_en_16(clk_en_16)
     );
 
-    // sin <=> FIFO
-    wire [23:0] sin_data;
-    wire [63:0] fifo_data;
-    wire sin_valid;
-    wire fifo_full;
-    wire [63:0] i2s_data;
-    wire fifo_empty;
-    wire i2s_ready;
-
-    assign fifo_wr_data = {8'h00, sin_data,8'h00, sin_data};
-
-    sfifo fifo(
+    sfifo #(.BW(48), .LGFLEN(4)) fifo(
         .i_clk(clk),
         .i_wr(sin_valid),
         .i_data(fifo_data),
@@ -70,7 +64,7 @@ module fpga_standalone_top(
         .clk(clk),
         .mclk_en(clk_en_4),
         .sclk_en(clk_en_16),
-        .reset(reset),
+        .reset(rst),
 
         .fifo_data(i2s_data),
         .fifo_valid(!fifo_empty),
@@ -84,7 +78,7 @@ module fpga_standalone_top(
 
     sine_generator sin(
         .clk(clk),
-        .reset(reset),
+        .reset(rst),
         .valid(sin_valid),
         .ready(!fifo_full),
         .out(sin_data)

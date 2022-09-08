@@ -45,7 +45,7 @@ module tb_i2s_master();
     wire lrclk;
     wire sdata;
     reg rst;
-    reg [63:0] fifo_data;
+    reg [47:0] fifo_data;
     reg fifo_valid;
     wire fifo_ready;
 
@@ -151,7 +151,7 @@ module tb_i2s_master();
     begin
             @(posedge clk);
             fifo_valid = 1;
-            fifo_data = {8'h00,send_l,8'h00,send_r};
+            fifo_data = {send_l,send_r};
             @(negedge fifo_ready);
     end    
     endtask
@@ -175,7 +175,7 @@ module tb_i2s_master();
                 send_frame(24'h000000, 24'h000000);
                 $display("Checking FIFO underflow");
                 fifo_valid = 0;
-                fifo_data = 64'hXXXXXXXXXXXXXXXX;
+                fifo_data = 48'hXXXXXXXXXXXX;
                 repeat(64*16*2*4)
                     @(posedge clk);
                 $display("sending 0x7a1cff 0x001300");
