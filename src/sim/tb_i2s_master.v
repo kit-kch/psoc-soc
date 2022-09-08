@@ -12,34 +12,54 @@
 // - data starts one BCLK after the LRCLK edge (Data delay from LRCLK edge (in BCLK units))
 module tb_i2s_master();
     // Generate clocks
-    reg clk_soc;
-    initial clk_soc <= 0;
-    always #4.167 clk_soc <= ~clk_soc;
+    reg clk;
+    initial clk <= 0;
+    always #10.173 clk <= ~clk;
 
-    reg ac_mclk = 0;
-    always #40.69 ac_mclk <= ~ac_mclk;
+    reg [1:0] mclk_counter;
+    initial mclk_counter <= 0;
+    reg mclk_en;
+    initial mclk_en <= 0;
+    always @(posedge clk) begin
+        mclk_counter <= mclk_counter + 1;
+        if(mclk_counter == 0)
+            mclk_en <= 1;
+        else
+            mclk_en <= 0;
+    end
+
+    reg [3:0] sclk_counter;
+    initial sclk_counter <= 0;
+    reg sclk_en;
+    initial sclk_en <= 0;
+    always @(posedge clk) begin
+        sclk_counter <= sclk_counter + 1;
+        if(sclk_counter == 0)
+            sclk_en <= 1;
+        else
+            sclk_en <= 0;
+    end
 
     // i2s_master signals
-    wire bclk;
-    wire full;
+    wire sclk;
     wire lrclk;
     wire sdata;
-    reg reset;
-    reg write_frame;
-    reg [23:0] frame_in_l, frame_in_r;
+    reg rst;
+    reg [63:0] fifo_data;
+    reg fifo_valid;
+    wire fifo_ready;
 
     i2s_master uut(
-        .bclk (bclk),
-        .lrclk (lrclk),
-        .sdata (sdata),
-        .full (full),
-
-        .clk_soc (clk_soc),
-        .ac_mclk (ac_mclk),
-        .reset(reset),
-        .frame_in_l (frame_in_l),
-        .frame_in_r (frame_in_r),
-        .write_frame (write_frame)
+        .sclk(sclk),
+        .lrclk(lrclk),
+        .sdata(sdata),
+        .clk(clk),
+        .sclk_en(sclk_en),
+        .mclk_en(mclk_en),
+        .rst(rst),
+        .fifo_data(fifo_data),
+        .fifo_ready(fifo_ready),
+        .fifo_valid(fifo_valid)
     );
 
     task receive_frame;
@@ -53,22 +73,19 @@ module tb_i2s_master();
                     // Left sample
                     count = 0;
                     while (!lrclk) begin
-                        @(negedge bclk or posedge lrclk);
-                        if (lrclk) begin
-                            // loop will end
-                        end else if(!bclk) begin
-                            if (count >= 24) begin
-                                $error("got more BCLK edges than expected (> 24) while receiving the left sample");
+                        @(posedge sclk or posedge lrclk);
+                        if(sclk) begin
+                            if (count > 32) begin
+                                $error("got more BCLK edges than expected (> 31) while receiving the left sample");
                                 #100
                                 $finish;
-                            end else begin
-                                l[23-count] = sdata;
-                            end
+                            end else if (count > 0 && count < 25)
+                                l[24-count] = sdata;
                             count = count + 1;
                         end
                     end
-                    if (count < 24) begin
-                        $error("got less BCLK edges than expected (want 24, got %0d)", count);
+                    if (count < 31) begin
+                        $error("got less BCLK edges than expected (want 32, got %0d)", count);
                         #100
                         $finish;
                     end
@@ -81,22 +98,19 @@ module tb_i2s_master();
                     // Right sample
                     count = 0;
                     while (lrclk) begin
-                        @(negedge bclk or negedge lrclk);
-                        if (!lrclk) begin
-                            // loop will end
-                        end else if (!bclk) begin
-                            if (count >= 24) begin
-                                $error("got more BCLK edges than expected (> 24) while receiving the right sample");
+                        @(posedge sclk or negedge lrclk);
+                        if(sclk) begin
+                            if (count > 32) begin
+                                $error("got more BCLK edges than expected (> 32) while receiving the left sample");
                                 #100
                                 $finish;
-                            end else begin
-                                r[23-count] = sdata;
-                            end
+                            end else if (count > 0 && count < 25)
+                                r[24-count] = sdata;
                             count = count + 1;
                         end
                     end
-                    if (count < 24) begin
-                        $error("got less BCLK edges than expected (want 24, got %0d)", count);
+                    if (count < 31) begin
+                        $error("got less BCLK edges than expected (want 32, got %0d)", count);
                         #100
                         $finish;
                     end
@@ -110,9 +124,9 @@ module tb_i2s_master();
                 end
 
                 begin: timeout
-                    #21000;
+                    #120000;
                     disable receive;
-                    $error("Frame transfer timed out (waited for 21us)");
+                    $error("Frame transfer timed out (waited for 120us)");
                     #100
                     $finish;
                 end
@@ -122,106 +136,72 @@ module tb_i2s_master();
 
     task do_reset;
         begin
-            reset <= 1;
-            write_frame <= 0;
+            rst <= 1;
             repeat (10)
-                @(posedge ac_mclk);
+                @(posedge clk);
 
-            reset <= 0;
+            rst <= 0;
             repeat (10)
-                @(posedge ac_mclk);
+                @(posedge clk);
         end
     endtask
 
-    // Uncomment to display the received data:
-    // reg [23:0] din;
-    // reg last_lrclk = 0;
-    // always @(lrclk) begin
-    //    $display("%c %06x @ %t", last_lrclk ? "R" : "L", din, $time);
-    //    din <= 24'hx;
-    //    last_lrclk <= lrclk;
-    // end
-    // always @(negedge bclk) begin
-    //    din <= {din[22:0], sdata};
-    // end
-
-    // Uncomment to display FIFO writes:
-    // always @(posedge clk_soc) begin
-    //    if(write_frame)
-    //      $display("FIFO write: %06x %06x", frame_in[47:24], frame_in[23:0]);
-    // end
-
-    // Uncomment to display FIFO reads (you might need to change uut.{fifo_read, cur_frame}):
-    // always @(posedge ac_mclk) begin
-    //    if(uut.fifo_read) begin
-    //	 @(posedge ac_mclk);
-    //       $display("FIFO read: %06x %06x", uut.cur_frame[47:24], uut.cur_frame[23:0]);
-    //    end
-    // end
-
-    integer i;
+    task send_frame;
+    input [23:0] send_l, send_r;
+    begin
+            @(posedge clk);
+            fifo_valid = 1;
+            fifo_data = {8'h00,send_l,8'h00,send_r};
+            @(negedge fifo_ready);
+    end    
+    endtask
 
     initial begin
         $timeformat(-9, 5, " ns", 10);
-
-        reset = 1;
-        write_frame = 0;
+        rst = 1;
+        fifo_valid = 0;
         do_reset;
 
-        // Wait for the FIFO reset to complete.
-        wait (full == 0);
-
+        
         // Push some test data into the FIFO.
-        @(posedge clk_soc);
-        $display("sending 0x123456 0xabcdef");
-        frame_in_l <= 24'h123456;
-        frame_in_r <= 24'habcdef;
-        write_frame <= 1;
+        
+        fork
+            begin: send
+                $display("sending 0xFFFFFF 0xFFFFFF");
+                send_frame(24'hFFFFFF, 24'hFFFFFF);
+                $display("sending 0x123456 0xabcdef");
+                send_frame(24'h123456, 24'habcdef);
+                $display("sending 0x000000 0x000000");
+                send_frame(24'h000000, 24'h000000);
+                $display("Checking FIFO underflow");
+                fifo_valid = 0;
+                fifo_data = 64'hXXXXXXXXXXXXXXXX;
+                repeat(64*16*2*4)
+                    @(posedge clk);
+                $display("sending 0x7a1cff 0x001300");
+                send_frame(24'h7a1cff, 24'h001300);
+                $display("sending 0x8a1eaa 0x001400");
+                send_frame(24'h8a1eaa, 24'h001400);
+                $display("sending 0x9a1dff 0x001500");
+                send_frame(24'h9a1dff, 24'h001500);
 
-        @(posedge clk_soc);
-        $display("sending 0x111111 0x222222");
-        frame_in_l <= 24'h111111;
-        frame_in_r <= 24'h222222;
+            end
 
-        @(posedge clk_soc);
-        $display("sending 0x333333 0x444444");
-        frame_in_l <= 24'h333333;
-        frame_in_r <= 24'h444444;
-
-        @(posedge clk_soc);
-        $display("sending 0x555555 0x666666");
-        frame_in_l <= 24'h555555;
-        frame_in_r <= 24'h666666;
-
-        @(posedge clk_soc);
-        frame_in_l <= 24'hxxxxxx;
-        frame_in_r <= 24'hxxxxxx;
-        write_frame <= 0;
-
-        // Check the received data.
-        @(negedge lrclk);  // Wait for frame start.
-        receive_frame(24'h123456, 24'habcdef);
-        receive_frame(24'h111111, 24'h222222);
-        receive_frame(24'h333333, 24'h444444);
-        receive_frame(24'h555555, 24'h666666);
-        receive_frame(24'h000000, 24'h000000);  // UUT should start sending zeroes when the FIFO is empty.
-
-        // Test the FULL flag.
-        do_reset;
-
-        frame_in_l <= 24'hxxxxxx;
-        frame_in_r <= 24'hxxxxxx;
-        write_frame <= 1;
-        @(posedge clk_soc);
-        for (i = 0; i < 10000 && !full; i = i+1) begin
-            @(posedge clk_soc);
-        end
-        write_frame <= 0;
-        if (!full) begin
-            $error("FULL is still low after 10000 writes; this does not seem correct");
-            #100
-            $finish;
-        end
+            begin: receive
+                @(negedge lrclk);
+                receive_frame(24'hFFFFFF, 24'hFFFFFF);
+                receive_frame(24'h123456, 24'habcdef);
+                receive_frame(24'h000000, 24'h000000);
+                //Expect to send 0s when no data is available
+                receive_frame(24'h000000, 24'h000000);
+                receive_frame(24'h000000, 24'h000000);
+                receive_frame(24'h000000, 24'h000000);
+                //As soon as data is avaible
+                receive_frame(24'h7a1cff, 24'h001300);
+                receive_frame(24'h8a1eaa, 24'h001400);
+                receive_frame(24'h9a1dff, 24'h001500);                
+            end
+        join
 
         $display("Test OK");
         $finish;

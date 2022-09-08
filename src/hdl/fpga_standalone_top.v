@@ -2,15 +2,13 @@
 //////////////////////////////////////////////////////////////////////////////////
 //
 // Description:
-// Standalone top module which does not include the picorv32 processor.
-// This is used for simple debugging to get the ADAU driver working first.
+// Standalone top module which does not include the neorv32 processor.
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-
 module fpga_standalone_top(
         // system clock
-        input sys_clk,
+        input clk,
 
         // for debugging
         output [7:0] led,
@@ -22,25 +20,15 @@ module fpga_standalone_top(
         input btn_r,
         input btn_u,
 
-        // ADAU signals
-        output ac_mclk,
-        output ac_dac_sdata,
-        output ac_bclk,
-        output ac_lrclk
+        // I2S signals
+        output i2s_mclk,
+        output i2s_sdata,
+        output i2s_bclk,
+        output i2s_lrclk
     );
 
     // global fast clock
-    wire clk_soc;
-    wire locked;
-
-    // Generate all required clocks
-    clk_wiz_0 pll(
-        .clk_in1(sys_clk),
-        .reset(0),
-        .clk_soc(clk_soc),
-        .clk_adau_mclk(ac_mclk),
-        .locked(locked)
-    );
+    wire clk;
 
     // stretch the reset pulse
     reg [5:0] reset_counter = 6'b111111;
@@ -54,34 +42,63 @@ module fpga_standalone_top(
             reset_counter <= reset_counter - 1;
     end
 
-    // sin <=> i2s
-    wire [23:0] sine_generator_out;
-    wire audio_full;
-    wire audio_valid;
+    wire clk_en_4;
+    wire clk_en_16;
+
+    clock_generator clk_gen(
+        .clk(clk),
+        .rst(rst),
+        .clk_en_2(),
+        .clk_en_4(clk_en_4),
+        .clk_en_8(),
+        .clk_en_16(clk_en_16)
+    );
+
+    // sin <=> FIFO
+    wire [23:0] sin_data;
+    wire [63:0] fifo_data;
+    wire sin_valid;
+    wire fifo_full;
+    wire [63:0] i2s_data;
+    wire fifo_empty;
+    wire i2s_ready;
+
+    assign fifo_wr_data = {8'h00, sin_data,8'h00, sin_data};
+
+    sfifo fifo(
+        .i_clk(clk),
+        .i_wr(sin_valid),
+        .i_data(fifo_data),
+        .o_full(fifo_full),
+        .o_fill(),
+        .i_rd(i2s_ready),
+        .o_data(i2s_data),
+        .o_empty(fifo_empty)
+    );
 
     i2s_master i2s(
-        .clk_soc(clk_soc),
-        .ac_mclk(ac_mclk),
+        .clk(clk),
+        .mclk_en(clk_en_4),
+        .sclk_en(clk_en_16),
         .reset(reset),
 
-        .frame_in_l(sine_generator_out),
-        .frame_in_r(sine_generator_out),
-        .write_frame(audio_valid),
-        .full(audio_full),
+        .fifo_data(i2s_data),
+        .fifo_valid(!fifo_empty),
+        .fifo_ready(i2s_ready),
 
-        .bclk(ac_bclk),
-        .lrclk(ac_lrclk),
-        .sdata(ac_dac_sdata)
+        .mclk(i2s_mclk),
+        .sclk(i2s_sclk),
+        .lrclk(i2s_lrclk),
+        .sdata(i2s_data)
     );
 
     sine_generator sin(
-        .clk(clk_soc),
+        .clk(clk),
         .reset(reset),
-        .valid(audio_valid),
-        .ready(!audio_full),
-        .out(sine_generator_out)
+        .valid(sin_valid),
+        .ready(!fifo_full),
+        .out(sin_data)
     );
-
 
     // Default LED outputs for debugging signals
     assign led = dip & {3'b111, btn_c, btn_d, btn_l, btn_r, btn_u};
