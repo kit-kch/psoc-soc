@@ -25,10 +25,10 @@ module fpga_standalone_top(
 
     // sin <=> FIFO
     wire [23:0] sin_data;
-    wire [48:0] fifo_data;
+    wire [47:0] fifo_data;
     wire sin_valid;
     wire fifo_full;
-    wire [48:0] i2s_data;
+    wire [47:0] i2s_data;
     wire fifo_empty;
     wire i2s_ready;
 
@@ -56,7 +56,7 @@ module fpga_standalone_top(
         .o_full(fifo_full),
         .o_fill(),
         .i_rd(i2s_ready),
-        .o_data(i2s_data),
+        .o_data(i2s_sdata),
         .o_empty(fifo_empty)
     );
 

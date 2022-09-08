@@ -72,33 +72,48 @@ module i2s_master(
                     buffer[7:0] = 8'b00000000;
                 end else if (sclk_counter < 31) begin
                     lrclk <= 0;
-                    buffer <= buffer << 1; 
+                    buffer <= buffer << 1;
                 end else if (sclk_counter < 63) begin
                     lrclk <= 1;
                     buffer <= buffer << 1;
                 end else begin
                     lrclk <= 0;
                     buffer <= buffer << 1;
-                    request_fifo <= 1;
                 end
             end
         end
     end
+    
+    wire stale;
+    assign stale = (sclk_counter == 5'b00001);
+    reg stale_ff;
+    initial stale_ff <= 0;
+    
+    reg stale_pulse;
+    initial stale_pulse <= 0;
+            
+    always @(posedge clk) begin
+        if(rst) begin
+            stale_ff <= 0;
+        end else begin
+            stale_ff <= stale;
+            stale_pulse <= stale_ff && stale;
+        end
+    end
+   reg fifo_req;
+   initial fifo_req <= 0;
 
     always @(posedge clk) begin
         if(rst == 1)
             fifo_reg <= 48'h000000000000;
-        else if(fifo_valid == 1) begin
-            if(request_fifo == 1) begin
+        else begin
+            if(stale_pulse == 1)
+                req <= 1;
+            if(fifo_valid && fifo_req) begin
                 fifo_reg <= fifo_data;
                 fifo_ready <= 1;
-                request_fifo <= 0;
+                fifo_req <= 0;
             end else
-                fifo_ready <= 0;
-        end else begin
-            if(request_fifo == 1)
-                fifo_ready <= 1;
-            else
                 fifo_ready <= 0;
         end
     end

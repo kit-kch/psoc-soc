@@ -27,4 +27,4 @@ set_property IOSTANDARD LVCMOS33 [get_ports i2s_sdata]
 
 create_clock -period 10.173 -name clk -waveform {0.000 5.0865} [get_ports clk]
 # Clock domain crossing for reset signal
-set_false_path -from [get_pins arst]
+set_false_path -from [get_pins reset_logic/arst_IBUF]
