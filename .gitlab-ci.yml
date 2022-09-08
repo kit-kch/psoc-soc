@@ -1,9 +1,7 @@
 implement-standalone:
   stage: test
   script:
-    - ./ci/fpga_implement.sh implement_standalone
-  tags:
-    - work1
+    - make standalone.bit
   artifacts:
     paths:
     - out/
@@ -11,9 +9,7 @@ implement-standalone:
 implement-soc:
   stage: test
   script:
-    - ./ci/fpga_implement.sh implement_soc
-  tags:
-    - work1
+    - make soc.bit
   artifacts:
     paths:
     - out/
@@ -21,29 +17,7 @@ implement-soc:
 i2s_master_tests:
   stage: test
   script:
-    - ./ci/run_tests.sh i2s_master_tests
-  tags:
-    - work1
-  artifacts:
-    paths:
-    - out/
-
-spi_master_tests:
-  stage: test
-  script:
-    - ./ci/run_tests.sh spi_master_tests
-  tags:
-    - work1
-  artifacts:
-    paths:
-    - out/
-
-adau_command_list_tests:
-  stage: test
-  script:
-    - ./ci/run_tests.sh adau_command_list_tests
-  tags:
-    - work1
+    - make i2s_master.sim
   artifacts:
     paths:
     - out/
@@ -51,19 +25,7 @@ adau_command_list_tests:
 sine_generator_tests:
   stage: test
   script:
-    - ./ci/run_tests.sh sine_generator_tests
-  tags:
-    - work1
-  artifacts:
-    paths:
-    - out/
-
-cpu_ram_tests:
-  stage: test
-  script:
-    - ./ci/run_tests.sh cpu_ram_tests
-  tags:
-    - work1
+    - make sine_generator.sim
   artifacts:
     paths:
     - out/
