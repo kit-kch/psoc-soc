@@ -57,11 +57,22 @@ module i2s_master(
         end
     end
 
+    /*
+    Main State Machine containing serial shift register for I2S Master. Clock counter is used for state definition.
+        sclk_counter == 0:
+            Read data from intermediate input register (fifo_reg). Reset request_fifo flag
+        sclk_counter == 32:
+            Change LRCLK from low to high to adjust output channel.
+        sclk_counter == 64:
+            Send last bit. Assert request_fifo flag indicating a data request.
+        others:
+            Shift buffer register, send MSB first. 
+    */
     always @(posedge clk) begin
         if (rst == 1) begin
             lrclk <= 1;
             buffer <= 64'h0000000000000000;
-            request_fifo <= 0;
+            request_fifo <= 1;
         end else if(sclk_en == 1) begin
             if(sclk == 1) begin
                 if(sclk_counter == 0) begin
@@ -70,6 +81,7 @@ module i2s_master(
                     buffer[39:32] = 8'b00000000;
                     buffer[31:8] = fifo_reg[23:0];
                     buffer[7:0] = 8'b00000000;
+                    request_fifo <= 0;
                 end else if (sclk_counter < 31) begin
                     lrclk <= 0;
                     buffer <= buffer << 1;
@@ -79,43 +91,31 @@ module i2s_master(
                 end else begin
                     lrclk <= 0;
                     buffer <= buffer << 1;
+                    request_fifo <= 1;
                 end
             end
         end
     end
-    
-    wire stale;
-    assign stale = (sclk_counter == 5'b00001);
-    reg stale_ff;
-    initial stale_ff <= 0;
-    
-    reg stale_pulse;
-    initial stale_pulse <= 0;
-            
-    always @(posedge clk) begin
-        if(rst) begin
-            stale_ff <= 0;
-        end else begin
-            stale_ff <= stale;
-            stale_pulse <= stale_ff && stale;
-        end
-    end
-   reg fifo_req;
-   initial fifo_req <= 0;
 
-    always @(posedge clk) begin
-        if(rst == 1)
+    /* 
+    FIFO Process. Read Data from FIFO when requested. For simplicity it is assumed that the FIFO is !never! empty.
+    Module interface is not AXI-Stream compatible
+    */
+    always @(posedge clk)
+        if (rst == 1) begin
+            fifo_ready <= 0;
             fifo_reg <= 48'h000000000000;
-        else begin
-            if(stale_pulse == 1)
-                req <= 1;
-            if(fifo_valid && fifo_req) begin
-                fifo_reg <= fifo_data;
-                fifo_ready <= 1;
-                fifo_req <= 0;
+        end else begin
+            if (sclk == 1 && sclk_en == 1 && request_fifo == 1) begin
+                if(fifo_valid == 1) begin
+                    fifo_reg <= fifo_data;
+                    fifo_ready <= 1;
+                else begin
+                    fifo_reg <= 48'h000000000000;
+                    fifo_ready <= 0;
+                end
             end else
                 fifo_ready <= 0;
         end
-    end
     
 endmodule

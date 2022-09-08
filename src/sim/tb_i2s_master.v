@@ -173,11 +173,6 @@ module tb_i2s_master();
                 send_frame(24'h123456, 24'habcdef);
                 $display("sending 0x000000 0x000000");
                 send_frame(24'h000000, 24'h000000);
-                $display("Checking FIFO underflow");
-                fifo_valid = 0;
-                fifo_data = 48'hXXXXXXXXXXXX;
-                repeat(64*16*2*4)
-                    @(posedge clk);
                 $display("sending 0x7a1cff 0x001300");
                 send_frame(24'h7a1cff, 24'h001300);
                 $display("sending 0x8a1eaa 0x001400");
@@ -192,11 +187,6 @@ module tb_i2s_master();
                 receive_frame(24'hFFFFFF, 24'hFFFFFF);
                 receive_frame(24'h123456, 24'habcdef);
                 receive_frame(24'h000000, 24'h000000);
-                //Expect to send 0s when no data is available
-                receive_frame(24'h000000, 24'h000000);
-                receive_frame(24'h000000, 24'h000000);
-                receive_frame(24'h000000, 24'h000000);
-                //As soon as data is avaible
                 receive_frame(24'h7a1cff, 24'h001300);
                 receive_frame(24'h8a1eaa, 24'h001400);
                 receive_frame(24'h9a1dff, 24'h001500);                
