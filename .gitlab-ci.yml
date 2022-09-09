@@ -1,20 +1,4 @@
-implement-standalone:
-  stage: test
-  script:
-    - make standalone.bit
-  artifacts:
-    paths:
-    - out/
-
-implement-soc:
-  stage: test
-  script:
-    - make soc.bit
-  artifacts:
-    paths:
-    - out/
-
-i2s_master_tests:
+test:i2s_master:
   stage: test
   script:
     - make i2s_master.sim
@@ -22,7 +6,7 @@ i2s_master_tests:
     paths:
     - out/
 
-sine_generator_tests:
+test:sine_generator:
   stage: test
   script:
     - make sine_generator.sim
@@ -30,10 +14,58 @@ sine_generator_tests:
     paths:
     - out/
 
-clock_generator_tests:
+test:clock_generator:
   stage: test
   script:
     - make clock_generator.sim
+  artifacts:
+    paths:
+    - out/
+
+test:fpga_riscv_top:
+  stage: test
+  script:
+    - make fpga_riscv_top.sim
+  artifacts:
+    paths:
+    - out/
+
+test:fpga_standalone_top:
+  stage: test
+  script:
+    - make fpga_standalone_top.sim
+  artifacts:
+    paths:
+    - out/
+
+bistream:standalone:
+  stage: bitstream
+  needs:
+   - job: "test:i2s_master"
+     artifacts: false
+   - job: "test:clock_generator"
+     artifacts: false
+   - job: "test:i2s_master"
+     artifacts: false
+#   - job: "test:fpga_standalone_top"
+#     artifacts: false
+  script:
+    - make standalone.bit
+  artifacts:
+    paths:
+    - out/
+
+bistream:soc:
+  stage: bitstream
+  needs:
+   - job: "test:clock_generator"
+     artifacts: false
+   - job: "test:i2s_master"
+     artifacts: false
+   - job: "test:fpga_riscv_top"
+     artifacts: false
+  script:
+    - make soc.bit
   artifacts:
     paths:
     - out/
