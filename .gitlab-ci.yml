@@ -1,6 +1,7 @@
 stages:
-  - test
-  - bitstream
+ - test
+ - bitstream
+ - upload
 
 test:i2s_master:
   stage: test
@@ -59,7 +60,7 @@ bitstream:standalone:
     paths:
     - out/
 
-bistream:soc:
+bitstream:soc:
   stage: bitstream
   needs:
    - job: "test:clock_generator"
