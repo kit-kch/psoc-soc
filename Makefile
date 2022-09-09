@@ -43,6 +43,9 @@ $(XPR_FILE): prj/gen_prj.tcl
 ui: $(XPR_FILE)
 	cd build && $(VIVADO_ENV) vivado ../$(XPR_FILE)
 
+tcl: $(XPR_FILE)
+	cd build && $(VIVADO_ENV) vivado -mode batch -source ../prj/update_prj.tcl
+
 # Bitstreams
 # Always phony: we want to rebuild whenever this target is invoked
 # Otherwise we'd have to add dependencies on all source files
