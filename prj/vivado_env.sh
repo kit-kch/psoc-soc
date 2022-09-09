@@ -5,4 +5,4 @@ if ! [ -x "$(command -v vivado)" ]; then
     source /tools/xilinx/set_xilinx2022.1.sh &>/dev/null
 fi
 
-exec vivado "$@"
+exec "$@"
