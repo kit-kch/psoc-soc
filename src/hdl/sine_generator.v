@@ -9,7 +9,7 @@ module sine_generator(
     );
 
     reg [23:0] lut [0:89];
-    initial $readmemh("../init/sin_lut_90x24.mem", lut);
+    initial $readmemh("sin_lut_90x24.mem", lut);
     reg [6:0] lut_addr;
 
     reg startup;

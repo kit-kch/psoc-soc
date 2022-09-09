@@ -1,4 +1,3 @@
-
 # RST button
 # ------------------------------------------------------
 set_property PACKAGE_PIN P16 [get_ports arst]
@@ -16,8 +15,8 @@ set_property IOSTANDARD LVCMOS33 [get_ports clk]
 set_property PACKAGE_PIN N19 [get_ports i2s_mclk]
 set_property IOSTANDARD LVCMOS33 [get_ports i2s_mclk]
 # LA01_CC_N, Bank 34
-set_property PACKAGE_PIN N20 [get_ports i2s_bclk]
-set_property IOSTANDARD LVCMOS33 [get_ports i2s_bclk]
+set_property PACKAGE_PIN N20 [get_ports i2s_sclk]
+set_property IOSTANDARD LVCMOS33 [get_ports i2s_sclk]
 # LA17_CC_P, Bank 35
 set_property PACKAGE_PIN B19 [get_ports i2s_lrclk]
 set_property IOSTANDARD LVCMOS33 [get_ports i2s_lrclk]
@@ -26,5 +25,3 @@ set_property PACKAGE_PIN B20 [get_ports i2s_sdata]
 set_property IOSTANDARD LVCMOS33 [get_ports i2s_sdata]
 
 create_clock -period 10.173 -name clk -waveform {0.000 5.0865} [get_ports clk]
-# Clock domain crossing for reset signal
-set_false_path -from [get_pins reset_logic/arst_IBUF]
