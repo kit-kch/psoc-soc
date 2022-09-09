@@ -1,3 +1,7 @@
+stages:
+  - test
+  - bitstream
+
 test:i2s_master:
   stage: test
   script:
@@ -38,14 +42,14 @@ test:fpga_standalone_top:
     paths:
     - out/
 
-bistream:standalone:
+bitstream:standalone:
   stage: bitstream
   needs:
    - job: "test:i2s_master"
      artifacts: false
    - job: "test:clock_generator"
      artifacts: false
-   - job: "test:i2s_master"
+   - job: "test:sine_generator"
      artifacts: false
 #   - job: "test:fpga_standalone_top"
 #     artifacts: false
