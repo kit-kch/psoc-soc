@@ -70,7 +70,7 @@ soc.bit: $(XPR_FILE)
 	cd build && $(VIVADO) -mode batch -source ../prj/gen_sim.tcl -nojournal -log ../out/gen_sim.log
 	cd build/psoc/psoc.sim/$*/behav/xsim && \
 		./compile.sh && \
-		/elaborate.sh && \
+		./elaborate.sh && \
 		./simulate.sh
 	cp -v build/psoc/psoc.sim/$*/behav/xsim/simulate.log out/$*.sim.log
 	grep -q 'Test OK' out/$*.sim.log

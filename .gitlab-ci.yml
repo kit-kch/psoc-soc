@@ -29,3 +29,11 @@ sine_generator_tests:
   artifacts:
     paths:
     - out/
+
+clock_generator_tests:
+  stage: test
+  script:
+    - make clock_generator.sim
+  artifacts:
+    paths:
+    - out/
