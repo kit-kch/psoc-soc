@@ -19,7 +19,6 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
 module wishbone_bus_logic(
 
 
@@ -37,22 +36,16 @@ module wishbone_bus_logic(
 //   Writing to the right channel triggers a write into the audio FIFO.
 
       input clk,
-      input reset,
+      input rst,
 
       // CPU connections
-      input [3:0] i_wb_sel,
-      input [31:0] i_wb_data,
-      input [31:0] i_wb_addr,
-      input i_wb_stb,
-      input i_wb_we,
-      output o_wb_stall,
-      output reg [31:0] o_wb_data,
-      output reg o_wb_ack,
-
-      // debugging stuff
-      input [7:0] dip,
-      input [4:0] buttons,
-      output reg [7:0] led,
+      input [3:0] wb_sel_i,
+      input [31:0] wb_dat_i,
+      input [31:0] wb_adr_i,
+      input wb_stb_i,
+      input wb_we_i,
+      output reg [31:0] wb_dat_o,
+      output reg wb_ack_o,
 
 
       // adau_interface signals
@@ -62,6 +55,7 @@ module wishbone_bus_logic(
       input adau_init_done
    );
 
+   wire o_wb_stall;
     assign o_wb_stall = 1'b0;
     reg adau_word_complete;
     
@@ -69,7 +63,7 @@ module wishbone_bus_logic(
    always @(posedge clk) begin
 //      ram_valid = 0;
  
-      case(i_wb_addr)
+      case(wb_adr_i)
          // 15 bit address / 256 kiBit
          // 0x0000_0000 - 0x0000_7FFF
 //         32'b0000_0000_0000_0000_0???_????_????_????: begin
@@ -77,18 +71,14 @@ module wishbone_bus_logic(
 //            ram_valid = valid;
 //            ready = ram_ready;
 //         end
-         32'h9000_0000: o_wb_data = {24'b0, dip};
-         32'h9000_0004: o_wb_data = {24'b0, led};
-         32'h9000_0008: o_wb_data = {27'b0, buttons};
-         32'h9000_000c: o_wb_data = {30'b0, adau_init_done, adau_word_complete};
-         default: o_wb_data = 32'h0000_0000;
+         32'h9000_000c: wb_dat_o = {30'b0, adau_init_done, adau_word_complete};
+         default: wb_dat_o = 32'h0000_0000;
       endcase
    end
 
    // write logic
    always @(posedge clk) begin
-      if(reset) begin
-         led <= 8'h00;
+      if(rst) begin
          adau_audio_l <= 24'h000000;
          adau_audio_r <= 24'h000000;
          adau_word_complete <= 1'b0;
@@ -100,29 +90,25 @@ module wishbone_bus_logic(
               adau_word_complete <= 0;
           end
 
-          if ((i_wb_stb)&&(i_wb_we)&&(!o_wb_stall))
+          if ((wb_stb_i)&&(wb_we_i)&&(!o_wb_stall))
 	        begin
-             case(i_wb_addr)
-                32'h9000_0004: begin
-                   if(i_wb_sel[0])
-                      led <= i_wb_data[7:0];
-                end
+             case(wb_adr_i)
                 32'h9000_0010: begin
-                   if(i_wb_sel[2])
-                      adau_audio_l[23:16] <= i_wb_data[23:16];
-                   if(i_wb_sel[1])
-                      adau_audio_l[15:8] <= i_wb_data[15:8];
-                   if(i_wb_sel[0])
-                      adau_audio_l[7:0] <= i_wb_data[7:0];
+                   if(wb_sel_i[2])
+                      adau_audio_l[23:16] <= wb_dat_i[23:16];
+                   if(wb_sel_i[1])
+                      adau_audio_l[15:8] <= wb_dat_i[15:8];
+                   if(wb_sel_i[0])
+                      adau_audio_l[7:0] <= wb_dat_i[7:0];
                 end
                 32'h9000_0014: begin
-                   if(i_wb_sel[2])
-                      adau_audio_r[23:16] <= i_wb_data[23:16];
-                   if(i_wb_sel[1])
-                      adau_audio_r[15:8] <= i_wb_data[15:8];
-                   if(i_wb_sel[0])
-                      adau_audio_r[7:0] <= i_wb_data[7:0];
-                   if(|i_wb_sel)
+                   if(wb_sel_i[2])
+                      adau_audio_r[23:16] <= wb_dat_i[23:16];
+                   if(wb_sel_i[1])
+                      adau_audio_r[15:8] <= wb_dat_i[15:8];
+                   if(wb_sel_i[0])
+                      adau_audio_r[7:0] <= wb_dat_i[7:0];
+                   if(|wb_sel_i)
                      adau_word_complete <= 1;
                 end
              endcase
@@ -132,11 +118,11 @@ module wishbone_bus_logic(
    
    // Acknowledgement
    always @(posedge clk) begin
-        if (reset) begin
-	       o_wb_ack <= 1'b0;
+        if (rst) begin
+	       wb_ack_o <= 1'b0;
 	       end 
         else begin
-	       o_wb_ack <= ((i_wb_stb)&&(!o_wb_stall));
+	       wb_ack_o <= ((wb_stb_i)&&(!o_wb_stall));
 	       end
    end
     

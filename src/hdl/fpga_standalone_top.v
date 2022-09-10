@@ -25,14 +25,14 @@ module fpga_standalone_top(
 
     // sin <=> FIFO
     wire [23:0] sin_data;
-    wire [47:0] frame_data;
-    wire frame_valid;
+    wire [47:0] fifo_data_in;
+    wire fifo_write;
     wire fifo_full;
-    wire [47:0] i2s_data;
+    wire [47:0] fifo_data_out;
     wire fifo_empty;
-    wire i2s_ready;
+    wire fifo_read;
 
-    assign frame_data = {sin_data, sin_data};
+    assign fifo_data_in = {sin_data, sin_data};
 
     reset_logic reset_logic(
         .clk(clk),
@@ -51,12 +51,12 @@ module fpga_standalone_top(
 
     sfifo #(.BW(48), .LGFLEN(4)) fifo(
         .i_clk(clk),
-        .i_wr(frame_valid),
-        .i_data(frame_data),
+        .i_wr(fifo_write),
+        .i_data(fifo_data_in),
         .o_full(fifo_full),
         .o_fill(),
-        .i_rd(i2s_ready),
-        .o_data(i2s_data),
+        .i_rd(fifo_read),
+        .o_data(fifo_data_out),
         .o_empty(fifo_empty)
     );
 
@@ -66,9 +66,9 @@ module fpga_standalone_top(
         .sclk_en(clk_en_16),
         .rst(rst),
 
-        .fifo_data(i2s_data),
+        .fifo_data(fifo_data_out),
         .fifo_valid(!fifo_empty),
-        .fifo_ready(i2s_ready),
+        .fifo_ready(fifo_read),
 
         .mclk(i2s_mclk),
         .sclk(i2s_sclk),
@@ -79,8 +79,8 @@ module fpga_standalone_top(
     sine_generator sin(
         .clk(clk),
         .reset(rst),
-        .valid(frame_valid),
+        .valid(fifo_write),
         .ready(!fifo_full),
         .out(sin_data)
     );
- endmodule
+endmodule
