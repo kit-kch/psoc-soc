@@ -817,7 +817,6 @@ set obj [get_runs synth_1]
 set_property -name "constrset" -value "constrs_standalone" -objects $obj
 set_property -name "needs_refresh" -value "1" -objects $obj
 set_property -name "part" -value "xc7z020clg484-1" -objects $obj
-set_property -name "incremental_checkpoint" -value "$proj_dir/psoc.srcs/utils_1/imports/synth_1/fpga_soc_top.dcp" -objects $obj
 set_property -name "auto_incremental_checkpoint" -value "1" -objects $obj
 set_property -name "strategy" -value "Vivado Synthesis Defaults" -objects $obj
 
