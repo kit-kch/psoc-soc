@@ -89,5 +89,13 @@ upload:standalone:
     - echo "Uplaod firmware"
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/standalone.bit" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/standlone.bit"'
 
-
-    
+upload:soc:
+  stage: upload
+  needs:
+   - job: "bitstream:soc"
+     artifacts: true
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo "Uplaod firmware"
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/soc.bit" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/soc.bit"'
