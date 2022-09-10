@@ -27,10 +27,10 @@ test:clock_generator:
     paths:
     - out/
 
-test:fpga_riscv_top:
+test:fpga_soc_top:
   stage: test
   script:
-    - make fpga_riscv_top.sim
+    - make fpga_soc_top.sim
   artifacts:
     paths:
     - out/
@@ -67,7 +67,7 @@ bitstream:soc:
      artifacts: false
    - job: "test:i2s_master"
      artifacts: false
-   - job: "test:fpga_riscv_top"
+   - job: "test:fpga_soc_top"
      artifacts: false
   script:
     - make soc.bit

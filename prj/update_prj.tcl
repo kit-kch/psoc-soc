@@ -18,9 +18,9 @@ if {[llength $file_list] != 0} {
 }
 
 #Update Riscv Constraints File
-set_property constrset constrs_riscv [get_runs synth_1]
-set_property constrset constrs_riscv [get_runs impl_1]
-set file_list [glob -directory ../src/constraints/ constr_riscv.xdc]
+set_property constrset constrs_soc [get_runs synth_1]
+set_property constrset constrs_soc [get_runs impl_1]
+set file_list [glob -directory ../src/constraints/ constr_soc.xdc]
 read_xdc $file_list
 
 #Update Standalone Constraints File

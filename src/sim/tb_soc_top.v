@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 
-module tb_riscv_top();
+module tb_soc_top();
 
     reg sys_clk;
     reg reset;

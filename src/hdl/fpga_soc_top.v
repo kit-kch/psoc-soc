@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module fpga_riscv_top(
+module fpga_soc_top(
         // system clock
         input clk,
         input arst,

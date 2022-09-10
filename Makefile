@@ -2,7 +2,7 @@
 # Configuration
 ####################################################################################################
 SIMULATION_SETS = i2s_master \
-    sine_generator clock_generator
+    sine_generator clock_generator fpga_soc_top fpga_standalone_top
 
 ####################################################################################################
 # Generated variables
@@ -63,9 +63,9 @@ soc.bit: $(XPR_FILE)
 	cd build && $(VIVADO_ENV) vivado -mode batch -source ../prj/soc_bit.tcl -nojournal -log ../out/fpga_soc.log
 	cp -v build/psoc/psoc.runs/synth_1/runme.log out/synthesis.log
 	cp -v build/psoc/psoc.runs/impl_1/runme.log out/implementation.log
-	cp -v build/psoc/psoc.runs/impl_1/fpga_riscv_top_timing_summary_routed.rpt out/
-	cp -v build/psoc/psoc.runs/impl_1/fpga_riscv_top_utilization_placed.rpt out/
-	cp -v build/psoc/psoc.runs/impl_1/fpga_riscv_top.bit out/soc.bit
+	cp -v build/psoc/psoc.runs/impl_1/fpga_soc_top_timing_summary_routed.rpt out/
+	cp -v build/psoc/psoc.runs/impl_1/fpga_soc_top_utilization_placed.rpt out/
+	cp -v build/psoc/psoc.runs/impl_1/fpga_soc_top.bit out/soc.bit
 
 # Simulation
 %.sim: $(XPR_FILE)
