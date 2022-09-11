@@ -42,8 +42,8 @@ entity neorv32_wrap is
     xip_sdo_o      : out std_ulogic; -- controller data output
 
     -- GPIO (available if IO_GPIO_EN = true) --
-    gpio_o         : out std_ulogic_vector(63 downto 0); -- parallel output
-    gpio_i         : in  std_ulogic_vector(63 downto 0) := (others => 'U'); -- parallel input
+    gpio_o         : out std_ulogic_vector(1 downto 0); -- parallel output
+    gpio_i         : in  std_ulogic_vector(6 downto 0) := (others => 'U'); -- parallel input
 
     -- primary UART0 (available if IO_UART0_EN = true) --
     uart0_txd_o    : out std_ulogic; -- UART0 send data
@@ -60,16 +60,28 @@ entity neorv32_wrap is
     twi_scl_io     : inout std_logic; -- twi serial clock line
 
     -- PWM (available if IO_PWM_NUM_CH > 0) --
-    pwm_o          : out std_ulogic_vector(59 downto 0); -- pwm channels
+    pwm_o          : out std_ulogic_vector(0 downto 0); -- pwm channels
 
     -- External platform interrupts (available if XIRQ_NUM_CH > 0) --
-    xirq_i         : in  std_ulogic_vector(31 downto 0) := (others => 'L') -- IRQ channels
+    xirq_i         : in  std_ulogic_vector(5 downto 0) := (others => 'L') -- IRQ channels
   );
 end neorv32_wrap;
 
 architecture rtl of neorv32_wrap is
     signal onewire_unconnected : std_logic;
+
+    signal gpio_o_tmp, gpio_i_tmp : std_ulogic_vector(63 downto 0);
+    signal pwm_o_tmp : std_ulogic_vector(59 downto 0);
+    signal xirq_i_tmp : std_ulogic_vector(31 downto 0);
+
 begin
+
+    gpio_o <= gpio_o_tmp(1 downto 0);
+    pwm_o <= pwm_o_tmp(0 downto 0);
+    gpio_i_tmp(6 downto 0) <= gpio_i;
+    gpio_i_tmp(63 downto 7) <= (others => 'U');
+    xirq_i_tmp(5 downto 0) <= xirq_i;
+    xirq_i_tmp(31 downto 6) <= (others => 'L');
 
     inst: neorv32_top
     generic map (
@@ -112,7 +124,7 @@ begin
         -- External Interrupts Controller (XIRQ) --
         XIRQ_NUM_CH => 5,  -- number of external IRQ channels (0..32)
         XIRQ_TRIGGER_TYPE => x"ffffffff", -- trigger type: 0=level, 1=edge
-        XIRQ_TRIGGER_POLARITY => x"00000000", -- trigger polarity: 0=low-level/falling-edge, 1=high-level/rising-edge
+        XIRQ_TRIGGER_POLARITY => x"00000020", -- trigger polarity: 0=low-level/falling-edge, 1=high-level/rising-edge
 
         -- Processor peripherals --
         IO_GPIO_EN => true,  -- implement general purpose input/output port unit (GPIO)?
@@ -170,8 +182,8 @@ begin
         slink_rx_lst_i => (others => 'L'), -- last data of packet
 
         -- GPIO (available if IO_GPIO_EN = true) --
-        gpio_o => gpio_o, -- parallel output
-        gpio_i => gpio_i, -- parallel input
+        gpio_o => gpio_o_tmp, -- parallel output
+        gpio_i => gpio_i_tmp, -- parallel input
 
         -- primary UART0 (available if IO_UART0_EN = true) --
         uart0_txd_o => uart0_txd_o, -- UART0 send data
@@ -199,7 +211,7 @@ begin
         onewire_io => onewire_unconnected, -- 1-wire bus
 
         -- PWM (available if IO_PWM_NUM_CH > 0) --
-        pwm_o => pwm_o, -- pwm channels
+        pwm_o => pwm_o_tmp, -- pwm channels
 
         -- Custom Functions Subsystem IO (available if IO_CFS_EN = true) --
         cfs_in_i => (others => 'U'), -- custom CFS inputs conduit
@@ -213,7 +225,7 @@ begin
         mtime_o => open, -- current system time from int. MTIME (if IO_MTIME_EN = true)
 
         -- External platform interrupts (available if XIRQ_NUM_CH > 0) --
-        xirq_i => xirq_i, -- IRQ channels
+        xirq_i => xirq_i_tmp, -- IRQ channels
 
         -- CPU interrupts --
         mtime_irq_i => 'L', -- machine timer interrupt, available if IO_MTIME_EN = false
