@@ -1,4 +1,6 @@
-`timescale 1ns / 1ps
+//Date: 11.09.2022
+//Author: Johannes Pfau
+//Description: Top-Level Verilog integrating the PSoC audio IP with neorv32 CPU
 
 module fpga_soc_top(
         // system clock
@@ -73,6 +75,8 @@ module fpga_soc_top(
     wire[31:0] bus_adr, bus_dat_i, bus_dat_o;
     wire bus_we, bus_stb, bus_ack;
     wire[3:0] bus_sel;
+    // And interrupt line
+    wire audio_fifo_low;
 
     // The SPI chip select signals
     wire [7:0] spi_csn_o;
@@ -103,7 +107,7 @@ module fpga_soc_top(
         .xip_sdi_i(xip_sdi_i),
         .xip_sdo_o(xip_sdo_o),
 
-        .gpio_o({phone_l, phone_r, gpio_o}),
+        .gpio_o(gpio_o),
         .gpio_i({btn_c, btn_d, btn_l, btn_u, btn_r, gpio_i[0], gpio_i[1]}),
 
         .uart0_txd_o(uart0_txd_o),
@@ -119,7 +123,7 @@ module fpga_soc_top(
 
         .pwm_o({pwm_led}),
 
-        .xirq_i({btn_c, btn_d, btn_l, btn_u, btn_r})
+        .xirq_i({audio_fifo_low, btn_c, btn_d, btn_l, btn_u, btn_r})
     );
 
     // NeoRV32 does not support QSPI yet.
@@ -127,7 +131,7 @@ module fpga_soc_top(
     assign xip_q2 = 1'b1;
     assign xip_q3 = 1'b1;
 
-    neo_audio audio(
+    psoc_audio audio(
         .clk(clk),
         .rst(rst),
 
@@ -138,6 +142,8 @@ module fpga_soc_top(
         .wb_sel_i(bus_sel),
         .wb_stb_i(bus_stb),
         .wb_ack_o(bus_ack),
+
+        .fifo_low(audio_fifo_low),
 
         .i2s_mclk(i2s_mclk),
         .i2s_sdata(i2s_sdata),
