@@ -1,4 +1,3 @@
-`timescale 1ns/1ps
 //Date: 08.09.2022
 //Author: Marc Neu
 //Description: Sycrhonizes reset to main clock

@@ -1,5 +1,3 @@
-`timescale 1ns/1ps
-
 module sine_generator(
         input clk,
         input reset,

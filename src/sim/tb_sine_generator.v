@@ -1,5 +1,3 @@
-`timescale 1ns/1ps
-
 module tb_sine_generator;
     // Generate clock
     reg clk = 0;

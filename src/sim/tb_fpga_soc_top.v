@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 module tb_fpga_soc_top();
     reg clk;
     initial clk <= 0;

@@ -1,5 +1,3 @@
-`timescale 1ns/1ps
-
 module i2s_master(
         input clk,        
         input rst,

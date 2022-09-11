@@ -1,5 +1,3 @@
-`timescale 1ns/1ps
-
 // This testbench assumes the following:
 // - set LRCLK at 50% duty cycle
 // - SDATA read when BCLK falls
