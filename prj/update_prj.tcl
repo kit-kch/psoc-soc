@@ -17,6 +17,10 @@ if {[llength $file_list] != 0} {
     puts "No Verilog Design Sources found."
 }
 
+#Reset runs, so Vivado does not reference design checkpoint files
+reset_run -quiet synth_1
+reset_run -quiet impl_1
+
 #Update Riscv Constraints File
 set_property constrset constrs_soc [get_runs synth_1]
 set_property constrset constrs_soc [get_runs impl_1]
