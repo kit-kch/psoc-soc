@@ -1,6 +1,3 @@
-#Open project
-open_project psoc/psoc.xpr
-
 #Add VHDL Design Sources to Project
 set file_list [glob -nocomplain -directory ../src/hdl/ *.vhd]
 if {[llength $file_list] != 0} {
@@ -37,6 +34,9 @@ read_xdc $file_list
 #This is necessary if a previously defined module is not available anymore and has before been the top module.
 set_property source_mgmt_mode All [current_project]
 update_compile_order -fileset sources_1
+
+#Reset Project to avoid dcp dependency
+reset_project
 
 #Write project tcl file. Use -force to overwrite
 write_project_tcl -no_copy_sources -use_bd_files -force {../prj/gen_prj.tcl}
