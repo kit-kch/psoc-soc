@@ -1,3 +1,6 @@
+#Open project
+open_project psoc/psoc.xpr
+
 #Add VHDL Design Sources to Project
 set file_list [glob -nocomplain -directory ../src/hdl/ *.vhd]
 if {[llength $file_list] != 0} {
