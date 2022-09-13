@@ -96,7 +96,7 @@ module i2s_wb_regfile #(
                         if (wb_sel_i[0])
                             reg_ctrl0[0] <= wb_dat_i[0];
                     end
-                    32'h9000_0004: begin
+                    32'h9000_0008: begin
                         if (wb_sel_i[3])
                             fifo_threshold_reg[31:24] <= wb_dat_i[31:24];
                         if (wb_sel_i[2])
