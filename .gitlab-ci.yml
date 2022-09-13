@@ -1,3 +1,7 @@
+default:
+  image:
+    name: gitlab.itiv.kit.edu:1443/itiv/docker/itiv-rocky8:master
+
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
