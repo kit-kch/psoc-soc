@@ -38,7 +38,7 @@ project: $(XPR_FILE)
 $(XPR_FILE): script/vivado/gen_prj.tcl
 	rm -rvf build
 	mkdir -p build
-	cd build && $(VIVADO_ENV) vivado -mode batch -source ../script/vivado/gen_prj.tcl
+	cd build && echo 'set origin_dir_loc "../script/vivado"; source ../script/vivado/gen_prj.tcl' | $(VIVADO_ENV) vivado -mode tcl
 
 ui: $(XPR_FILE)
 	cd build && $(VIVADO_ENV) vivado ../$(XPR_FILE)
