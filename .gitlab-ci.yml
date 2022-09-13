@@ -3,6 +3,7 @@ variables:
 
 stages:
  - test
+ - software
  - bitstream
  - upload
 
@@ -42,6 +43,30 @@ test:fpga_standalone_top:
   stage: test
   script:
     - make fpga_standalone_top.sim
+  artifacts:
+    paths:
+    - out/
+
+sw:i2s_sin:
+  stage: software
+  script:
+    - make i2s_sin
+  artifacts:
+    paths:
+    - out/
+
+sw:i2s_sin_ir:
+  stage: software
+  script:
+    - make i2s_sin_ir
+  artifacts:
+    paths:
+    - out/
+
+sw:dac_bit:
+  stage: software
+  script:
+    - make dac_bit
   artifacts:
     paths:
     - out/
@@ -99,3 +124,20 @@ upload:soc:
   script:
     - echo "Upload firmware"
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/soc.bit" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/soc.bit"'
+
+upload:sw:
+  stage: upload
+  needs:
+   - job: "sw:i2s_sin"
+     artifacts: true
+   - job: "sw:i2s_sin_ir"
+     artifacts: true
+   - job: "sw:dac_bit"
+     artifacts: true
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo "Upload software"
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/i2s_sin.exe.bin" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/i2s_sin.exe.bin"'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/i2s_sin_ir.exe.bin" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/i2s_sin_ir.exe.bin"'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/dac_bit.exe.bin" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/dac_bit.exe.bin"'
