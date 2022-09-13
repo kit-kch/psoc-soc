@@ -55,6 +55,7 @@ sw:i2s_sin:
   stage: software
   script:
     - make i2s_sin
+  dependencies: []
   artifacts:
     paths:
     - out/
@@ -63,6 +64,7 @@ sw:i2s_sin_ir:
   stage: software
   script:
     - make i2s_sin_ir
+  dependencies: []
   artifacts:
     paths:
     - out/
@@ -71,6 +73,7 @@ sw:dac_bit:
   stage: software
   script:
     - make dac_bit
+  dependencies: []
   artifacts:
     paths:
     - out/
