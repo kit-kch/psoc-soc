@@ -42,4 +42,4 @@ update_compile_order -fileset sources_1
 reset_project
 
 #Write project tcl file. Use -force to overwrite
-write_project_tcl -no_copy_sources -use_bd_files -force {../prj/gen_prj.tcl}
+write_project_tcl -no_copy_sources -use_bd_files -force {../script/vivado/gen_prj.tcl}

@@ -12,7 +12,7 @@ SIM_SETS=$(addsuffix .sim,$(SIMULATION_SETS))
 ####################################################################################################
 # Tool Commands
 ####################################################################################################
-VIVADO_ENV=$(abspath ./prj/vivado_env.sh)
+VIVADO_ENV=$(abspath ./script/vivado/vivado_env.sh)
 
 ####################################################################################################
 # Abbreviations
@@ -35,23 +35,23 @@ clean:
 
 # Project and UI
 project: $(XPR_FILE)
-$(XPR_FILE): prj/gen_prj.tcl
+$(XPR_FILE): script/vivado/gen_prj.tcl
 	rm -rvf build
 	mkdir -p build
-	cd build && $(VIVADO_ENV) vivado -mode batch -source ../prj/gen_prj.tcl
+	cd build && $(VIVADO_ENV) vivado -mode batch -source ../script/vivado/gen_prj.tcl
 
 ui: $(XPR_FILE)
 	cd build && $(VIVADO_ENV) vivado ../$(XPR_FILE)
 
 tcl: $(XPR_FILE)
-	cd build && $(VIVADO_ENV) vivado -mode batch -source ../prj/update_prj.tcl
+	cd build && $(VIVADO_ENV) vivado -mode batch -source ../script/vivado/update_prj.tcl
 
 # Bitstreams
 # Always phony: we want to rebuild whenever this target is invoked
 # Otherwise we'd have to add dependencies on all source files
 standalone.bit: $(XPR_FILE)
 	mkdir -p out
-	cd build && $(VIVADO_ENV) vivado -mode batch -source ../prj/standalone_bit.tcl -nojournal -log ../out/fpga_standalone.log
+	cd build && $(VIVADO_ENV) vivado -mode batch -source ../script/vivado/standalone_bit.tcl -nojournal -log ../out/fpga_standalone.log
 	cp -v build/psoc/psoc.runs/synth_1/runme.log out/synthesis.log
 	cp -v build/psoc/psoc.runs/impl_1/runme.log out/implementation.log
 	cp -v build/psoc/psoc.runs/impl_1/fpga_standalone_top_timing_summary_routed.rpt out/
@@ -60,7 +60,7 @@ standalone.bit: $(XPR_FILE)
 
 soc.bit: $(XPR_FILE)
 	mkdir -p out
-	cd build && $(VIVADO_ENV) vivado -mode batch -source ../prj/soc_bit.tcl -nojournal -log ../out/fpga_soc.log
+	cd build && $(VIVADO_ENV) vivado -mode batch -source ../script/vivado/soc_bit.tcl -nojournal -log ../out/fpga_soc.log
 	cp -v build/psoc/psoc.runs/synth_1/runme.log out/synthesis.log
 	cp -v build/psoc/psoc.runs/impl_1/runme.log out/implementation.log
 	cp -v build/psoc/psoc.runs/impl_1/fpga_soc_top_timing_summary_routed.rpt out/
@@ -70,7 +70,7 @@ soc.bit: $(XPR_FILE)
 # Simulation
 %.sim: $(XPR_FILE)
 	mkdir -p out
-	cd build && $(VIVADO_ENV) vivado -mode batch -source ../prj/gen_sim.tcl -nojournal -log ../out/gen_sim.log
+	cd build && $(VIVADO_ENV) vivado -mode batch -source ../script/vivado/gen_sim.tcl -nojournal -log ../out/gen_sim.log
 	cd build/psoc/psoc.sim/$*/behav/xsim && \
 		$(VIVADO_ENV) ./compile.sh && \
 		$(VIVADO_ENV) ./elaborate.sh && \
