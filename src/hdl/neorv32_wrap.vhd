@@ -189,7 +189,7 @@ begin
         uart0_txd_o => uart0_txd_o, -- UART0 send data
         uart0_rxd_i => uart0_rxd_i, -- UART0 receive data
         uart0_rts_o => open, -- hw flow control: UART0.RX ready to receive ("RTR"), low-active, optional
-        uart0_cts_i => 'L', -- hw flow control: UART1.TX allowed to transmit, low-active, optional
+        uart0_cts_i => '0', -- hw flow control: UART0.TX allowed to transmit, low-active, optional
 
         -- secondary UART1 (available if IO_UART1_EN = true) --
         uart1_txd_o => open, -- UART1 send data
