@@ -95,7 +95,7 @@ begin
         -- RISC-V CPU Extensions --
         CPU_EXTENSION_RISCV_B => true,  -- implement bit-manipulation extension?
         CPU_EXTENSION_RISCV_C => true,  -- implement compressed extension?
-        CPU_EXTENSION_RISCV_E => true,  -- implement embedded RF extension?
+        CPU_EXTENSION_RISCV_E => false,  -- implement embedded RF extension?
         CPU_EXTENSION_RISCV_M => true,  -- implement mul/div extension?
         CPU_EXTENSION_RISCV_U => true,  -- implement user mode extension?
         CPU_EXTENSION_RISCV_Zfinx => true,  -- implement 32-bit floating-point extension (using INT regs!)
