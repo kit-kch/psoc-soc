@@ -13,8 +13,8 @@ module reset_logic(
 
     always @(posedge clk)
         if (arst == 1) 
-            rst <= 0;
-        else
             rst <= 1;
+        else
+            rst <= 0;
 
 endmodule
