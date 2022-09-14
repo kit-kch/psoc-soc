@@ -1,7 +1,7 @@
 module tb_fpga_soc_top();
     reg clk;
     initial clk <= 0;
-    always #10.173 clk <= ~clk;
+    always #5.03504391 clk <= ~clk;
 
     reg arst;
     initial arst <= 1;
@@ -69,7 +69,18 @@ module tb_fpga_soc_top();
         .xip_q3()
     );
 
+    task do_reset;
+        begin
+            repeat(10)
+                @(posedge clk);
+            arst <= 0;
+        end
+    endtask
+
     initial begin
+        do_reset;
+        repeat(100)
+            @(posedge clk);
         $display("Test OK");
         $finish;
     end
