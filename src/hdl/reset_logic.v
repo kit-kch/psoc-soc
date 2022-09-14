@@ -1,10 +1,10 @@
 //Date: 08.09.2022
 //Author: Marc Neu
-//Description: Sycrhonizes reset to main clock
+//Description: Synchronizes reset to main clock
 
 
 module reset_logic(
-        input clk,        
+        input clk,
         input arst,
         output reg rst
 );
