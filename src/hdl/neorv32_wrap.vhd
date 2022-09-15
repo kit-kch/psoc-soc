@@ -86,7 +86,7 @@ begin
     inst: neorv32_top
     generic map (
         -- General --
-        CLOCK_FREQUENCY => 99304000,  -- clock frequency of clk_i in Hz
+        CLOCK_FREQUENCY => 98304000,  -- clock frequency of clk_i in Hz
         INT_BOOTLOADER_EN => true,  -- boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
 
         -- On-Chip Debugger (OCD) --
