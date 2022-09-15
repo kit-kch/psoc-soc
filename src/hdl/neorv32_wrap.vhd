@@ -122,7 +122,7 @@ begin
         --MEM_EXT_TIMEOUT              : natural := 255;    -- cycles after a pending bus access auto-terminates (0 = disabled)
 
         -- External Interrupts Controller (XIRQ) --
-        XIRQ_NUM_CH => 5,  -- number of external IRQ channels (0..32)
+        XIRQ_NUM_CH => 6,  -- number of external IRQ channels (0..32)
         XIRQ_TRIGGER_TYPE => x"ffffffff", -- trigger type: 0=level, 1=edge
         XIRQ_TRIGGER_POLARITY => x"00000020", -- trigger polarity: 0=low-level/falling-edge, 1=high-level/rising-edge
 
