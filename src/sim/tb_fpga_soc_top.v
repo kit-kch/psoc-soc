@@ -1,7 +1,7 @@
 module tb_fpga_soc_top();
     reg clk;
     initial clk <= 0;
-    always #5.03504391 clk <= ~clk;
+    always #5.087 clk <= ~clk;
 
     reg arst;
     initial arst <= 1;
