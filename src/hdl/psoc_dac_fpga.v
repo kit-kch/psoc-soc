@@ -6,6 +6,7 @@ module psoc_dac(
         // system clock
         input clk,
         input rst,
+        input enable,
 
         // FIFO signals
         input [47:0] fifo_data,
@@ -35,10 +36,10 @@ module psoc_dac(
     end
 
     // This is our FIFO read signal
-    assign fifo_ready = clk_en_2048;
+    assign fifo_ready = clk_en_2048 & enable;
 
     // dummy: On FPGA, just return the lowest bit in each channel.
-    assign phone_l = fifo_data[0];
-    assign phone_r = fifo_data[24];
+    assign phone_l = fifo_data[0] & enable;
+    assign phone_r = fifo_data[24] & enable;
 
 endmodule

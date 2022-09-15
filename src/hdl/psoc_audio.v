@@ -50,15 +50,18 @@ module psoc_audio(
     wire fifo_full, fifo_empty;
 
     // Local control signals
-    wire dac_mode;
+    wire device_reset, software_rst, dac_mode, dac_enable, i2s_enable;
     wire[FIFO_LEN_BITS:0] fifo_level, fifo_threshold;
+
+    assign device_reset = rst | software_rst;
 
     // For I2S output mode
     i2s_master i2s(
         .clk(clk),
         .mclk_en(clk_en_4),
         .sclk_en(clk_en_16),
-        .rst(rst),
+        .rst(device_reset),
+        .enable(i2s_enable),
 
         .fifo_data(fifo_data_out),
         .fifo_valid(!fifo_empty),
@@ -73,7 +76,8 @@ module psoc_audio(
     // For using our own DAC
     psoc_dac dac(
         .clk(clk),
-        .rst(rst),
+        .rst(device_reset),
+        .enable(dac_enable),
 
         .fifo_data(fifo_data_out),
         .fifo_ready(fifo_ready_dac),
@@ -124,7 +128,10 @@ module psoc_audio(
         .fifo_low(fifo_low),
         .fifo_level(fifo_level),
         .fifo_threshold(fifo_threshold),
-        .dac_mode(dac_mode)
+        .dac_mode(dac_mode),
+        .dac_enable(dac_enable),
+        .i2s_enable(i2s_enable),
+        .software_rst(software_rst)
     );
 
 endmodule

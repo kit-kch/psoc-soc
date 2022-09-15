@@ -5,7 +5,10 @@
 /*
  * MEMORY MAP:
  * - 0x90000000: Control register CTRL0
- *   - Bit 0: DAC mode: 0 = I2S output, 1 = Use builtin DAC
+ *   - Bit 0: Reset (1 = active)
+ *   - Bit 1: DAC mode: 0 = I2S output, 1 = Use builtin DAC
+ *   - Bit 2: DAC enable
+ *   - Bit 3: I2S enable
  * - 0x90000004: Status register STAT0 (readonly)
  *   - Bit 0: FIFO is low (1 when Fifo count is less than FIFO_LOW)
  *   - Bit 1: FIFO empty (1 if FIFO is empty)
@@ -45,7 +48,10 @@ module i2s_wb_regfile #(
         input fifo_low,
         input[FIFO_LEN_BITS:0] fifo_level,
         output[FIFO_LEN_BITS:0] fifo_threshold,
-        output dac_mode
+        output dac_mode,
+        output dac_enable,
+        output i2s_enable,
+        output software_rst
     );
 
     // never stalls
@@ -54,7 +60,10 @@ module i2s_wb_regfile #(
 
     // registers
     reg[31:0] reg_ctrl0;
-    assign dac_mode = reg_ctrl0[0];
+    assign software_rst = reg_ctrl0[0];
+    assign dac_mode = reg_ctrl0[1];
+    assign dac_enable = reg_ctrl0[2];
+    assign i2s_enable = reg_ctrl0[3];
 
     reg[31:0] fifo_threshold_reg;
     assign fifo_threshold[FIFO_LEN_BITS:0] = fifo_threshold_reg[FIFO_LEN_BITS:0];

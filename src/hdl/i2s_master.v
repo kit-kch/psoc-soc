@@ -1,6 +1,7 @@
 module i2s_master(
-        input clk,        
+        input clk,
         input rst,
+        input enable,
         input mclk_en,
         input sclk_en,
 
