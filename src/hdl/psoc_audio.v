@@ -42,7 +42,7 @@ module psoc_audio(
     );
 
     // FIFO
-    localparam FIFO_LEN_BITS = 4;
+    localparam FIFO_LEN_BITS = 8;
     wire[47:0] fifo_data_in, fifo_data_out;
     wire fifo_write;
     reg fifo_read;
