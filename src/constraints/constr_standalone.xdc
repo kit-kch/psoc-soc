@@ -24,4 +24,4 @@ set_property IOSTANDARD LVCMOS33 [get_ports i2s_lrclk]
 set_property PACKAGE_PIN B20 [get_ports i2s_sdata]
 set_property IOSTANDARD LVCMOS33 [get_ports i2s_sdata]
 
-create_clock -period 10.173 -name clk -waveform {0.000 5.0865} [get_ports clk]
+create_clock -period 10.173 -name clk -waveform {0.000 5.087} [get_ports clk]
