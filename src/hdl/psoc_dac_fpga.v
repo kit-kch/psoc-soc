@@ -26,9 +26,9 @@ module psoc_dac(
             c <= 0;
         end else begin
             if (c == 0)
-                clk_en_2048 <= 0;
-            else if (c == 1)
                 clk_en_2048 <= 1;
+            else if (c == 1)
+                clk_en_2048 <= 0;
 
             c <= c + 1;
         end
