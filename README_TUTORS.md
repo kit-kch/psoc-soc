@@ -3,7 +3,14 @@
 ### Compiling the RiscV Compilers for /tools/psoc/rv32i-ilp32-toolchain
 
 ```bash
-
+git clone https://github.com/riscv-collab/riscv-gnu-toolchain.git
+cd riscv-gnu-toolchain
+git checkout 2022.08.26
+git submodule update
+git submodule init
+./configure --prefix=/home/nq5949/psoc/rv32i-ilp32-toolchain --with-arch=rv32i --with-abi=ilp32
+make -j128
+make DESTDIR=/tools/psoc/rv32i-ilp32-toolchain/ install
 ```
 
 
