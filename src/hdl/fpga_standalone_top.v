@@ -18,7 +18,6 @@ module fpga_standalone_top(
     );
 
     wire rst;
-
     wire clk_en_4;
     wire clk_en_16;
 
@@ -61,6 +60,7 @@ module fpga_standalone_top(
 
     i2s_master i2s(
         .clk(clk),
+        .clk_en(1),
         .mclk_en(clk_en_4),
         .sclk_en(clk_en_16),
         .rst(rst),

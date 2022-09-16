@@ -1,17 +1,9 @@
-// This testbench assumes the following:
-// - set LRCLK at 50% duty cycle
-// - SDATA read when BCLK falls
-// - audio frames begin when LRCLK falls
-// - 2 channels per frame
-// - ADAU is the I2S slave
-// - 48 BCLK cycles per audio frame
-// - left channel first
-// - MSB first
-// - data starts one BCLK after the LRCLK edge (Data delay from LRCLK edge (in BCLK units))
 module tb_i2s_master();
     // Generate clocks
     reg clk;
+    reg clk_en;
     initial clk <= 0;
+    initial clk_en <= 1;
     always #10.173 clk <= ~clk;
 
     reg [1:0] mclk_counter;
@@ -52,6 +44,7 @@ module tb_i2s_master();
         .lrclk(lrclk),
         .sdata(sdata),
         .clk(clk),
+	.clk_en(clk_en),
         .sclk_en(sclk_en),
         .mclk_en(mclk_en),
         .rst(rst),

@@ -1,7 +1,11 @@
+// Author: Marc Neu
+// Date: 16.09.2022
+// Description: I2S Master Peripheral
+
 module i2s_master(
         input clk,
         input rst,
-        input enable,
+        input clk_en,
         input mclk_en,
         input sclk_en,
 
@@ -37,8 +41,9 @@ module i2s_master(
     always @(posedge clk) begin
         if (rst == 1) begin
             mclk <= 0;
-        end else if(mclk_en == 1) begin
-            mclk <= ~mclk;
+        end else if(clk_en == 1) begin
+            if(mclk_en == 1)
+                mclk <= ~mclk;
         end
     end
 
@@ -49,10 +54,12 @@ module i2s_master(
         if (rst == 1) begin
             sclk <= 0;
             sclk_counter <= 63;
-        end else if(sclk_en == 1) begin
-            sclk <= ~sclk;
-            if(sclk == 1)
-                sclk_counter <= sclk_counter + 1;
+        end else if(clk_en == 1) begin
+            if(sclk_en == 1) begin            
+                sclk <= ~sclk;
+                if(sclk == 1)
+                    sclk_counter <= sclk_counter + 1;
+            end
         end
     end
 
@@ -72,22 +79,24 @@ module i2s_master(
             lrclk <= 1;
             buffer <= 64'h0000000000000000;
             request_fifo <= 1;
-        end else if(sclk_en == 1) begin
-            if(sclk == 1) begin
-                if(sclk_counter == 0) begin
-                    lrclk <= 0;
-                    buffer = {fifo_reg[47:24],8'h00,fifo_reg[23:0],8'h00};
-                    request_fifo <= 0;
-                end else if (sclk_counter < 31) begin
-                    lrclk <= 0;
-                    buffer <= buffer << 1;
-                end else if (sclk_counter < 63) begin
-                    lrclk <= 1;
-                    buffer <= buffer << 1;
-                end else begin
-                    lrclk <= 0;
-                    buffer <= buffer << 1;
-                    request_fifo <= 1;
+        end else if(clk_en == 1) begin
+            if(sclk_en == 1) begin
+                if(sclk == 1) begin
+                    if(sclk_counter == 0) begin
+                        lrclk <= 0;
+                        buffer = {fifo_reg[47:24],8'h00,fifo_reg[23:0],8'h00};
+                        request_fifo <= 0;
+                    end else if (sclk_counter < 31) begin
+                        lrclk <= 0;
+                        buffer <= buffer << 1;
+                    end else if (sclk_counter < 63) begin
+                        lrclk <= 1;
+                        buffer <= buffer << 1;
+                    end else begin
+                        lrclk <= 0;
+                        buffer <= buffer << 1;
+                        request_fifo <= 1;
+                    end
                 end
             end
         end
@@ -101,7 +110,7 @@ module i2s_master(
         if (rst == 1) begin
             fifo_ready <= 0;
             fifo_reg <= 48'h000000000000;
-        end else begin
+        end else if (clk_en == 1) begin
             if (sclk == 1 && sclk_en == 1 && request_fifo == 1) begin
                 if(fifo_valid == 1) begin
                     fifo_reg <= fifo_data;
