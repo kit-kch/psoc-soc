@@ -34,7 +34,7 @@ module psoc_audio(
     wire clk_en_16;
     clock_generator clk_gen(
         .clk(clk),
-        .rst(rst),
+        .rst(software_rst),
         .clk_en_2(),
         .clk_en_4(clk_en_4),
         .clk_en_8(),
