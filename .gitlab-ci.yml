@@ -13,6 +13,7 @@ stages:
 
 test:i2s_master:
   stage: test
+  needs: []
   script:
     - make i2s_master.sim
   artifacts:
@@ -21,6 +22,7 @@ test:i2s_master:
 
 test:sine_generator:
   stage: test
+  needs: []
   script:
     - make sine_generator.sim
   artifacts:
@@ -29,6 +31,7 @@ test:sine_generator:
 
 test:clock_generator:
   stage: test
+  needs: []
   script:
     - make clock_generator.sim
   artifacts:
@@ -37,6 +40,11 @@ test:clock_generator:
 
 test:fpga_soc_top:
   stage: test
+  needs:
+   - job: "test:i2s_master"
+     artifacts: false
+   - job: "test:clock_generator"
+     artifacts: false
   script:
     - make fpga_soc_top.sim
   artifacts:
@@ -45,6 +53,13 @@ test:fpga_soc_top:
 
 test:fpga_standalone_top:
   stage: test
+  needs:
+   - job: "test:i2s_master"
+     artifacts: false
+   - job: "test:clock_generator"
+     artifacts: false
+   - job: "test:sine_generator"
+     artifacts: false
   script:
     - make fpga_standalone_top.sim
   artifacts:
@@ -53,6 +68,7 @@ test:fpga_standalone_top:
 
 sw:i2s_sin:
   stage: software
+  needs: []
   script:
     - make i2s_sin
   dependencies: []
@@ -62,6 +78,7 @@ sw:i2s_sin:
 
 sw:i2s_sin_ir:
   stage: software
+  needs: []
   script:
     - make i2s_sin_ir
   dependencies: []
@@ -71,6 +88,7 @@ sw:i2s_sin_ir:
 
 sw:dac_bit:
   stage: software
+  needs: []
   script:
     - make dac_bit
   dependencies: []
@@ -81,12 +99,6 @@ sw:dac_bit:
 bitstream:standalone:
   stage: bitstream
   needs:
-   - job: "test:i2s_master"
-     artifacts: false
-   - job: "test:clock_generator"
-     artifacts: false
-   - job: "test:sine_generator"
-     artifacts: false
    - job: "test:fpga_standalone_top"
      artifacts: false
   script:
