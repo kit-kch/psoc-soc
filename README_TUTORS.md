@@ -10,7 +10,7 @@ git submodule update
 git submodule init
 ./configure --prefix=/home/nq5949/psoc/rv32i-ilp32-toolchain --with-arch=rv32i --with-abi=ilp32
 make -j128
-make DESTDIR=/tools/psoc/rv32i-ilp32-toolchain/ install
+cp -Rv /home/nq5949/psoc/rv32i-ilp32-toolchain /tools/psoc/rv32i-ilp32-toolchain/ install
 ```
 
 
