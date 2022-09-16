@@ -103,7 +103,7 @@ module i2s_wb_regfile #(
                 case (wb_adr_i)
                     32'h9000_0000: begin
                         if (wb_sel_i[0])
-                            reg_ctrl0[0] <= wb_dat_i[0];
+                            reg_ctrl0[7:0] <= wb_dat_i[7:0];
                     end
                     32'h9000_0008: begin
                         if (wb_sel_i[3])
