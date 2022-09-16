@@ -58,10 +58,10 @@ module psoc_audio(
     // For I2S output mode
     i2s_master i2s(
         .clk(clk),
+        .clk_en(i2s_enable),
         .mclk_en(clk_en_4),
         .sclk_en(clk_en_16),
         .rst(device_reset),
-        .enable(i2s_enable),
 
         .fifo_data(fifo_data_out),
         .fifo_valid(!fifo_empty),
