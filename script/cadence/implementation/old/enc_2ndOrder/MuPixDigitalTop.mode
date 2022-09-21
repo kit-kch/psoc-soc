@@ -1,0 +1,24 @@
+#####################################################################
+#
+# First Encounter mode file
+# Created by Encounter(R) RTL Compiler on 08/21/2014 17:14:09
+#
+#####################################################################
+
+
+# General Mode Settings
+###########################################################
+
+set_global timing_apply_default_primary_input_assertion false
+set_global timing_clock_phase_propagation both
+setAnalysisMode -asyncChecks noAsync
+setAnalysisMode -multipleClockPerRegister true
+if {[info command getVersion] != ""} {
+  set ver [getVersion]
+  regexp \[0-9\]+ $ver enc_ver
+  if {$enc_ver >= 10} {
+    setOptMode -allEndPoints false
+  }
+}
+setPlaceMode -reorderScan false
+setExtractRCMode -engine preRoute

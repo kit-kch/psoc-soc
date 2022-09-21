@@ -1,0 +1,43 @@
+##############################################################################
+#-----------------------------------------------------------------------------
+#
+# SOC Encounter GDSII Layer Map Table
+#
+#   Version: 10-Feb-2010
+##############################################################################
+# layer/object-type    layer/object-type    layer-number   data-type
+# =================    =================    ============   =========
+    PC                   NET,SPNET,VIA,PIN   7            0
+    CA                   VIA                14            0
+    M1                   NET,SPNET,VIA,PIN  15            0
+    V1                   VIA                16            0
+    M2                   NET,SPNET,VIA,PIN  17            0
+    V2                   VIA                18            0
+    M3                   NET,SPNET,VIA,PIN  19            0
+    V3                   VIA                20            0
+    M4                   NET,SPNET,VIA,PIN  21            0
+    V4                   VIA                22            0
+    MT                   NET,SPNET,VIA,PIN  25            0
+    FT                   VIA               127            0
+    AM                   NET,SPNET,VIA,PIN  53            0
+    NAME                 PC/PIN              7            20
+#    NAME                 PC/NET              7            20
+#    NAME                 PC/SPNET            7            20
+    NAME                 M1/PIN             15            20
+#    NAME                 M1/NET             15            20
+#    NAME                 M1/SPNET           15            20
+    NAME                 M2/PIN             17            20
+#    NAME                 M2/NET             17            20
+#    NAME                 M2/SPNET           17            20
+    NAME                 M3/PIN             19            20
+#    NAME                 M3/NET             19            20
+#    NAME                 M3/SPNET           19            20
+    NAME                 M4/PIN             21            20
+#    NAME                 M4/NET             21            20
+#    NAME                 M4/SPNET           21            20
+    NAME                 MT/PIN             25            20
+#    NAME                 MT/NET             25            20
+#    NAME                 MT/SPNET           25            20
+    NAME                 AM/PIN             53            20
+#    NAME                 AM/NET             53            20
+#    NAME                 AM/SPNET           53            20

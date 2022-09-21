@@ -1,0 +1,18 @@
+ME1         ALL            46                   0
+ME1         CUSTOM         101                  0    #M1_CAD TEXT
+VI1         ALL            47                   0
+ME2         ALL            48                   0
+ME2         CUSTOM         102                  0    #M2_CAD TEXT
+VI2         ALL            49                   0
+ME3         ALL            50                   0
+ME3         CUSTOM         103                  0    #M3_CAD TEXT
+VI3         ALL            51                   0
+ME4         ALL            52                   0
+ME4         CUSTOM         104                  0    #M4_CAD TEXT
+VI4         ALL            53                   0
+ME5         ALL            54                   0
+ME5         CUSTOM         105                  0    #M4_CAD TEXT
+VI5         ALL            55                   0
+ME6         ALL            56                   0
+ME6         CUSTOM         106                  0    #M4_CAD TEXT
+

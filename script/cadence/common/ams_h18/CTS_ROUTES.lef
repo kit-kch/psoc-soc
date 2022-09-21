@@ -1,0 +1,46 @@
+VERSION 5.7 ;
+BUSBITCHARS "[]" ;
+DIVIDERCHAR "/" ;
+
+UNITS
+  DATABASE MICRONS 1000 ;
+END UNITS
+
+MANUFACTURINGGRID 0.01 ;
+
+
+NONDEFAULTRULE width2x_space2x
+
+    LAYER M1
+        WIDTH   0.48 ;
+        SPACING 0.4 ;
+    END M1
+
+    LAYER M2
+        WIDTH   0.56 ;
+        SPACING 0.56 ;
+    END M2
+
+    LAYER M3
+        WIDTH   0.56 ;
+        SPACING 0.56 ;
+    END M3
+
+    LAYER M4
+        WIDTH   0.56 ;
+        SPACING 0.56 ;
+    END M4
+
+    LAYER MT
+        WIDTH   0.56 ;
+        SPACING 0.56 ;
+    END MT
+
+    LAYER AM
+        WIDTH   4.0 ;
+        SPACING 10.0 ;
+    END AM
+
+
+END width2x_space2x
+

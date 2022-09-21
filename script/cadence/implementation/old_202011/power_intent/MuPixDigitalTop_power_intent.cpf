@@ -1,0 +1,70 @@
+###############################################################################
+##
+##         Power Intent File for the DCDBv3 Project
+##
+###############################################################################
+
+set_cpf_version 1.1
+
+#Library definitions
+
+
+define_library_set -name typ -libraries /eda/design_kits/AMS/ah18-hitkit414/liberty/ah18_1.8V/ah18_CORELIB_HV_TYP.lib
+
+define_library_set -name fastLT -libraries /eda/design_kits/AMS/ah18-hitkit414/liberty/ah18_1.8V/ah18_CORELIB_HV_BC.lib
+
+define_library_set -name slowHT -libraries /eda/design_kits/AMS/ah18-hitkit414/liberty/ah18_1.8V/ah18_CORELIB_HV_WC.lib
+
+
+
+#Define top level designs
+set_design encoder_top
+
+#Define power constrains
+set_power_unit uW
+
+set_power_target -leakage 1000 -dynamic 100000
+
+#Define power and ground nets
+create_ground_nets -nets gnd!
+create_power_nets -nets vdd! -voltage 1.8
+
+
+#Create power domains
+create_power_domain -name main_power_domain -default
+update_power_domain -name main_power_domain -primary_power_net vdd! -primary_ground_net gnd!
+
+
+#Create global power connections
+create_global_connection -net vdd! -pins vdd!
+create_global_connection -net gnd! -pins gnd!
+
+
+#Define nominal conditions
+create_nominal_condition -name typical_condition -voltage 1.8
+update_nominal_condition -name typical_condition -library_set typ
+create_nominal_condition -name best_condition -voltage 1.9
+update_nominal_condition -name best_condition -library_set fastLT
+create_nominal_condition -name worst_condition -voltage 1.7
+update_nominal_condition -name worst_condition -library_set slowHT
+
+#Create power modes
+   #functional
+create_power_mode -name PM_typical_functional -domain_conditions main_power_domain@typical_condition
+#update_power_mode -name PM_typical_functional -activity_file ./power_intent/dcd_b_digital_block_togglecount.tcf -activity_file_weight 100 -sdc_files ./constraints/constraints_functionalMode.sdc
+update_power_mode -name PM_typical_functional -sdc_files $BASE/implementation/constraints/constraints_functionalMode.sdc
+create_power_mode -name PM_best_functional -domain_conditions main_power_domain@best_condition
+#update_power_mode -name PM_best_functional -activity_file ./power_intent/dcd_b_digital_block_togglecount.tcf -activity_file_weight 100 -sdc_files ./constraints/constraints_functionalMode.sdc
+update_power_mode -name PM_best_functional -sdc_files $BASE/implementation/constraints/constraints_functionalMode.sdc
+create_power_mode -name PM_worst_functional -domain_conditions main_power_domain@worst_condition -default
+#update_power_mode -name PM_worst_functional -activity_file ./power_intent/dcd_b_digital_block_togglecount.tcf -activity_file_weight 100 -sdc_files ./constraints/constraints_functionalMode.sdc
+update_power_mode -name PM_worst_functional -sdc_files $BASE/implementation/constraints/constraints_functionalMode.sdc
+   #test
+create_power_mode -name PM_typical_test -domain_conditions main_power_domain@typical_condition
+update_power_mode -name PM_typical_test -sdc_files $BASE/implementation/constraints/constraints_testMode.sdc
+create_power_mode -name PM_best_test -domain_conditions main_power_domain@best_condition
+update_power_mode -name PM_best_test -sdc_files $BASE/implementation/constraints/constraints_testMode.sdc
+create_power_mode -name PM_worst_test -domain_conditions main_power_domain@worst_condition
+update_power_mode -name PM_worst_test -sdc_files $BASE/implementation/constraints/constraints_testMode.sdc
+
+end_design
