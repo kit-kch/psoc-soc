@@ -13,7 +13,7 @@ create_library_set -name fastLT \
     -si      $STD_CELLS($cell_lib/cdb/$cell_corner_fast)
 
 #### Second: Constraints
-create_constraint_mode -name functional_slow -sdc_files $::env(BASE)/implementation/constraints/speed_slow.sdc
+create_constraint_mode -name functional_slow -sdc_files $::env(BASE)/script/cadence/implementation/constraints/speed_slow.sdc
 #create_constraint_mode -name functional_1n25 -sdc_files $sourcesFolder/constraints/test.sdc 
 
 #### Third: Create a delay corner ??

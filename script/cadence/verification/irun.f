@@ -3,13 +3,13 @@
 
 ## Main Hardware RTL files
 ####
-$BASE/source_code/hdl/binary_counter.v
-$BASE/source_code/hdl/thermometer_encoder.v
-$BASE/source_code/hdl/encoder_top.v
+$BASE/src/hdl/binary_counter.v
+$BASE/src/hdl/thermometer_encoder.v
+$BASE/src/hdl/encoder_top.v
 
 ## Simulation testbench
 #####
-$BASE/verification/encoder_sim.v
+$BASE/src/sim/tb_thermometer_encoder.v
 
 ## Simulator arguments
 #########

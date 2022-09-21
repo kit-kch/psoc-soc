@@ -2,19 +2,15 @@
 # RTL Files
 # Reference the encounter_top.f netlist file
 ########
--f $BASE/rtl/encoder_top.f
+-f $BASE/src/hdl/encoder_top.f
 
 
 # Testbench Files
 ########
-$BASE/verification/encoder_sim.v
+$BASE/src/sim/tb_thermometer_encoder.v
 
 
 ## Simulator Arguments
 #############
--access +rwc 
+-access +rwc
 -timescale 1ns/1ps
-
-
-
-

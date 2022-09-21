@@ -7,14 +7,12 @@
 ../par/stream_out/encoder_top.simulation.nonFlat.v
 
 ## Logic cells
-$BASE/common/ams_h18/ah18_CORELIB_HV.v 
+$BASE/script/cadence/common/ams_h18/ah18_CORELIB_HV.v
 
 ## Test Bench
 ## This stays the same
-$BASE/verification/encoder_sim.v
+$BASE/src/sim/tb_thermometer_encoder.v
 
 
--access +rwc 
+-access +rwc
 -timescale 1ns/1ps
-
-

@@ -5,11 +5,11 @@
 set BASE $::env(BASE)
 
 
-set sourcesFolder $BASE/rtl/
+set sourcesFolder $BASE/src/hdl/
 
 ## Load the AMSH18 helper script
 ## This script produces a TCL array with required technology files sorted by type so they can be used later on
-source $::env(BASE)/common/ams_h18/std_cells.tcl
+source $::env(BASE)/script/cadence/common/ams_h18/std_cells.tcl
 
 ## Location of the current script
 set location [file dirname [file normalize [info script]]]
