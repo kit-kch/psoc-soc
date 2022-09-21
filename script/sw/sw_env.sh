@@ -2,7 +2,7 @@
 
 # Only export path if gcc is not already available
 if ! [ -x "$(command -v riscv32-unknown-elf-gcc)" ]; then
-    export PATH=$PATH:/tools/psoc/rv32i-ilp32-toolchain/bin
+    export PATH=$PATH:/tools/riscv/rv32i-ilp32-gcc/2022.08.26_12.1.0/bin
 fi
 
 # Only export path if openocd is not already available
