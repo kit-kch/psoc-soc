@@ -20,7 +20,7 @@ proc reload_parameters args {
 	uplevel {source $parametersScript}
 }
 
-set top_module	encoder_top
+set top_module $::env(HDL_TOP)
 
 
 ## we are saving the Standard Cells library and corner names in variables to make the script easier to read
@@ -106,3 +106,6 @@ proc flow_signoff args {
 
 ##############
 
+innovus_0_0_load_design
+flow_signoff
+exit

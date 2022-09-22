@@ -9,6 +9,8 @@ stages:
  - test
  - software
  - bitstream
+ - asic_test
+ - asic
  - upload
 
 test:i2s_master:
@@ -92,6 +94,85 @@ sw:dac_bit:
   script:
     - make dac_bit
   dependencies: []
+  artifacts:
+    paths:
+    - out/
+
+
+behav:encoder_top:
+  stage: asic_test
+  needs: []
+  script:
+    - make encoder_top.xrun
+  artifacts:
+    paths:
+    - out/
+
+behav:thermometer_code:
+  stage: asic_test
+  needs: []
+  script:
+    - make thermometer_code.xrun
+  artifacts:
+    paths:
+    - out/
+
+syn:encoder_top:
+  stage: asic_test
+  needs: []
+  script:
+    - make encoder_top.genus
+    - make encoder_top.xrun2
+  artifacts:
+    paths:
+    - out/
+
+syn:thermometer_code:
+  stage: asic_test
+  needs: []
+  script:
+    - make thermometer_code.genus
+    - make thermometer_code.xrun2
+  artifacts:
+    paths:
+    - out/
+
+imp:encoder_top:
+  stage: asic_test
+  needs: []
+  script:
+    - make encoder_top.genus
+    - make encoder_top.innovus
+    - make encoder_top.xrun3
+  artifacts:
+    paths:
+    - out/
+
+
+syn:encoder_top:
+  stage: asic
+  needs: []
+  script:
+    - make encoder_top.genus
+  artifacts:
+    paths:
+    - out/
+
+syn:thermometer_code:
+  stage: asic
+  needs: []
+  script:
+    - make thermometer_code.genus
+  artifacts:
+    paths:
+    - out/
+
+imp:encoder_top:
+  stage: asic
+  needs: []
+  script:
+    - make encoder_top.genus
+    - make encoder_top.innovus
   artifacts:
     paths:
     - out/

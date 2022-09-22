@@ -39,7 +39,7 @@ proc innovus_0_0_load_design args {
 	## Set Design
 	## Synthesis GTL is read from the neighbor "synthesis" folder under run/
 	###############################
-	set ::init_verilog "../synthesis/netlist/${top_module}.gtl.v"
+	set ::init_verilog "../${top_module}.genus/netlist.gtl.v"
 	set ::init_top_cell $top_module
 
 	#### MMMC Setup

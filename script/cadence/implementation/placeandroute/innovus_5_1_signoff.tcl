@@ -112,10 +112,10 @@ proc innovus_5_3_streamout args {
 	##write_sdf -view functional_fastLT -edges noedge ./stream_out/${top_module}.fast.sdf
 	
 	## Save Netlist for LVS
-	saveNetlist -flat -includePhysicalCell [join $STD_CELLS(physical/fillcaps)] -excludeLeafCell ./stream_out/${top_module}.lvs.v
+	saveNetlist -flat -includePhysicalCell [join $STD_CELLS(physical/fillcaps)] -excludeLeafCell ./stream_out/netlist.lvs.v
 	
 	## Save Netlist for Simulation
-	saveNetlist ./stream_out/${top_module}.simulation.nonFlat.v
+	saveNetlist ./stream_out/netlist.simulation.nonFlat.v
 	
 	
 	## GDS  -mapFile $STD_CELLS(physical/gdsmap)
@@ -126,7 +126,7 @@ proc innovus_5_3_streamout args {
 	
 	
         puts "Streamout Map: $STD_CELLS(physical/gdsmap)"
-        streamOut -outputMacros -mapFile $STD_CELLS(physical/gdsmap) ./stream_out/${top_module}.gds
+        streamOut -outputMacros -mapFile $STD_CELLS(physical/gdsmap) ./stream_out/map.gds
 	
 
 	saveDesign savings/save06_postStreamout.enc

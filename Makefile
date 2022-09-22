@@ -14,6 +14,7 @@ SIM_SETS=$(addsuffix .sim,$(SIMULATION_SETS))
 ####################################################################################################
 VIVADO_ENV=$(abspath ./script/vivado/vivado_env.sh)
 SW_ENV=$(abspath ./script/sw/sw_env.sh)
+CADENCE_ENV=$(abspath ./script/cadence/cadence_env.sh)
 
 ####################################################################################################
 # Abbreviations
@@ -98,3 +99,57 @@ dac_bit:
 	mkdir -p out
 	cd ext/psoc_demo_sw/dac_bit && $(SW_ENV) make exe
 	cp -v ext/psoc_demo_sw/dac_bit/neorv32_exe.bin out/dac_bit.exe.bin
+
+# Cadence
+
+# Synthesis
+%.genus:
+	mkdir -p out
+	mkdir -p build/$*.genus/
+	cd build/$*.genus; \
+		export HDL_TOP=$*; \
+		$(CADENCE_ENV) genus -overwrite -files ../../script/cadence/implementation/synthesis/synthesize.tcl
+
+# Implementation
+%.innovus:
+	mkdir -p out
+	mkdir -p build/$*.innovus/
+	cd build/$*.innovus; \
+		export HDL_TOP=$*; \
+		$(CADENCE_ENV) innovus -files ../../script/cadence/implementation/placeandroute/innovus_parameters.tcl
+
+# Simulation
+%.xrun:
+	mkdir -p out
+	mkdir -p build/$*.xrun/
+	cd build/$*.xrun; \
+		GUI_ARG=$$([ -z "$(GUI)" ] && echo "" || echo "-gui"); \
+		export SIM_NAME=$*; \
+		$(CADENCE_ENV) xrun -f ../../script/cadence/verification/sim_rtl.f $$GUI_ARG
+
+# sim_gtl
+%.xrun2:
+	mkdir -p out
+	mkdir -p build/$*.xrun/
+	cd build/$*.xrun; \
+		GUI_ARG=$$([ -z "$(GUI)" ] && echo "" || echo "-gui"); \
+		export SIM_NAME=$*; \
+		$(CADENCE_ENV) xrun -f ../../script/cadence/verification/sim_gtl.f $$GUI_ARG
+
+# sim_par
+%.xrun3:
+	mkdir -p out
+	mkdir -p build/$*.xrun/
+	cd build/$*.xrun; \
+		GUI_ARG=$$([ -z "$(GUI)" ] && echo "" || echo "-gui"); \
+		export SIM_NAME=$*; \
+		$(CADENCE_ENV) xrun -f ../../script/cadence/verification/sim_par.f $$GUI_ARG
+
+# 
+%.xrun4:
+	mkdir -p out
+	mkdir -p build/$*.xrun/
+	cd build/$*.xrun; \
+		GUI_ARG=$$([ -z "$(GUI)" ] && echo "" || echo "-gui"); \
+		export SIM_NAME=$*; \
+		$(CADENCE_ENV) xrun -f ../../script/cadence/verification/sim_par.f -define SDF_ANNOTATE $$GUI_ARG

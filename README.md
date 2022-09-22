@@ -36,3 +36,32 @@ make all
 # To remove all vivado build files
 make clean
 ```
+
+## Cadence
+
+```bash
+
+# Behavorial simulation
+make thermometer_encoder.xrun
+
+# Same, but open the GUI:
+make GUI=1 thermometer_encoder.xrun
+
+# Synthesize
+make thermometer_encoder.genus
+
+# Simulate the synthesized design (must run make thermometer_encoder.genus before!)
+make thermometer_encoder.xrun2
+
+# Same, but open the GUI:
+make GUI=1 thermometer_encoder.xrun2
+
+# Implement the design (must run make encoder_top.genus before!)
+make encoder_top.innovus
+
+# Simulate the implemented design (must run make encoder_top.innovus before!)
+make encoder_top.xrun3
+
+# Same, but open the GUI:
+make GUI=1 encoder_top.xrun3
+```

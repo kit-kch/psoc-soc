@@ -1,14 +1,11 @@
 
 # RTL Files
-# Reference the encounter_top.f netlist file
 ########
--f $BASE/src/hdl/encoder_top.f
-
+-f ../../src/hdl/${SIM_NAME}.f
 
 # Testbench Files
 ########
-$BASE/src/sim/tb_thermometer_encoder.v
-
+../../src/sim/tb_${SIM_NAME}.v
 
 ## Simulator Arguments
 #############
