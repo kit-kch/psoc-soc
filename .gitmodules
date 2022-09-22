@@ -4,3 +4,6 @@
 [submodule "ext/psoc_demo_sw"]
 	path = ext/psoc_demo_sw
 	url = ../../psoc-admin/psoc_demo_sw.git
+[submodule "ext/psoc_analog"]
+	path = ext/psoc_analog
+	url = ../../psoc-admin/psoc_analog.git
