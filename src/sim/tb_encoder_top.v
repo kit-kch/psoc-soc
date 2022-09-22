@@ -1,27 +1,19 @@
 module tb_thermometer_encoder();
     reg clk;
     reg reset;
-    reg [7:0] in;
-    wire [255:0] out;
+    wire [255:0] thermometer_code;
 
-    thermometer_encoder encoder(
+    encoder_top encoder(
         .clk(clk),
         .reset(reset),
-        .in(in),
-        .out(out)
+        .thermometer_code(thermometer_code)
     );
 
     always #2 clk <= ~clk;
     initial begin
         #0 clk = 0;
-        #0 in = 0;
         #0 reset = 1;
         #5 reset = 0;
-
-        #10 in = 1;
-        #20 in = 2;
-        #30 in = 16;
-        #40 in = 255;
 
         #100 $finish;
     end
