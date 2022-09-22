@@ -99,7 +99,7 @@ sw:dac_bit:
     - out/
 
 
-behav:encoder_top:
+behavs:encoder_top:
   stage: asic_test
   needs: []
   script:
@@ -108,7 +108,7 @@ behav:encoder_top:
     paths:
     - out/
 
-behav:thermometer_encoder:
+behavs:thermometer_encoder:
   stage: asic_test
   needs: []
   script:
@@ -117,32 +117,32 @@ behav:thermometer_encoder:
     paths:
     - out/
 
-syn:encoder_top:
+syns:encoder_top:
   stage: asic_test
   needs: []
   script:
-    - make encoder_top.genus
+    - export USER=build && make encoder_top.genus
     - make encoder_top.xrun2
   artifacts:
     paths:
     - out/
 
-syn:thermometer_encoder:
+syns:thermometer_encoder:
   stage: asic_test
   needs: []
   script:
-    - make thermometer_encoder.genus
+    - export USER=build && make thermometer_encoder.genus
     - make thermometer_encoder.xrun2
   artifacts:
     paths:
     - out/
 
-imp:encoder_top:
+imps:encoder_top:
   stage: asic_test
   needs: []
   script:
-    - make encoder_top.genus
-    - make encoder_top.innovus
+    - export USER=build && make encoder_top.genus
+    - export USER=build && make encoder_top.innovus
     - make encoder_top.xrun3
   artifacts:
     paths:
@@ -153,7 +153,7 @@ syn:encoder_top:
   stage: asic
   needs: []
   script:
-    - make encoder_top.genus
+    - export USER=build && make encoder_top.genus
   artifacts:
     paths:
     - out/
@@ -162,7 +162,7 @@ syn:thermometer_encoder:
   stage: asic
   needs: []
   script:
-    - make thermometer_encoder.genus
+    - export USER=build && make thermometer_encoder.genus
   artifacts:
     paths:
     - out/
@@ -171,8 +171,8 @@ imp:encoder_top:
   stage: asic
   needs: []
   script:
-    - make encoder_top.genus
-    - make encoder_top.innovus
+    - export USER=build && make encoder_top.genus
+    - export USER=build && make encoder_top.innovus
   artifacts:
     paths:
     - out/
