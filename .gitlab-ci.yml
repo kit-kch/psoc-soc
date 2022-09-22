@@ -108,11 +108,11 @@ behav:encoder_top:
     paths:
     - out/
 
-behav:thermometer_code:
+behav:thermometer_encoder:
   stage: asic_test
   needs: []
   script:
-    - make thermometer_code.xrun
+    - make thermometer_encoder.xrun
   artifacts:
     paths:
     - out/
@@ -127,12 +127,12 @@ syn:encoder_top:
     paths:
     - out/
 
-syn:thermometer_code:
+syn:thermometer_encoder:
   stage: asic_test
   needs: []
   script:
-    - make thermometer_code.genus
-    - make thermometer_code.xrun2
+    - make thermometer_encoder.genus
+    - make thermometer_encoder.xrun2
   artifacts:
     paths:
     - out/
@@ -158,11 +158,11 @@ syn:encoder_top:
     paths:
     - out/
 
-syn:thermometer_code:
+syn:thermometer_encoder:
   stage: asic
   needs: []
   script:
-    - make thermometer_code.genus
+    - make thermometer_encoder.genus
   artifacts:
     paths:
     - out/
