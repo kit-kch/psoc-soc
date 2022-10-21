@@ -15,6 +15,6 @@ module tb_thermometer_encoder();
         #0 reset = 1;
         #5 reset = 0;
 
-        #100 $finish;
+        #10000 $finish;
     end
 endmodule
