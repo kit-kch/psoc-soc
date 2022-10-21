@@ -99,6 +99,16 @@ sw:dac_bit:
     - out/
 
 
+sw:boardtest:
+  stage: software
+  needs: []
+  script:
+    - make boardtest
+  dependencies: []
+  artifacts:
+    paths:
+    - out/
+
 behavs:encoder_top:
   stage: asic_test
   needs: []
@@ -234,6 +244,8 @@ upload:sw:
      artifacts: true
    - job: "sw:dac_bit"
      artifacts: true
+   - job: "sw:boardtests"
+     artifacts: true
   rules:
     - if: $CI_COMMIT_TAG
   script:
@@ -241,3 +253,4 @@ upload:sw:
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/i2s_sin.exe.bin" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/i2s_sin.exe.bin"'
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/i2s_sin_ir.exe.bin" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/i2s_sin_ir.exe.bin"'
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/dac_bit.exe.bin" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/dac_bit.exe.bin"'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/boardtest.exe.bin" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/boardtest.exe.bin"'

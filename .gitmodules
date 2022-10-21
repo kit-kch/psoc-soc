@@ -7,3 +7,6 @@
 [submodule "ext/psoc_analog"]
 	path = ext/psoc_analog
 	url = ../../psoc-admin/psoc_analog.git
+[submodule "ext/psoc_boardtest_sw"]
+	path = ext/psoc_boardtest_sw
+	url = ../../psoc_boardtest_sw.git

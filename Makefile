@@ -30,12 +30,13 @@ XPR_FILE=build/psoc/psoc.xpr
 all: sim bitstream sw
 sim: $(SIM_SETS)
 bitstream: standalone.bit soc.bit
-sw: i2s_sin i2s_sin_ir dac_bit
+sw: i2s_sin i2s_sin_ir dac_bit boardtest
 
 clean:
 	cd ext/psoc_demo_sw/i2s_sin && $(SW_ENV) make clean
 	cd ext/psoc_demo_sw/i2s_sin_ir && $(SW_ENV) make clean
 	cd ext/psoc_demo_sw/dac_bit && $(SW_ENV) make clean
+	cd ext/psoc_boardtest_sw && $(SW_ENV) make clean
 	rm -rvf build
 	rm -rvf out
 
@@ -99,6 +100,11 @@ dac_bit:
 	mkdir -p out
 	cd ext/psoc_demo_sw/dac_bit && $(SW_ENV) make exe
 	cp -v ext/psoc_demo_sw/dac_bit/neorv32_exe.bin out/dac_bit.exe.bin
+
+boardtest:
+	mkdir -p out
+	cd ext/psoc_boardtest_sw && $(SW_ENV) make exe
+	cp -v ext/psoc_boardtest_sw/neorv32_exe.bin out/boardtest.exe.bin
 
 # Cadence
 
