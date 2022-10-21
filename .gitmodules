@@ -9,4 +9,4 @@
 	url = ../../psoc-admin/psoc_analog.git
 [submodule "ext/psoc_boardtest_sw"]
 	path = ext/psoc_boardtest_sw
-	url = ../../psoc_boardtest_sw.git
+	url = ../../psoc-admin/psoc_boardtest_sw.git
