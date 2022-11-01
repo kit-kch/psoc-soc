@@ -60,7 +60,7 @@ make bootloader
 * Open moserial
 * Port Settings
   * `/dev/ttyUSB0`
-  * Baudrate 921600
+  * Baudrate 19200
   * Data Bits 8
   * Stopp Bits 1
   * Parity None
