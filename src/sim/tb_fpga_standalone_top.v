@@ -3,12 +3,12 @@ module tb_fpga_standalone_top();
     initial clk <= 0;
     always #10.173 clk <= ~clk;
 
-    reg arst;
-    initial arst <= 1;
+    reg arstn;
+    initial arstn <= 0;
 
     fpga_standalone_top uut(
             .clk(),
-            .arst(),
+            .arstn(),
             .i2s_mclk(),
             .i2s_sdata(),
             .i2s_sclk(),

@@ -3,14 +3,14 @@ module tb_fpga_soc_top();
     initial clk <= 0;
     always #5.087 clk <= ~clk;
 
-    reg arst;
-    initial arst <= 1;
+    reg arstn;
+    initial arstn <= 0;
 
     wire i2c_sda, i2c_scl;
 
     fpga_soc_top uut(
         .clk(clk),
-        .arst(arst),
+        .arstn(arstn),
 
         // I2S signals
         .i2s_mclk(),
@@ -73,7 +73,7 @@ module tb_fpga_soc_top();
         begin
             repeat(10)
                 @(posedge clk);
-            arst <= 0;
+            arstn <= 1;
         end
     endtask
 
