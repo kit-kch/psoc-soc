@@ -32,7 +32,7 @@ module tb_fpga_soc_top();
 
         // GPIO
         .gpio_o(),
-        .gpio_i({1'b0, 1'b0}),
+        .gpio_i(1'b0),
 
         // Buttons
         .btn_c(1'b0),
