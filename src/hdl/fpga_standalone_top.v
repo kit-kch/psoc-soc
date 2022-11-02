@@ -6,22 +6,25 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module fpga_standalone_top(
-        // system clock
+        // System signals
         input clk,
-        input arst,
+        input arstn,
 
         // I2S signals
         output i2s_mclk,
         output i2s_sdata,
         output i2s_sclk,
-        output i2s_lrclk
+        output i2s_lrclk,
+
+        // General purpose signals
+        output [1:0] gpio_o
     );
 
+    //Wire definitions go here
     wire rst;
     wire clk_en_4;
     wire clk_en_16;
 
-    // sin <=> FIFO
     wire [23:0] sin_data;
     wire [47:0] fifo_data_in;
     wire fifo_write;
@@ -30,12 +33,21 @@ module fpga_standalone_top(
     wire fifo_empty;
     wire fifo_read;
 
+    //Wire assigments go here
     assign fifo_data_in = {sin_data, sin_data};
+
+    //Module instatiations go here
 
     reset_logic reset_logic(
         .clk(clk),
-        .arst(arst),
+        .arstn(arstn),
         .rst(rst)
+    );
+
+    led led(
+        .clk(clk),
+        .rst(rst),
+        .led(gpio_o)
     );
 
     clock_generator clk_gen(

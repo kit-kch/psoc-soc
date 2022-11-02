@@ -5,7 +5,7 @@
 module fpga_soc_top(
         // system clock
         input clk,
-        input arst,
+        input arstn,
 
         // I2S signals
         output i2s_mclk,
@@ -67,7 +67,7 @@ module fpga_soc_top(
     wire rst;
     reset_logic reset_logic(
         .clk(clk),
-        .arst(arst),
+        .arstn(arstn),
         .rst(rst)
     );
 
