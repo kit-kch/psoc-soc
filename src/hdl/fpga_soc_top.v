@@ -108,7 +108,7 @@ module fpga_soc_top(
         .xip_sdo_o(xip_sdo_o),
 
         .gpio_o(gpio_o),
-        .gpio_i({btn_c, btn_d, btn_l, btn_u, btn_r, gpio_i[0], 0'b0}),
+        .gpio_i({btn_c, btn_d, btn_l, btn_u, btn_r, gpio_i, 0'b0}),
 
         .uart0_txd_o(uart0_txd_o),
         .uart0_rxd_i(uart0_rxd_i),
