@@ -1,9 +1,3 @@
-# Reset
-# ------------------------------------------------------
-# GPIO1, LA19_N, Bank 35
-set_property PACKAGE_PIN G16 [get_ports arstn]
-set_property IOSTANDARD LVCMOS33 [get_ports arstn]
-
 # Clock Oscillator
 # ------------------------------------------------------
 # CLK0_M2C_P, Bank 34
@@ -33,5 +27,8 @@ set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[0]}]
 # GPIO3, LA03_P, Bank 34
 set_property PACKAGE_PIN N22 [get_ports {gpio_o[1]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[1]}]
+# GPIO1, LA19_N, Bank 35
+set_property PACKAGE_PIN G16 [get_ports arstn]
+set_property IOSTANDARD LVCMOS33 [get_ports arstn]
 
 create_clock -period 10.173 -name clk -waveform {0.000 5.087} [get_ports clk]

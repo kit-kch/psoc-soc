@@ -1,9 +1,3 @@
-# RST button
-# ------------------------------------------------------
-set_property PACKAGE_PIN P16 [get_ports arstn]
-set_property IOSTANDARD LVCMOS33 [get_ports arstn]
-
-
 # Clock Oscillator
 # ------------------------------------------------------
 # CLK0_M2C_P, Bank 34
@@ -52,11 +46,11 @@ set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[0]}]
 set_property PACKAGE_PIN N22 [get_ports {gpio_o[1]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpio_o[1]}]
 # GPIO0, LA19_P, Bank 35
-set_property PACKAGE_PIN G15 [get_ports {gpio_i[0]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {gpio_i[0]}]
+set_property PACKAGE_PIN G15 [get_ports gpio_i]
+set_property IOSTANDARD LVCMOS33 [get_ports gpio_i]
 # GPIO1, LA19_N, Bank 35
-set_property PACKAGE_PIN G16 [get_ports {gpio_i[1]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {gpio_i[1]}]
+set_property PACKAGE_PIN G16 [get_ports arstn]
+set_property IOSTANDARD LVCMOS33 [get_ports arstn]
 
 # PWM LED
 # ------------------------------------------------------
