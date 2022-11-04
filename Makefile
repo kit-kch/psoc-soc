@@ -12,9 +12,9 @@ SIM_SETS=$(addsuffix .sim,$(SIMULATION_SETS))
 ####################################################################################################
 # Tool Commands
 ####################################################################################################
-VIVADO_ENV=$(abspath ./script/vivado/vivado_env.sh)
-SW_ENV=$(abspath ./script/sw/sw_env.sh)
-CADENCE_ENV=$(abspath ./script/cadence/cadence_env.sh)
+VIVADO_ENV="$(abspath ./script/vivado/vivado_env.sh)"
+SW_ENV="$(abspath ./script/sw/sw_env.sh)"
+CADENCE_ENV="$(abspath ./script/cadence/cadence_env.sh)"
 
 ####################################################################################################
 # Abbreviations
