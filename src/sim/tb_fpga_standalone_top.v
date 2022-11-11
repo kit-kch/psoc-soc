@@ -1,7 +1,7 @@
 module tb_fpga_standalone_top();
     reg clk;
     initial clk <= 0;
-    always #10.173 clk <= ~clk;
+    always #5.087 clk <= ~clk;
 
     reg arstn;
     initial arstn <= 0;
