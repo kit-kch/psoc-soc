@@ -113,6 +113,10 @@ behavs:encoder_top:
   stage: asic_test
   needs: []
   script:
+    - ls -l /
+    - ls -l /tools
+    - ls -l /tools/psoc
+    - ls -l /eda
     - make encoder_top.xrun
   artifacts:
     paths:
