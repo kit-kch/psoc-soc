@@ -2,7 +2,7 @@
 
 # Only source vivado if this was not done before
 if ! [ -x "$(command -v vivado)" ]; then
-    module load xilinx/2024.1
+    source /tools/xilinx/set_xilinx2024.1.sh &>/dev/null
 fi
 
 # Allow sourcing this script without params. Otherwise exec command
