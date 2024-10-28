@@ -35,6 +35,7 @@ test:clock_generator:
   stage: test
   needs: []
   script:
+    - source /etc/profile.d/modules.sh && module load xilinx/2024.1
     - make clock_generator.sim
   artifacts:
     paths:
