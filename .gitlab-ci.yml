@@ -5,12 +5,6 @@ default:
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
-.xilinx_env:
-  tags:
-    - vivado
-  before_script:
-    - source /etc/profile.d/modules.sh && module load xilinx/2024.1
-
 stages:
  - test
  - software
@@ -29,7 +23,6 @@ test:i2s_master:
     - out/
 
 test:sine_generator:
-  extends: .xilinx_env
   stage: test
   needs: []
   script:
@@ -39,7 +32,6 @@ test:sine_generator:
     - out/
 
 test:clock_generator:
-  extends: .xilinx_env
   stage: test
   needs: []
   script:
@@ -49,7 +41,6 @@ test:clock_generator:
     - out/
 
 test:fpga_soc_top:
-  extends: .xilinx_env
   stage: test
   needs:
    - job: "test:i2s_master"
@@ -63,7 +54,6 @@ test:fpga_soc_top:
     - out/
 
 test:fpga_standalone_top:
-  extends: .xilinx_env
   stage: test
   needs:
    - job: "test:i2s_master"
