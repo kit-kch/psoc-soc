@@ -1,6 +1,6 @@
 [submodule "ext/neorv32"]
 	path = ext/neorv32
-	url = https://github.com/stnolting/neorv32.git
+	url = https://github.com/kit-kch/psoc-neorv32.git
 [submodule "ext/psoc_demo_sw"]
 	path = ext/psoc_demo_sw
 	url = ../../psoc-admin/psoc_demo_sw.git

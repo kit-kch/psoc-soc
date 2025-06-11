@@ -74,6 +74,14 @@ architecture rtl of neorv32_wrap is
     signal pwm_o_tmp : std_ulogic_vector(59 downto 0);
     signal xirq_i_tmp : std_ulogic_vector(31 downto 0);
 
+    -- jtagspi
+    signal jtagspi_sck : std_ulogic;
+    signal jtagspi_sdo : std_ulogic;
+    signal jtagspi_csn : std_ulogic;
+
+    signal xip_csn : std_ulogic;
+    signal xip_clk : std_ulogic;
+    signal xip_sdo : std_ulogic;
 begin
 
     gpio_o <= gpio_o_tmp(1 downto 0);
@@ -146,6 +154,11 @@ begin
         jtag_tdi_i => jtag_tdi_i, -- serial data input
         jtag_tdo_o => jtag_tdo_o, -- serial data output
         jtag_tms_i => jtag_tms_i, -- mode select
+        -- jtagspi passthrough support --
+        jtagspi_sck_o => jtagspi_sck,
+        jtagspi_sdo_o => jtagspi_sdo,
+        jtagspi_sdi_i => xip_sdi_i,
+        jtagspi_csn_o => jtagspi_csn,
 
         -- Wishbone bus interface (available if MEM_EXT_EN = true) --
         wb_tag_o => open, -- request tag
@@ -164,10 +177,10 @@ begin
         fencei_o => open, -- indicates an executed FENCEI operation
 
         -- XIP (execute in place via SPI) signals (available if IO_XIP_EN = true) --
-        xip_csn_o => xip_csn_o, -- chip-select, low-active
-        xip_clk_o => xip_clk_o, -- serial clock
+        xip_csn_o => xip_csn, -- chip-select, low-active
+        xip_clk_o => xip_clk, -- serial clock
         xip_sdi_i => xip_sdi_i, -- device data input
-        xip_sdo_o => xip_sdo_o, -- controller data output
+        xip_sdo_o => xip_sdo, -- controller data output
 
         -- TX stream interfaces (available if SLINK_NUM_TX > 0) --
         slink_tx_dat_o => open, -- output data
@@ -232,5 +245,10 @@ begin
         msw_irq_i => 'L', -- machine software interrupt
         mext_irq_i => 'L'  -- machine external interrupt
     );
+
+  -- jtagspi mux
+  xip_csn_o <= jtagspi_csn and xip_csn;
+  xip_clk_o <= jtagspi_sck when jtagspi_csn = '0' else xip_clk;
+  xip_sdo_o <= jtagspi_sdo when jtagspi_csn = '0' else xip_sdo;
 
 end rtl;
