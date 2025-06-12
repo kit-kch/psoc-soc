@@ -111,9 +111,7 @@ begin
         CPU_EXTENSION_RISCV_Zifencei => true,  -- implement instruction stream sync.?
 
         -- Internal Instruction memory (IMEM) --
-        MEM_INT_IMEM_EN => true,  -- implement processor-internal instruction memory
-        MEM_INT_IMEM_SIZE => 32*1024, -- size of processor-internal instruction memory in bytes
-
+        MEM_INT_IMEM_EN => false,  -- implement processor-internal instruction memory
         -- Internal Data memory (DMEM) --
         MEM_INT_DMEM_EN => true,  -- implement processor-internal data memory
         MEM_INT_DMEM_SIZE => 96*1024, -- size of processor-internal data memory in bytes
