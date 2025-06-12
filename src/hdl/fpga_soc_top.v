@@ -84,6 +84,9 @@ module fpga_soc_top(
     assign spi_ss_2 = spi_csn_o[2];
     assign spi_ss_3 = spi_csn_o[3];
 
+    wire i2c_sda_i, i2c_sda_o;
+    wire i2c_scl_i, i2c_scl_o;
+
     neorv32_wrap cpu(
         .clk_i(clk),
         .rstn_i(~rst),
@@ -118,13 +121,21 @@ module fpga_soc_top(
         .spi_sdi_i(spi_sdi_i),
         .spi_csn_o(spi_csn_o),
 
-        .twi_sda_io(i2c_sda),
-        .twi_scl_io(i2c_scl),
+        .twi_sda_i(i2c_sda_i),
+        .twi_sda_o(i2c_sda_o),
+        .twi_scl_i(i2c_scl_i),
+        .twi_scl_o(i2c_scl_o),
 
         .pwm_o({pwm_led}),
 
-        .xirq_i({audio_fifo_low, btn_c, btn_d, btn_l, btn_u, btn_r})
+        .i2s_fifo_low_i({audio_fifo_low})
     );
+
+    // tri-state drivers
+    assign i2c_sda = (i2c_sda_o == 1'b0) ? 1'b0 : 1'bz;
+    assign i2c_scl = (i2c_scl_o == 1'b0) ? 1'b0 : 1'bz;
+    assign i2c_sda_i = i2c_sda;
+    assign i2c_scl_i = i2c_scl;
 
     // NeoRV32 does not support QSPI yet.
     // In normal SPI mode, xip_q2 is nWP and xip_q3 is nRESET

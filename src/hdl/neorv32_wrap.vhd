@@ -44,6 +44,7 @@ entity neorv32_wrap is
     -- GPIO (available if IO_GPIO_EN = true) --
     gpio_o         : out std_ulogic_vector(1 downto 0); -- parallel output
     gpio_i         : in  std_ulogic_vector(6 downto 0) := (others => 'U'); -- parallel input
+    i2s_fifo_low_i : in std_ulogic;
 
     -- primary UART0 (available if IO_UART0_EN = true) --
     uart0_txd_o    : out std_ulogic; -- UART0 send data
@@ -56,23 +57,21 @@ entity neorv32_wrap is
     spi_csn_o      : out std_ulogic_vector(07 downto 0); -- chip-select
 
     -- TWI (available if IO_TWI_EN = true) --
-    twi_sda_io     : inout std_logic; -- twi serial data line
-    twi_scl_io     : inout std_logic; -- twi serial clock line
+    twi_sda_i      : in std_logic; -- twi serial data line
+    twi_sda_o      : out std_logic; -- twi serial data line
+    twi_scl_i      : in std_logic; -- twi serial clock line
+    twi_scl_o      : out std_logic; -- twi serial clock line
 
     -- PWM (available if IO_PWM_NUM_CH > 0) --
-    pwm_o          : out std_ulogic_vector(0 downto 0); -- pwm channels
-
-    -- External platform interrupts (available if XIRQ_NUM_CH > 0) --
-    xirq_i         : in  std_ulogic_vector(5 downto 0) := (others => 'L') -- IRQ channels
+    pwm_o          : out std_ulogic_vector(0 downto 0) -- pwm channels
   );
 end neorv32_wrap;
 
 architecture rtl of neorv32_wrap is
     signal onewire_unconnected : std_logic;
 
-    signal gpio_o_tmp, gpio_i_tmp : std_ulogic_vector(63 downto 0);
-    signal pwm_o_tmp : std_ulogic_vector(59 downto 0);
-    signal xirq_i_tmp : std_ulogic_vector(31 downto 0);
+    signal gpio_o_tmp, gpio_i_tmp : std_ulogic_vector(31 downto 0);
+    signal pwm_o_tmp : std_ulogic_vector(15 downto 0);
 
     -- jtagspi
     signal jtagspi_sck : std_ulogic;
@@ -87,31 +86,31 @@ begin
     gpio_o <= gpio_o_tmp(1 downto 0);
     pwm_o <= pwm_o_tmp(0 downto 0);
     gpio_i_tmp(6 downto 0) <= gpio_i;
-    gpio_i_tmp(63 downto 7) <= (others => 'U');
-    xirq_i_tmp(5 downto 0) <= xirq_i;
-    xirq_i_tmp(31 downto 6) <= (others => 'L');
+    gpio_i_tmp(7) <= 'U';
+    gpio_i_tmp(8) <= i2s_fifo_low_i;
+    gpio_i_tmp(31 downto 9) <= (others => 'U');
 
     inst: neorv32_top
     generic map (
         -- General --
         CLOCK_FREQUENCY => 98304000,  -- clock frequency of clk_i in Hz
-        INT_BOOTLOADER_EN => true,  -- boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
+        BOOT_MODE_SELECT => 0,
 
         -- On-Chip Debugger (OCD) --
-        ON_CHIP_DEBUGGER_EN => true,  -- implement on-chip debugger
+        OCD_EN => true,  -- implement on-chip debugger
 
         -- RISC-V CPU Extensions --
-        CPU_EXTENSION_RISCV_B => true,  -- implement bit-manipulation extension?
-        CPU_EXTENSION_RISCV_C => true,  -- implement compressed extension?
-        CPU_EXTENSION_RISCV_E => false,  -- implement embedded RF extension?
-        CPU_EXTENSION_RISCV_M => true,  -- implement mul/div extension?
-        CPU_EXTENSION_RISCV_U => true,  -- implement user mode extension?
-        CPU_EXTENSION_RISCV_Zfinx => true,  -- implement 32-bit floating-point extension (using INT regs!)
-        CPU_EXTENSION_RISCV_Zicsr => true,   -- implement CSR system?
-        CPU_EXTENSION_RISCV_Zifencei => true,  -- implement instruction stream sync.?
+        RISCV_ISA_C => true,  -- implement compressed extension?
+        RISCV_ISA_M => true,  -- implement mul/div extension?
+        RISCV_ISA_U => true,  -- implement user mode extension?
+        RISCV_ISA_Zfinx => true,  -- implement 32-bit floating-point extension (using INT regs!)
+
+        -- Hardware Performance Monitors (HPM) --
+        HPM_NUM_CNTS => 1, -- number of implemented HPM counters (0..13)
 
         -- Internal Instruction memory (IMEM) --
         MEM_INT_IMEM_EN => false,  -- implement processor-internal instruction memory
+
         -- Internal Data memory (DMEM) --
         MEM_INT_DMEM_EN => true,  -- implement processor-internal data memory
         MEM_INT_DMEM_SIZE => 96*1024, -- size of processor-internal data memory in bytes
@@ -120,26 +119,18 @@ begin
         ICACHE_EN => true,  -- implement instruction cache
         ICACHE_NUM_BLOCKS => 8,      -- i-cache: number of blocks (min 1), has to be a power of 2
         ICACHE_BLOCK_SIZE => 64,     -- i-cache: block size in bytes (min 4), has to be a power of 2
-        ICACHE_ASSOCIATIVITY => 2,      -- i-cache: associativity / number of sets (1=direct_mapped), has to be a power of 2
 
         -- External memory interface (WISHBONE) --
-        MEM_EXT_EN => true,  -- implement external memory bus interface?
-        -- TODO: Was 0, do we need this?
-        --MEM_EXT_TIMEOUT              : natural := 255;    -- cycles after a pending bus access auto-terminates (0 = disabled)
-
-        -- External Interrupts Controller (XIRQ) --
-        XIRQ_NUM_CH => 6,  -- number of external IRQ channels (0..32)
-        XIRQ_TRIGGER_TYPE => x"ffffffff", -- trigger type: 0=level, 1=edge
-        XIRQ_TRIGGER_POLARITY => x"00000020", -- trigger polarity: 0=low-level/falling-edge, 1=high-level/rising-edge
+        XBUS_EN => true,  -- implement external memory bus interface?
 
         -- Processor peripherals --
-        IO_GPIO_EN => true,  -- implement general purpose input/output port unit (GPIO)?
-        IO_MTIME_EN => true,  -- implement machine system timer (MTIME)?
+        IO_GPIO_NUM => 7,  -- implement general purpose input/output port unit (GPIO)?
+        IO_CLINT_EN => true,  -- implement machine system timer (MTIME)?
         IO_UART0_EN => true,  -- implement primary universal asynchronous receiver/transmitter (UART0)?
         IO_SPI_EN => true,  -- implement serial peripheral interface (SPI)?
         IO_TWI_EN => true,  -- implement two-wire interface (TWI)?
         IO_PWM_NUM_CH => 1,  -- number of PWM channels to implement (0..60); 0 = disabled
-        IO_XIP_EN => true  -- implement execute in place module (XIP)?
+        XIP_EN => true  -- implement execute in place module (XIP)?
     )
     port map (
         -- Global control --
@@ -147,7 +138,6 @@ begin
         rstn_i => rstn_i, -- global reset, low-active, async
 
         -- JTAG on-chip debugger interface (available if ON_CHIP_DEBUGGER_EN = true) --
-        jtag_trst_i => jtag_trst_i, -- low-active TAP reset (optional)
         jtag_tck_i => jtag_tck_i, -- serial clock
         jtag_tdi_i => jtag_tdi_i, -- serial data input
         jtag_tdo_o => jtag_tdo_o, -- serial data output
@@ -159,38 +149,22 @@ begin
         jtagspi_csn_o => jtagspi_csn,
 
         -- Wishbone bus interface (available if MEM_EXT_EN = true) --
-        wb_tag_o => open, -- request tag
-        wb_adr_o => wb_adr_o, -- address
-        wb_dat_i => wb_dat_i, -- read data
-        wb_dat_o => wb_dat_o, -- write data
-        wb_we_o => wb_we_o, -- read/write
-        wb_sel_o => wb_sel_o, -- byte enable
-        wb_stb_o => wb_stb_o, -- strobe
-        wb_cyc_o => open, -- valid cycle
-        wb_ack_i => wb_ack_i, -- transfer acknowledge
-        wb_err_i => 'L', -- transfer error
-
-        -- Advanced memory control signals --
-        fence_o => open, -- indicates an executed FENCE operation
-        fencei_o => open, -- indicates an executed FENCEI operation
+        xbus_tag_o => open, -- request tag
+        xbus_adr_o => wb_adr_o, -- address
+        xbus_dat_i => wb_dat_i, -- read data
+        xbus_dat_o => wb_dat_o, -- write data
+        xbus_we_o => wb_we_o, -- read/write
+        xbus_sel_o => wb_sel_o, -- byte enable
+        xbus_stb_o => wb_stb_o, -- strobe
+        xbus_cyc_o => open, -- valid cycle
+        xbus_ack_i => wb_ack_i, -- transfer acknowledge
+        xbus_err_i => 'L', -- transfer error
 
         -- XIP (execute in place via SPI) signals (available if IO_XIP_EN = true) --
         xip_csn_o => xip_csn, -- chip-select, low-active
         xip_clk_o => xip_clk, -- serial clock
-        xip_sdi_i => xip_sdi_i, -- device data input
-        xip_sdo_o => xip_sdo, -- controller data output
-
-        -- TX stream interfaces (available if SLINK_NUM_TX > 0) --
-        slink_tx_dat_o => open, -- output data
-        slink_tx_val_o => open, -- valid output
-        slink_tx_rdy_i => (others => 'L'), -- ready to send
-        slink_tx_lst_o => open, -- last data of packet
-
-        -- RX stream interfaces (available if SLINK_NUM_RX > 0) --
-        slink_rx_dat_i => (others => (others => 'U')), -- input data
-        slink_rx_val_i => (others => 'L'), -- valid input
-        slink_rx_rdy_o => open, -- ready to receive
-        slink_rx_lst_i => (others => 'L'), -- last data of packet
+        xip_dat_i => xip_sdi_i, -- device data input
+        xip_dat_o => xip_sdo, -- controller data output
 
         -- GPIO (available if IO_GPIO_EN = true) --
         gpio_o => gpio_o_tmp, -- parallel output
@@ -209,34 +183,21 @@ begin
         uart1_cts_i => 'L', -- hw flow control: UART1.TX allowed to transmit, low-active, optional
 
         -- SPI (available if IO_SPI_EN = true) --
-        spi_sck_o => spi_sck_o, -- SPI serial clock
-        spi_sdo_o => spi_sdo_o, -- controller data out, peripheral data in
-        spi_sdi_i => spi_sdi_i, -- controller data in, peripheral data out
+        spi_clk_o => spi_sck_o, -- SPI serial clock
+        spi_dat_o => spi_sdo_o, -- controller data out, peripheral data in
+        spi_dat_i => spi_sdi_i, -- controller data in, peripheral data out
         spi_csn_o => spi_csn_o, -- chip-select
 
         -- TWI (available if IO_TWI_EN = true) --
-        twi_sda_io => twi_sda_io, -- twi serial data line
-        twi_scl_io => twi_scl_io, -- twi serial clock line
+        twi_sda_i => twi_sda_i, -- twi serial data line
+        twi_sda_o => twi_sda_o, -- twi serial data line
+        twi_scl_i => twi_scl_i, -- twi serial clock line
+        twi_scl_o => twi_scl_o, -- twi serial clock line
 
-        -- 1-Wire Interface (available if IO_ONEWIRE_EN = true) --
-        onewire_io => onewire_unconnected, -- 1-wire bus
 
         -- PWM (available if IO_PWM_NUM_CH > 0) --
         pwm_o => pwm_o_tmp, -- pwm channels
 
-        -- Custom Functions Subsystem IO (available if IO_CFS_EN = true) --
-        cfs_in_i => (others => 'U'), -- custom CFS inputs conduit
-        cfs_out_o => open, -- custom CFS outputs conduit
-
-        -- NeoPixel-compatible smart LED interface (available if IO_NEOLED_EN = true) --
-        neoled_o => open, -- async serial data line
-
-        -- System time --
-        mtime_i => (others => 'U'), -- current system time from ext. MTIME (if IO_MTIME_EN = false)
-        mtime_o => open, -- current system time from int. MTIME (if IO_MTIME_EN = true)
-
-        -- External platform interrupts (available if XIRQ_NUM_CH > 0) --
-        xirq_i => xirq_i_tmp, -- IRQ channels
 
         -- CPU interrupts --
         mtime_irq_i => 'L', -- machine timer interrupt, available if IO_MTIME_EN = false
