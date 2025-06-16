@@ -70,23 +70,26 @@ module i2s_wb_regfile #(
 
     // read logic
     always @(posedge clk) begin
-        case (wb_adr_i[15:0])
-            16'h0000: begin
-                wb_dat_o <= reg_ctrl0;
-            end
-            16'h0004: begin
-                wb_dat_o <= {29'b0, fifo_full, fifo_empty, fifo_low};
-            end
-            16'h0008: begin
-                wb_dat_o <= fifo_threshold_reg;
-            end
-            16'h000c: begin
-                wb_dat_o <= {{32-FIFO_LEN_BITS{1'b0}}, fifo_level};
-            end
-            default: begin
-                wb_dat_o <= 32'h0000_0000;
-            end
-        endcase
+        wb_dat_o <= 'b0;
+        if (wb_stb_i && !wb_we_i) begin
+            case (wb_adr_i[15:0])
+                16'h0000: begin
+                    wb_dat_o <= reg_ctrl0;
+                end
+                16'h0004: begin
+                    wb_dat_o <= {29'b0, fifo_full, fifo_empty, fifo_low};
+                end
+                16'h0008: begin
+                    wb_dat_o <= fifo_threshold_reg;
+                end
+                16'h000c: begin
+                    wb_dat_o <= {{32-FIFO_LEN_BITS{1'b0}}, fifo_level};
+                end
+                default: begin
+                    wb_dat_o <= 32'h0000_0000;
+                end
+            endcase
+        end
     end
 
     // write logic
