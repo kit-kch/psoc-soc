@@ -29,6 +29,7 @@ module psoc_audio(
         output phone_r
     );
 
+    wire software_rst;
     // Clock strobe signals
     wire clk_en_4;
     wire clk_en_16;
@@ -50,7 +51,7 @@ module psoc_audio(
     wire fifo_full, fifo_empty;
 
     // Local control signals
-    wire device_reset, software_rst, dac_mode, dac_enable, i2s_enable;
+    wire device_reset, dac_mode, dac_enable, i2s_enable;
     wire[FIFO_LEN_BITS:0] fifo_level, fifo_threshold;
 
     assign device_reset = rst | software_rst;
