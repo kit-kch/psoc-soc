@@ -81,6 +81,13 @@ architecture rtl of neorv32_wrap is
     signal xip_csn : std_ulogic;
     signal xip_clk : std_ulogic;
     signal xip_sdo : std_ulogic;
+
+    -- xbus switch
+    constant base_io_i2s_c : std_ulogic_vector(31 downto 0) := x"ffd00000";
+    signal xbus_req : bus_req_t;
+    signal xbus_rsp : bus_rsp_t;
+    signal i2s_req : bus_req_t;
+    signal i2s_rsp : bus_rsp_t;
 begin
 
     gpio_o <= gpio_o_tmp(1 downto 0);
@@ -150,15 +157,15 @@ begin
 
         -- Wishbone bus interface (available if MEM_EXT_EN = true) --
         xbus_tag_o => open, -- request tag
-        xbus_adr_o => wb_adr_o, -- address
-        xbus_dat_i => wb_dat_i, -- read data
-        xbus_dat_o => wb_dat_o, -- write data
-        xbus_we_o => wb_we_o, -- read/write
-        xbus_sel_o => wb_sel_o, -- byte enable
-        xbus_stb_o => wb_stb_o, -- strobe
+        xbus_adr_o => xbus_req.addr, -- address
+        xbus_dat_i => xbus_rsp.data, -- read data
+        xbus_dat_o => xbus_req.data, -- write data
+        xbus_we_o => xbus_req.rw, -- read/write
+        xbus_sel_o => xbus_req.ben, -- byte enable
+        xbus_stb_o => xbus_req.stb, -- strobe
         xbus_cyc_o => open, -- valid cycle
-        xbus_ack_i => wb_ack_i, -- transfer acknowledge
-        xbus_err_i => 'L', -- transfer error
+        xbus_ack_i => xbus_rsp.ack, -- transfer acknowledge
+        xbus_err_i => xbus_rsp.err, -- transfer error
 
         -- XIP (execute in place via SPI) signals (available if IO_XIP_EN = true) --
         xip_csn_o => xip_csn, -- chip-select, low-active
@@ -209,5 +216,102 @@ begin
   xip_csn_o <= jtagspi_csn and xip_csn;
   xip_clk_o <= jtagspi_sck when jtagspi_csn = '0' else xip_clk;
   xip_sdo_o <= jtagspi_sdo when jtagspi_csn = '0' else xip_sdo;
+
+  -- Switch for the XBUS
+  xbus_switch: entity neorv32.neorv32_bus_io_switch
+  generic map (
+    INREG_EN  => true,
+    OUTREG_EN => true,
+    DEV_SIZE  => iodev_size_c,
+    DEV_00_EN => true,            DEV_00_BASE => base_io_i2s_c,
+    DEV_01_EN => false,           DEV_01_BASE => (others => '0'),
+    DEV_02_EN => false,           DEV_02_BASE => (others => '0'),
+    DEV_03_EN => false,           DEV_03_BASE => (others => '0'),
+    DEV_04_EN => false,           DEV_04_BASE => (others => '0'),
+    DEV_05_EN => false,           DEV_05_BASE => (others => '0'),
+    DEV_06_EN => false,           DEV_06_BASE => (others => '0'),
+    DEV_07_EN => false,           DEV_07_BASE => (others => '0'),
+    DEV_08_EN => false,           DEV_08_BASE => (others => '0'),
+    DEV_09_EN => false,           DEV_09_BASE => (others => '0'),
+    DEV_10_EN => false,           DEV_10_BASE => (others => '0'),
+    DEV_11_EN => false,           DEV_11_BASE => (others => '0'),
+    DEV_12_EN => false,           DEV_12_BASE => (others => '0'),
+    DEV_13_EN => false,           DEV_13_BASE => (others => '0'),
+    DEV_14_EN => false,           DEV_14_BASE => (others => '0'),
+    DEV_15_EN => false,           DEV_15_BASE => (others => '0'),
+    DEV_16_EN => false,           DEV_16_BASE => (others => '0'),
+    DEV_17_EN => false,           DEV_17_BASE => (others => '0'),
+    DEV_18_EN => false,           DEV_18_BASE => (others => '0'),
+    DEV_19_EN => false,           DEV_19_BASE => (others => '0'),
+    DEV_20_EN => false,           DEV_20_BASE => (others => '0'),
+    DEV_21_EN => false,           DEV_21_BASE => (others => '0'),
+    DEV_22_EN => false,           DEV_22_BASE => (others => '0'),
+    DEV_23_EN => false,           DEV_23_BASE => (others => '0'),
+    DEV_24_EN => false,           DEV_24_BASE => (others => '0'),
+    DEV_25_EN => false,           DEV_25_BASE => (others => '0'),
+    DEV_26_EN => false,           DEV_26_BASE => (others => '0'),
+    DEV_27_EN => false,           DEV_27_BASE => (others => '0'),
+    DEV_28_EN => false,           DEV_28_BASE => (others => '0'),
+    DEV_29_EN => false,           DEV_29_BASE => (others => '0'),
+    DEV_30_EN => false,           DEV_30_BASE => (others => '0'),
+    DEV_31_EN => false,           DEV_31_BASE => (others => '0')
+  )
+  port map (
+    clk_i        => clk_i,
+    rstn_i       => rstn_i,
+    main_req_i   => xbus_req,
+    main_rsp_o   => xbus_rsp,
+    dev_00_req_o => i2s_req,                  dev_00_rsp_i => i2s_rsp,
+    dev_01_req_o => open,                     dev_01_rsp_i => rsp_terminate_c,
+    dev_02_req_o => open,                     dev_02_rsp_i => rsp_terminate_c,
+    dev_03_req_o => open,                     dev_03_rsp_i => rsp_terminate_c,
+    dev_04_req_o => open,                     dev_04_rsp_i => rsp_terminate_c,
+    dev_05_req_o => open,                     dev_05_rsp_i => rsp_terminate_c,
+    dev_06_req_o => open,                     dev_06_rsp_i => rsp_terminate_c,
+    dev_07_req_o => open,                     dev_07_rsp_i => rsp_terminate_c,
+    dev_08_req_o => open,                     dev_08_rsp_i => rsp_terminate_c,
+    dev_09_req_o => open,                     dev_09_rsp_i => rsp_terminate_c,
+    dev_10_req_o => open,                     dev_10_rsp_i => rsp_terminate_c,
+    dev_11_req_o => open,                     dev_11_rsp_i => rsp_terminate_c,
+    dev_12_req_o => open,                     dev_12_rsp_i => rsp_terminate_c,
+    dev_13_req_o => open,                     dev_13_rsp_i => rsp_terminate_c,
+    dev_14_req_o => open,                     dev_14_rsp_i => rsp_terminate_c,
+    dev_15_req_o => open,                     dev_15_rsp_i => rsp_terminate_c,
+    dev_16_req_o => open,                     dev_16_rsp_i => rsp_terminate_c,
+    dev_17_req_o => open,                     dev_17_rsp_i => rsp_terminate_c,
+    dev_18_req_o => open,                     dev_18_rsp_i => rsp_terminate_c,
+    dev_19_req_o => open,                     dev_19_rsp_i => rsp_terminate_c,
+    dev_20_req_o => open,                     dev_20_rsp_i => rsp_terminate_c,
+    dev_21_req_o => open,                     dev_21_rsp_i => rsp_terminate_c,
+    dev_22_req_o => open,                     dev_22_rsp_i => rsp_terminate_c,
+    dev_23_req_o => open,                     dev_23_rsp_i => rsp_terminate_c,
+    dev_24_req_o => open,                     dev_24_rsp_i => rsp_terminate_c,
+    dev_25_req_o => open,                     dev_25_rsp_i => rsp_terminate_c,
+    dev_26_req_o => open,                     dev_26_rsp_i => rsp_terminate_c,
+    dev_27_req_o => open,                     dev_27_rsp_i => rsp_terminate_c,
+    dev_28_req_o => open,                     dev_28_rsp_i => rsp_terminate_c,
+    dev_29_req_o => open,                     dev_29_rsp_i => rsp_terminate_c,
+    dev_30_req_o => open,                     dev_30_rsp_i => rsp_terminate_c,
+    dev_31_req_o => open,                     dev_31_rsp_i => rsp_terminate_c
+  );
+
+  -- The internal NEORV bus has additional signals. We don't use these 
+  xbus_req.src <= '0';
+  xbus_req.priv <= '0';
+  xbus_req.amo <= '0';
+  xbus_req.amoop <= (others => '0');
+  xbus_req.fence <= '0';
+  xbus_req.sleep <= '0';
+  xbus_req.debug <= '0';
+
+  -- Map back from internal representation to wishbone
+  wb_adr_o <= i2s_req.addr;
+  wb_dat_o <= i2s_req.data;
+  wb_we_o <= i2s_req.rw;
+  wb_sel_o <= i2s_req.ben;
+  wb_stb_o <= i2s_req.stb;
+  i2s_rsp.data <= wb_dat_i;
+  i2s_rsp.ack <= wb_ack_i;
+  i2s_rsp.err <= '0';
 
 end rtl;
