@@ -48,15 +48,17 @@ module i2s_wb_regfile #(
         input fifo_low,
         input[FIFO_LEN_BITS:0] fifo_level,
         output[FIFO_LEN_BITS:0] fifo_threshold,
+        input fifo_ready,
         output dac_mode,
         output dac_enable,
         output i2s_enable,
         output software_rst
     );
 
-    // never stalls
-    wire o_wb_stall;
-    assign o_wb_stall = 1'b0;
+    // Stall if we can't write to FIFO this cycle
+    // Note: If we're reading or writing other registers, the FIFO doesn't matter.
+    // It's however easier and reduces logic complexity to always stall
+    wire o_wb_stall = !fifo_ready;
 
     // registers
     reg[31:0] reg_ctrl0;

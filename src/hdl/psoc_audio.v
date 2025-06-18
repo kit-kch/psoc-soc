@@ -45,7 +45,7 @@ module psoc_audio(
     // FIFO
     localparam FIFO_LEN_BITS = 8;
     wire[47:0] fifo_data_in, fifo_data_out;
-    wire fifo_write;
+    wire fifo_write, fifo_write_ready;
     reg fifo_read;
     wire fifo_ready_i2s, fifo_ready_dac;
     wire fifo_full, fifo_empty;
@@ -99,6 +99,7 @@ module psoc_audio(
         .i_clk(clk),
         .i_wr(fifo_write),
         .i_data(fifo_data_in),
+        .o_ready(fifo_write_ready),
         .o_full(fifo_full),
         .o_fill(fifo_level),
         .i_rd(fifo_read),
@@ -129,6 +130,7 @@ module psoc_audio(
         .fifo_low(fifo_low),
         .fifo_level(fifo_level),
         .fifo_threshold(fifo_threshold),
+        .fifo_ready(fifo_write_ready),
         .dac_mode(dac_mode),
         .dac_enable(dac_enable),
         .i2s_enable(i2s_enable),

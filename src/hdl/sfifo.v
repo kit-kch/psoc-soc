@@ -9,6 +9,8 @@
 // Creator:	Dan Gisselquist, Ph.D.
 //		Gisselquist Technology, LLC
 //
+// Modified by Johannes Pfau to work with single ported RAM. Read has priority
+//
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Written and distributed by Gisselquist Technology, LLC
@@ -20,7 +22,7 @@
 // FITNESS FOR A PARTICULAR PURPOSE.
 //
 ////////////////////////////////////////////////////////////////////////////////
-module sfifo(i_clk, i_wr, i_data, o_full, o_fill, i_rd, o_data, o_empty);
+module sfifo(i_clk, i_wr, i_data, o_ready, o_full, o_fill, i_rd, o_data, o_empty);
 	parameter	BW=32;	// Byte/data width
 	parameter 	LGFLEN=4;
 
@@ -28,11 +30,12 @@ module sfifo(i_clk, i_wr, i_data, o_full, o_fill, i_rd, o_data, o_empty);
 	// Write interface
 	input	wire		i_wr;
 	input	wire [(BW-1):0]	i_data;
+	output	wire		o_ready;
 	output	reg 		o_full;
 	output	reg [LGFLEN:0]	o_fill;
 	// Read interface
 	input	wire		i_rd;
-	output	reg [(BW-1):0]	o_data;
+	output	wire [(BW-1):0]	o_data;
 	output	reg		o_empty;
 
 	reg	[(BW-1):0]	fifo_mem[0:(1<<LGFLEN)-1];
@@ -42,17 +45,26 @@ module sfifo(i_clk, i_wr, i_data, o_full, o_fill, i_rd, o_data, o_empty);
 	wire	w_wr = (i_wr && !o_full);
 	wire	w_rd = (i_rd && !o_empty);
 
+	assign o_ready = !i_rd;
+
 	//
 	// Write a new value into our FIFO
 	//
 	initial	wr_addr = 0;
 	always @(posedge i_clk)
-	if (w_wr)
+	if (!i_rd && w_wr)
 		wr_addr <= wr_addr + 1'b1;
 
-	always @(posedge i_clk)
-	if (w_wr)
-		fifo_mem[wr_addr[(LGFLEN-1):0]] <= i_data;
+	// Instantiate the memory
+    sfifo_mem #(.BW(BW), .LGFLEN(LGFLEN)) mem(
+        .i_clk(i_clk),
+        .i_wr(w_wr),
+		.i_wr_addr(wr_addr[(LGFLEN-1):0]),
+        .i_data(i_data),
+        .i_rd(i_rd),
+        .i_rd_addr(rd_addr[LGFLEN-1:0]),
+        .o_data(o_data)
+    );
 
 	//
 	// Read a value back out of it
@@ -61,9 +73,6 @@ module sfifo(i_clk, i_wr, i_data, o_full, o_fill, i_rd, o_data, o_empty);
 	always @(posedge i_clk)
 	if (w_rd)
 		rd_addr <= rd_addr + 1;
-
-	always @(*)
-		o_data = fifo_mem[rd_addr[LGFLEN-1:0]];
 
 	//
 	// Return some metrics of the FIFO, it's current fill level,
