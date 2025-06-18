@@ -70,7 +70,7 @@ module soc_top(
 
     // Wishbone bus for I2S module
     wire[31:0] bus_adr, bus_dat_i, bus_dat_o;
-    wire bus_we, bus_stb, bus_ack;
+    wire bus_we, bus_stb, bus_cyc, bus_ack;
     wire[3:0] bus_sel;
     // And interrupt line
     wire audio_fifo_low;
@@ -97,6 +97,7 @@ module soc_top(
         .wb_adr_o(bus_adr),
         .wb_dat_i(bus_dat_i),
         .wb_dat_o(bus_dat_o),
+        .wb_cyc_o(bus_cyc),
         .wb_we_o(bus_we),
         .wb_sel_o(bus_sel),
         .wb_stb_o(bus_stb),
@@ -147,6 +148,7 @@ module soc_top(
         .wb_we_i(bus_we),
         .wb_sel_i(bus_sel),
         .wb_stb_i(bus_stb),
+        .wb_cyc_i(bus_cyc),
         .wb_ack_o(bus_ack),
 
         .fifo_low(audio_fifo_low),

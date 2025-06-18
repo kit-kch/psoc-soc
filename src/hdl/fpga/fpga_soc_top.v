@@ -73,7 +73,7 @@ module fpga_soc_top(
 
     // Wishbone bus for I2S module
     wire[31:0] bus_adr, bus_dat_i, bus_dat_o;
-    wire bus_we, bus_stb, bus_ack;
+    wire bus_we, bus_stb, bus_cyc, bus_ack;
     wire[3:0] bus_sel;
     // And interrupt line
     wire audio_fifo_low;
@@ -103,6 +103,7 @@ module fpga_soc_top(
         .wb_we_o(bus_we),
         .wb_sel_o(bus_sel),
         .wb_stb_o(bus_stb),
+        .wb_cyc_o(bus_cyc),
         .wb_ack_i(bus_ack),
 
         .xip_csn_o(xip_csn_o),
@@ -152,6 +153,7 @@ module fpga_soc_top(
         .wb_we_i(bus_we),
         .wb_sel_i(bus_sel),
         .wb_stb_i(bus_stb),
+        .wb_cyc_i(bus_cyc),
         .wb_ack_o(bus_ack),
 
         .fifo_low(audio_fifo_low),

@@ -13,6 +13,7 @@ module psoc_audio(
         input wb_we_i,
         input[3:0] wb_sel_i,
         input wb_stb_i,
+        input wb_cyc_i,
         output wb_ack_o,
 
         // status bit if fifo is low. use for interrupts
@@ -118,6 +119,7 @@ module psoc_audio(
         .wb_dat_i(wb_dat_i),
         .wb_adr_i(wb_adr_i),
         .wb_stb_i(wb_stb_i),
+        .wb_cyc_i(wb_cyc_i),
         .wb_we_i(wb_we_i),
         .wb_dat_o(wb_dat_o),
         .wb_ack_o(wb_ack_o),

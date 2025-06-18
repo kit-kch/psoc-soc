@@ -33,6 +33,7 @@ entity neorv32_wrap is
     wb_we_o        : out std_ulogic; -- read/write
     wb_sel_o       : out std_ulogic_vector(03 downto 0); -- byte enable
     wb_stb_o       : out std_ulogic; -- strobe
+    wb_cyc_o       : out std_ulogic; -- valid cycle
     wb_ack_i       : in  std_ulogic := 'L'; -- transfer acknowledge
 
     -- XIP (execute in place via SPI) signals (available if IO_XIP_EN = true) --
@@ -155,7 +156,7 @@ begin
         xbus_we_o => wb_we_o, -- read/write
         xbus_sel_o => wb_sel_o, -- byte enable
         xbus_stb_o => wb_stb_o, -- strobe
-        xbus_cyc_o => open, -- valid cycle
+        xbus_cyc_o => wb_cyc_o, -- valid cycle
         xbus_ack_i => wb_ack_i, -- transfer acknowledge
         xbus_err_i => 'L', -- transfer error
 

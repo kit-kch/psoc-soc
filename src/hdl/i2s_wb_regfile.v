@@ -33,6 +33,7 @@ module i2s_wb_regfile #(
         input[31:0] wb_dat_i,
         input[31:0] wb_adr_i,
         input wb_stb_i,
+        input wb_cyc_i,
         input wb_we_i,
         output reg[31:0] wb_dat_o,
         output reg wb_ack_o,
@@ -73,7 +74,7 @@ module i2s_wb_regfile #(
     // read logic
     always @(posedge clk) begin
         wb_dat_o <= 'b0;
-        if (wb_stb_i && !wb_we_i) begin
+        if (wb_cyc_i && !wb_we_i) begin
             case (wb_adr_i[15:0])
                 16'h0000: begin
                     wb_dat_o <= reg_ctrl0;
@@ -104,7 +105,7 @@ module i2s_wb_regfile #(
             // reset every cycle, should be high for one cycle only
             audio_valid <= 1'b0;
 
-            if (wb_stb_i && wb_we_i && !o_wb_stall) begin
+            if (wb_cyc_i && wb_we_i && !o_wb_stall) begin
                 case (wb_adr_i[15:0])
                     32'h0000: begin
                         if (wb_sel_i[0])
@@ -150,7 +151,7 @@ module i2s_wb_regfile #(
         if (rst) begin
             wb_ack_o <= 1'b0;
         end else begin
-            wb_ack_o <= (wb_stb_i) && (!o_wb_stall);
+            wb_ack_o <= (wb_cyc_i) && (!o_wb_stall);
         end
     end
 
