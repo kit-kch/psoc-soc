@@ -160,13 +160,16 @@ boardtest:
 		export SIM_NAME=$*; \
 		$(CADENCE_ENV) xrun -f ../../script/cadence/verification/sim_par.f -define SDF_ANNOTATE $$GUI_ARG
 
-src/hdl/sg13g2/neorv32_wrap.v:
+sg13g2_wrap:
 	./script/sg13g2/convert_neo.sh
 
-sg13g2-core: src/hdl/sg13g2/neorv32_wrap.v
-
 sg13g2:
-    cd $FLOW_HOME; \
-		export DESIGN_CONFIG=$PWD/script/sg13g2/config.mk; \
+	export DESIGN_CONFIG=$$PWD/script/sg13g2/config.mk; \
+		cd $$FLOW_HOME; \
 		make clean_all; \
 		make
+
+sg13g2_ui:
+	export DESIGN_CONFIG=$$PWD/script/sg13g2/config.mk; \
+		cd $$FLOW_HOME; \
+		make gui_final
