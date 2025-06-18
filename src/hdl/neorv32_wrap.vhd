@@ -120,7 +120,7 @@ begin
 
         -- Internal Data memory (DMEM) --
         MEM_INT_DMEM_EN => true,  -- implement processor-internal data memory
-        MEM_INT_DMEM_SIZE => 96*1024, -- size of processor-internal data memory in bytes
+        MEM_INT_DMEM_SIZE => 16*1024, -- size of processor-internal data memory in bytes
 
         -- Internal Instruction Cache (iCACHE) --
         ICACHE_EN => true,  -- implement instruction cache
