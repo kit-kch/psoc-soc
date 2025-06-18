@@ -103,7 +103,6 @@ begin
         RISCV_ISA_C => true,  -- implement compressed extension?
         RISCV_ISA_M => true,  -- implement mul/div extension?
         RISCV_ISA_U => true,  -- implement user mode extension?
-        RISCV_ISA_Zfinx => true,  -- implement 32-bit floating-point extension (using INT regs!)
 
         -- Hardware Performance Monitors (HPM) --
         HPM_NUM_CNTS => 1, -- number of implemented HPM counters (0..13)
