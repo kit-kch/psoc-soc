@@ -130,7 +130,8 @@ begin
         IO_SPI_EN => true,  -- implement serial peripheral interface (SPI)?
         IO_TWI_EN => true,  -- implement two-wire interface (TWI)?
         IO_PWM_NUM_CH => 1,  -- number of PWM channels to implement (0..60); 0 = disabled
-        XIP_EN => true  -- implement execute in place module (XIP)?
+        XIP_EN => true,  -- implement execute in place module (XIP)?
+        CPU_RF_HW_RST_EN => true
     )
     port map (
         -- Global control --
