@@ -10,7 +10,8 @@ NEORV32_FILES=$(sed "s|NEORV32_RTL_PATH_PLACEHOLDER|$NEORV32_HDL|g" src/hdl/sg13
 # Modified or extra files
 EXTRA_FILES="../../src/hdl/neorv32_wrap.vhd \
     ../../ext/psoc_xip_bootloader/bootloader_tiny/neorv32_bootloader_image.vhd \
-    ../../src/hdl/sg13g2/neorv32_dmem.vhd"
+    ../../src/hdl/sg13g2/neorv32_dmem.vhd \
+    ../../src/hdl/sg13g2//neorv32_cache.vhd"
 
 rm -rf build/ghdl
 mkdir -p build/ghdl
