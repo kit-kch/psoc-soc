@@ -101,8 +101,8 @@
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/hdl/led.v"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/hdl/cadence/thermometer_encoder.v"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/hdl/audio/sine_generator.v"
-#    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/constraints/constr_standalone.xdc"
-#    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/constraints/constr_soc.xdc"
+#    "/home/nq5949/Dokumente/psoc/psoc_soc2/script/vivado/constr_standalone.xdc"
+#    "/home/nq5949/Dokumente/psoc/psoc_soc2/script/vivado/constr_soc.xdc"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/sim/tb_clock_generator.v"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/sim/tb_sine_generator.v"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/sim/tb_i2s_master.v"
@@ -192,8 +192,8 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/../../src/hdl/led.v"]"\
  "[file normalize "$origin_dir/../../src/hdl/cadence/thermometer_encoder.v"]"\
  "[file normalize "$origin_dir/../../src/hdl/audio/sine_generator.v"]"\
- "[file normalize "$origin_dir/../../src/constraints/constr_standalone.xdc"]"\
- "[file normalize "$origin_dir/../../src/constraints/constr_soc.xdc"]"\
+ "[file normalize "$origin_dir/../../script/vivado/constr_standalone.xdc"]"\
+ "[file normalize "$origin_dir/../../script/vivado/constr_soc.xdc"]"\
  "[file normalize "$origin_dir/../../src/sim/tb_clock_generator.v"]"\
  "[file normalize "$origin_dir/../../src/sim/tb_sine_generator.v"]"\
  "[file normalize "$origin_dir/../../src/sim/tb_i2s_master.v"]"\
@@ -744,9 +744,9 @@ if {[string equal [get_filesets -quiet constrs_standalone] ""]} {
 set obj [get_filesets constrs_standalone]
 
 # Add/Import constrs file and set constrs file properties
-set file "[file normalize "$origin_dir/../../src/constraints/constr_standalone.xdc"]"
+set file "[file normalize "$origin_dir/../../script/vivado/constr_standalone.xdc"]"
 set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$origin_dir/../../src/constraints/constr_standalone.xdc"
+set file "$origin_dir/../../script/vivado/constr_standalone.xdc"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets constrs_standalone] [list "*$file"]]
 set_property -name "file_type" -value "XDC" -objects $file_obj
@@ -764,18 +764,18 @@ if {[string equal [get_filesets -quiet constrs_soc] ""]} {
 set obj [get_filesets constrs_soc]
 
 # Add/Import constrs file and set constrs file properties
-set file "[file normalize "$origin_dir/../../src/constraints/constr_soc.xdc"]"
+set file "[file normalize "$origin_dir/../../script/vivado/constr_soc.xdc"]"
 set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$origin_dir/../../src/constraints/constr_soc.xdc"
+set file "$origin_dir/../../script/vivado/constr_soc.xdc"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets constrs_soc] [list "*$file"]]
 set_property -name "file_type" -value "XDC" -objects $file_obj
 
 # Set 'constrs_soc' fileset properties
 set obj [get_filesets constrs_soc]
-set_property -name "target_constrs_file" -value "[file normalize "$origin_dir/../../src/constraints/constr_soc.xdc"]" -objects $obj
+set_property -name "target_constrs_file" -value "[file normalize "$origin_dir/../../script/vivado/constr_soc.xdc"]" -objects $obj
 set_property -name "target_part" -value "xc7z020clg484-1" -objects $obj
-set_property -name "target_ucf" -value "[file normalize "$origin_dir/../../src/constraints/constr_soc.xdc"]" -objects $obj
+set_property -name "target_ucf" -value "[file normalize "$origin_dir/../../script/vivado/constr_soc.xdc"]" -objects $obj
 
 # Create 'sim_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sim_1] ""]} {
