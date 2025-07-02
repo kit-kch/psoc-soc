@@ -12,16 +12,23 @@ export ADDITIONAL_GDS += $(PLATFORM_DIR)/gds/RM_IHPSG13_1P_4096x16_c3_bm_bist.gd
 RTL_DIR = $(DESIGN_PATH)src/hdl
 SCRIPT_DIR = $(DESIGN_PATH)script/sg13g2
 
-RTL_SOURCES = reset_logic.v \
-    clock_generator.v \
-    i2s_master.v \
-    psoc_dac_fpga.v \
+RTL_SOURCES = \
     sg13g2/sfifo_mem.v \
-    sfifo.v \
-    i2s_wb_regfile.v \
-    psoc_audio.v \
+    audio/sfifo.v \
+    audio/clock_generator.v \
+    audio/i2s_master.v \
+    audio/psoc_dac_fpga.v \
+    audio/i2s_wb_regfile.v \
+    audio/psoc_audio.v \
+    sg13g2/iobank0.v \
+    sg13g2/iobank1.v \
+    io/io_wb_regfile.v \
+    io/iomux.v \
+    io/io_subsystem.v \
     sg13g2/neorv32_wrap.v \
-	sg13g2/soc_top.v
+    reset_logic.v \
+    wb_xbar.v \
+	soc_top.v
 
 export VERILOG_FILES = $(addprefix $(RTL_DIR)/,$(RTL_SOURCES))
 export SDC_FILE = $(SCRIPT_DIR)/constraint.sdc

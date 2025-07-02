@@ -1,7 +1,7 @@
 current_design soc_top
 
 set clk_name clk
-set clk_port_name clk
+set clk_port_name {pads[28]}
 set clk_period 10.173
 set clk_io_pct 0.2
 
