@@ -41,6 +41,7 @@
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/hdl/audio/sfifo.v"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/hdl/fpga/sfifo_mem.v"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/hdl/soc_top.v"
+#    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/hdl/wb_xbar.v"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/ext/neorv32/rtl/core/neorv32_package.vhd"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/ext/neorv32/rtl/core/neorv32_application_image.vhd"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/ext/psoc_xip_bootloader/bootloader_tiny/neorv32_bootloader_image.vhd"
@@ -131,6 +132,7 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/../../src/hdl/audio/sfifo.v"]"\
  "[file normalize "$origin_dir/../../src/hdl/fpga/sfifo_mem.v"]"\
  "[file normalize "$origin_dir/../../src/hdl/soc_top.v"]"\
+ "[file normalize "$origin_dir/../../src/hdl/wb_xbar.v"]"\
  "[file normalize "$origin_dir/../../ext/neorv32/rtl/core/neorv32_package.vhd"]"\
  "[file normalize "$origin_dir/../../ext/neorv32/rtl/core/neorv32_application_image.vhd"]"\
  "[file normalize "$origin_dir/../../ext/psoc_xip_bootloader/bootloader_tiny/neorv32_bootloader_image.vhd"]"\
@@ -335,6 +337,7 @@ set files [list \
  [file normalize "${origin_dir}/../../src/hdl/audio/sfifo.v"] \
  [file normalize "${origin_dir}/../../src/hdl/fpga/sfifo_mem.v"] \
  [file normalize "${origin_dir}/../../src/hdl/soc_top.v"] \
+ [file normalize "${origin_dir}/../../src/hdl/wb_xbar.v"] \
  [file normalize "${origin_dir}/../../ext/neorv32/rtl/core/neorv32_package.vhd"] \
  [file normalize "${origin_dir}/../../ext/neorv32/rtl/core/neorv32_application_image.vhd"] \
  [file normalize "${origin_dir}/../../ext/psoc_xip_bootloader/bootloader_tiny/neorv32_bootloader_image.vhd"] \

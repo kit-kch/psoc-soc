@@ -68,10 +68,10 @@ set_property IOSTANDARD LVCMOS33 [get_ports {pads[8]}]
 # I2C
 # ------------------------------------------------------
 # I2C_SCL, I2C_SCL_F, FMC-SCL, Bank 13, i2c_scl
-set_property PACKAGE_PIN R7 [get_ports {pads[7]}];
+set_property PACKAGE_PIN R7 [get_ports {pads[7]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {pads[7]}]
 # I2C_SDA, I2C_SDA_F, FMC-SDA, Bank 13, i2c_sda
-set_property PACKAGE_PIN U7 [get_ports {pads[6]}];
+set_property PACKAGE_PIN U7 [get_ports {pads[6]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {pads[6]}]
 
 

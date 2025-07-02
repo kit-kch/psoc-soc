@@ -15,16 +15,21 @@ module soc_top(
         .rst(rst)
     );
 
+    // Wishbone bus for xbar
+    wire[31:0] wb_xbar_adr, wb_xbar_dat_i, wb_xbar_dat_o;
+    wire wb_xbar_we, wb_xbar_stb, wb_xbar_cyc, wb_xbar_ack;
+    wire[3:0] wb_xbar_sel;
     // Wishbone bus for I2S module
-    wire[31:0] bus_adr, bus_dat_i, bus_dat_o;
-    wire bus_we, bus_stb, bus_cyc, bus_ack;
-    wire[3:0] bus_sel;
+    wire[31:0] wb_i2s_adr, wb_i2s_dat_i, wb_i2s_dat_o;
+    wire wb_i2s_we, wb_i2s_stb, wb_i2s_cyc, wb_i2s_ack;
+    wire[3:0] wb_i2s_sel;
+    // Wishbone bus for IO module
+    wire[31:0] wb_io_adr, wb_io_dat_i, wb_io_dat_o;
+    wire wb_io_we, wb_io_stb, wb_io_cyc, wb_io_ack;
+    wire[3:0] wb_io_sel;
+
     // Audio module interrupt line
     wire audio_fifo_low;
-    // Wishbone bus for IO module
-    wire[31:0] wbio_adr, wbio_dat_i, wbio_dat_o;
-    wire wbio_we, wbio_stb, wbio_cyc, wbio_ack;
-    wire[3:0] wbio_sel;
     // GPIO Signals
     wire[31:0] gpio_i, gpio_o;
     // I2S signals
@@ -52,14 +57,14 @@ module soc_top(
         .jtag_tdo_o(jtag_tdo_o),
         .jtag_tms_i(jtag_tms_i),
 
-        .wb_adr_o(wbio_adr),
-        .wb_dat_i(wbio_dat_i),
-        .wb_dat_o(wbio_dat_o),
-        .wb_we_o(wbio_we),
-        .wb_sel_o(wbio_sel),
-        .wb_stb_o(wbio_stb),
-        .wb_cyc_o(wbio_cyc),
-        .wb_ack_i(wbio_ack),
+        .wb_adr_o(wb_xbar_adr),
+        .wb_dat_i(wb_xbar_dat_i),
+        .wb_dat_o(wb_xbar_dat_o),
+        .wb_we_o(wb_xbar_we),
+        .wb_sel_o(wb_xbar_sel),
+        .wb_stb_o(wb_xbar_stb),
+        .wb_cyc_o(wb_xbar_cyc),
+        .wb_ack_i(wb_xbar_ack),
 
         .xip_csn_o(xip_csn_o),
         .xip_clk_o(xip_clk_o),
@@ -83,18 +88,47 @@ module soc_top(
         .twi_scl_o(i2c_scl_o)
     );
 
+    wb_xbar xbar(
+        .wb_adr(wb_xbar_adr),
+        .wb_dat_i(wb_xbar_dat_i),
+        .wb_dat_o(wb_xbar_dat_o),
+        .wb_we(wb_xbar_we),
+        .wb_sel(wb_xbar_sel),
+        .wb_stb(wb_xbar_stb),
+        .wb_cyc(wb_xbar_cyc),
+        .wb_ack(wb_xbar_ack),
+
+        .wb_i2s_adr(wb_i2s_adr),
+        .wb_i2s_dat_i(wb_i2s_dat_i),
+        .wb_i2s_dat_o(wb_i2s_dat_o),
+        .wb_i2s_we(wb_i2s_we),
+        .wb_i2s_sel(wb_i2s_sel),
+        .wb_i2s_stb(wb_i2s_stb),
+        .wb_i2s_cyc(wb_i2s_cyc),
+        .wb_i2s_ack(wb_i2s_ack),
+
+        .wb_io_adr(wb_io_adr),
+        .wb_io_dat_i(wb_io_dat_i),
+        .wb_io_dat_o(wb_io_dat_o),
+        .wb_io_we(wb_io_we),
+        .wb_io_sel(wb_io_sel),
+        .wb_io_stb(wb_io_stb),
+        .wb_io_cyc(wb_io_cyc),
+        .wb_io_ack(wb_io_ack)
+    );
+    
     psoc_audio audio(
         .clk(clk),
         .rst(rst),
 
-        .wb_adr_i(bus_adr),
-        .wb_dat_i(bus_dat_i),
-        .wb_dat_o(bus_dat_o),
-        .wb_we_i(bus_we),
-        .wb_sel_i(bus_sel),
-        .wb_stb_i(bus_stb),
-        .wb_cyc_i(bus_cyc),
-        .wb_ack_o(bus_ack),
+        .wb_adr_i(wb_i2s_adr),
+        .wb_dat_i(wb_i2s_dat_i),
+        .wb_dat_o(wb_i2s_dat_o),
+        .wb_we_i(wb_i2s_we),
+        .wb_sel_i(wb_i2s_sel),
+        .wb_stb_i(wb_i2s_stb),
+        .wb_cyc_i(wb_i2s_cyc),
+        .wb_ack_o(wb_i2s_ack),
 
         .fifo_low(audio_fifo_low),
 
@@ -115,14 +149,14 @@ module soc_top(
         .arstn(arstn),
         .rst(rst),
 
-        .wb_adr(wbio_adr),
-        .wb_dat_i(wbio_dat_i),
-        .wb_dat_o(wbio_dat_o),
-        .wb_we(wbio_we),
-        .wb_sel(wbio_sel),
-        .wb_stb(wbio_stb),
-        .wb_cyc(wbio_cyc),
-        .wb_ack(wbio_ack),
+        .wb_adr(wb_io_adr),
+        .wb_dat_i(wb_io_dat_i),
+        .wb_dat_o(wb_io_dat_o),
+        .wb_we(wb_io_we),
+        .wb_sel(wb_io_sel),
+        .wb_stb(wb_io_stb),
+        .wb_cyc(wb_io_cyc),
+        .wb_ack(wb_io_ack),
 
         .gpio_i(gpio_i[19:0]),
         .gpio_o(gpio_o[19:0]),
