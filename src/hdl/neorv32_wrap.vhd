@@ -20,7 +20,6 @@ entity neorv32_wrap is
     rstn_i         : in  std_ulogic; -- global reset, low-active, async
 
     -- JTAG on-chip debugger interface (available if ON_CHIP_DEBUGGER_EN = true) --
-    jtag_trst_i    : in  std_ulogic := 'U'; -- low-active TAP reset (optional)
     jtag_tck_i     : in  std_ulogic := 'U'; -- serial clock
     jtag_tdi_i     : in  std_ulogic := 'U'; -- serial data input
     jtag_tdo_o     : out std_ulogic;        -- serial data output
@@ -43,9 +42,8 @@ entity neorv32_wrap is
     xip_sdo_o      : out std_ulogic; -- controller data output
 
     -- GPIO (available if IO_GPIO_EN = true) --
-    gpio_o         : out std_ulogic_vector(1 downto 0); -- parallel output
-    gpio_i         : in  std_ulogic_vector(6 downto 0) := (others => 'U'); -- parallel input
-    i2s_fifo_low_i : in std_ulogic;
+    gpio_o         : out std_ulogic_vector(31 downto 0); -- parallel output
+    gpio_i         : in  std_ulogic_vector(31 downto 0) := (others => 'U'); -- parallel input
 
     -- primary UART0 (available if IO_UART0_EN = true) --
     uart0_txd_o    : out std_ulogic; -- UART0 send data
@@ -61,18 +59,12 @@ entity neorv32_wrap is
     twi_sda_i      : in std_logic; -- twi serial data line
     twi_sda_o      : out std_logic; -- twi serial data line
     twi_scl_i      : in std_logic; -- twi serial clock line
-    twi_scl_o      : out std_logic; -- twi serial clock line
-
-    -- PWM (available if IO_PWM_NUM_CH > 0) --
-    pwm_o          : out std_ulogic_vector(0 downto 0) -- pwm channels
+    twi_scl_o      : out std_logic -- twi serial clock line
   );
 end neorv32_wrap;
 
 architecture rtl of neorv32_wrap is
     signal onewire_unconnected : std_logic;
-
-    signal gpio_o_tmp, gpio_i_tmp : std_ulogic_vector(31 downto 0);
-    signal pwm_o_tmp : std_ulogic_vector(15 downto 0);
 
     -- jtagspi
     signal jtagspi_sck : std_ulogic;
@@ -83,13 +75,6 @@ architecture rtl of neorv32_wrap is
     signal xip_clk : std_ulogic;
     signal xip_sdo : std_ulogic;
 begin
-
-    gpio_o <= gpio_o_tmp(1 downto 0);
-    pwm_o <= pwm_o_tmp(0 downto 0);
-    gpio_i_tmp(6 downto 0) <= gpio_i;
-    gpio_i_tmp(7) <= 'U';
-    gpio_i_tmp(8) <= i2s_fifo_low_i;
-    gpio_i_tmp(31 downto 9) <= (others => 'U');
 
     inst: neorv32_top
     generic map (
@@ -124,12 +109,12 @@ begin
         XBUS_EN => true,  -- implement external memory bus interface?
 
         -- Processor peripherals --
-        IO_GPIO_NUM => 7,  -- implement general purpose input/output port unit (GPIO)?
+        IO_GPIO_NUM => 21,  -- implement general purpose input/output port unit (GPIO)?
         IO_CLINT_EN => true,  -- implement machine system timer (MTIME)?
         IO_UART0_EN => true,  -- implement primary universal asynchronous receiver/transmitter (UART0)?
         IO_SPI_EN => true,  -- implement serial peripheral interface (SPI)?
         IO_TWI_EN => true,  -- implement two-wire interface (TWI)?
-        IO_PWM_NUM_CH => 1,  -- number of PWM channels to implement (0..60); 0 = disabled
+        IO_PWM_NUM_CH => 0,  -- number of PWM channels to implement (0..60); 0 = disabled
         XIP_EN => true,  -- implement execute in place module (XIP)?
         CPU_RF_HW_RST_EN => true
     )
@@ -168,8 +153,8 @@ begin
         xip_dat_o => xip_sdo, -- controller data output
 
         -- GPIO (available if IO_GPIO_EN = true) --
-        gpio_o => gpio_o_tmp, -- parallel output
-        gpio_i => gpio_i_tmp, -- parallel input
+        gpio_o => gpio_o, -- parallel output
+        gpio_i => gpio_i, -- parallel input
 
         -- primary UART0 (available if IO_UART0_EN = true) --
         uart0_txd_o => uart0_txd_o, -- UART0 send data
@@ -194,11 +179,6 @@ begin
         twi_sda_o => twi_sda_o, -- twi serial data line
         twi_scl_i => twi_scl_i, -- twi serial clock line
         twi_scl_o => twi_scl_o, -- twi serial clock line
-
-
-        -- PWM (available if IO_PWM_NUM_CH > 0) --
-        pwm_o => pwm_o_tmp, -- pwm channels
-
 
         -- CPU interrupts --
         mtime_irq_i => 'L', -- machine timer interrupt, available if IO_MTIME_EN = false
