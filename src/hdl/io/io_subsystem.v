@@ -88,19 +88,31 @@ module io_subsystem(
     assign i2c_scl_i = fn_i[7];
 
     assign fn_o[8] = uart0_txd;
+    assign fn_oe[8] = 1'b1;
     assign uart0_rxd = fn_i[9];
+    assign fn_oe[9] = 1'b0;
 
     assign fn_o[10] = spi_sck;
+    assign fn_oe[10] = 1'b1;
     assign fn_o[11] = spi_sdo;
+    assign fn_oe[11] = 1'b1;
     assign spi_sdi = fn_i[12];
+    assign fn_oe[12] = 1'b0;
     assign fn_o[13] = spi_csn[0];
+    assign fn_oe[13] = 1'b1;
     assign fn_o[14] = spi_csn[1];
+    assign fn_oe[14] = 1'b1;
     assign fn_o[15] = spi_csn[2];
+    assign fn_oe[15] = 1'b1;
     // TODO: SD signals: clk, cmd, dat, cd
     assign fn_o[16] = 1'b0;
+    assign fn_oe[16] = 1'b0;
     assign fn_o[17] = 1'b0;
+    assign fn_oe[17] = 1'b0;
     assign fn_o[18] = 1'b0;
+    assign fn_oe[18] = 1'b0;
     assign fn_o[19] = 1'b0;
+    assign fn_oe[19] = 1'b0;
 
     // Wishbone regfile
     io_wb_regfile wb(
