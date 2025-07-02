@@ -30,12 +30,12 @@ module i2s_wb_regfile #(
 
         // wishbone signals
         input[3:0] wb_sel_i,
-        input[31:0] wb_dat_i,
+        input[31:0] wb_dat_o,
         input[31:0] wb_adr_i,
         input wb_stb_i,
         input wb_cyc_i,
         input wb_we_i,
-        output reg[31:0] wb_dat_o,
+        output reg[31:0] wb_dat_i,
         output reg wb_ack_o,
 
 
@@ -73,23 +73,23 @@ module i2s_wb_regfile #(
 
     // read logic
     always @(posedge clk) begin
-        wb_dat_o <= 'b0;
+        wb_dat_i <= 'b0;
         if (wb_cyc_i && !wb_we_i) begin
             case (wb_adr_i[15:0])
                 16'h0000: begin
-                    wb_dat_o <= reg_ctrl0;
+                    wb_dat_i <= reg_ctrl0;
                 end
                 16'h0004: begin
-                    wb_dat_o <= {29'b0, fifo_full, fifo_empty, fifo_low};
+                    wb_dat_i <= {29'b0, fifo_full, fifo_empty, fifo_low};
                 end
                 16'h0008: begin
-                    wb_dat_o <= fifo_threshold_reg;
+                    wb_dat_i <= fifo_threshold_reg;
                 end
                 16'h000c: begin
-                    wb_dat_o <= {{32-FIFO_LEN_BITS{1'b0}}, fifo_level};
+                    wb_dat_i <= {{32-FIFO_LEN_BITS{1'b0}}, fifo_level};
                 end
                 default: begin
-                    wb_dat_o <= 32'h0000_0000;
+                    wb_dat_i <= 32'h0000_0000;
                 end
             endcase
         end
@@ -109,37 +109,37 @@ module i2s_wb_regfile #(
                 case (wb_adr_i[15:0])
                     32'h0000: begin
                         if (wb_sel_i[0])
-                            reg_ctrl0[7:0] <= wb_dat_i[7:0];
+                            reg_ctrl0[7:0] <= wb_dat_o[7:0];
                     end
                     16'h0008: begin
                         if (wb_sel_i[3])
-                            fifo_threshold_reg[31:24] <= wb_dat_i[31:24];
+                            fifo_threshold_reg[31:24] <= wb_dat_o[31:24];
                         if (wb_sel_i[2])
-                            fifo_threshold_reg[23:16] <= wb_dat_i[23:16];
+                            fifo_threshold_reg[23:16] <= wb_dat_o[23:16];
                         if (wb_sel_i[1])
-                            fifo_threshold_reg[15:8] <= wb_dat_i[15:8];
+                            fifo_threshold_reg[15:8] <= wb_dat_o[15:8];
                         if (wb_sel_i[0])
-                            fifo_threshold_reg[7:0] <= wb_dat_i[7:0];
+                            fifo_threshold_reg[7:0] <= wb_dat_o[7:0];
                     end
                     16'h0010: begin
                         if (wb_sel_i[3])
-                            audio_valid <= wb_dat_i[31];
+                            audio_valid <= wb_dat_o[31];
                         if (wb_sel_i[2])
-                            audio_data[23:16] <= wb_dat_i[23:16];
+                            audio_data[23:16] <= wb_dat_o[23:16];
                         if (wb_sel_i[1])
-                            audio_data[15:8] <= wb_dat_i[15:8];
+                            audio_data[15:8] <= wb_dat_o[15:8];
                         if (wb_sel_i[0])
-                            audio_data[7:0] <= wb_dat_i[7:0];
+                            audio_data[7:0] <= wb_dat_o[7:0];
                     end
                     16'h0014: begin
                         if (wb_sel_i[3])
-                            audio_valid <= wb_dat_i[31];
+                            audio_valid <= wb_dat_o[31];
                         if (wb_sel_i[2])
-                            audio_data[47:40] <= wb_dat_i[23:16];
+                            audio_data[47:40] <= wb_dat_o[23:16];
                         if (wb_sel_i[1])
-                            audio_data[39:32] <= wb_dat_i[15:8];
+                            audio_data[39:32] <= wb_dat_o[15:8];
                         if (wb_sel_i[0])
-                            audio_data[31:24] <= wb_dat_i[7:0];
+                            audio_data[31:24] <= wb_dat_o[7:0];
                     end
                 endcase
             end

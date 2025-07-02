@@ -8,8 +8,8 @@ module psoc_audio(
         input rst,
 
         input[31:0] wb_adr_i,
-        input[31:0] wb_dat_i,
-        output[31:0] wb_dat_o,
+        output[31:0] wb_dat_i,
+        input[31:0] wb_dat_o,
         input wb_we_i,
         input[3:0] wb_sel_i,
         input wb_stb_i,
