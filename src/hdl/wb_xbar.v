@@ -1,6 +1,7 @@
 // Date: 02.07.2025
 // Author: Johannes Pfau
 // Description: Minimal wishbone crossbar based on https://zipcpu.com/blog/2017/06/22/simple-wb-interconnect.html
+//              We however keep everything combinational. We still meet timing and this way we avoid additional registers.
 // Note: This xbar assumes that we use the neorv xbus interface an that all slaves set their outputs to 0 when they're not actively reading.
 
 
