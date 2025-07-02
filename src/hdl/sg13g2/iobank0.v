@@ -13,9 +13,8 @@ module iobank0(
 
     genvar i;
     generate
-        for (i = 0; i < 20; i = i + 1) begin : mux_loop
-            assign pads[i] = (pad_oe[i] == 1'b1) ? pad_o[i] : 1'bz;
-            assign pad_i[i] = pads[i];
+        for (i = 0; i < 20; i = i + 1) begin : pad
+            (* keep *) sg13g2_IOPadInOut4mA inst (.pad(pads[i]), .c2p(pad_o[i]), .c2p_en(pad_oe[i]), .p2c(pad_i[i]));
         end
     endgenerate
 

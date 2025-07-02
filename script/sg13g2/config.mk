@@ -32,13 +32,14 @@ RTL_SOURCES = \
 
 export VERILOG_FILES = $(addprefix $(RTL_DIR)/,$(RTL_SOURCES))
 export SDC_FILE = $(SCRIPT_DIR)/constraint.sdc
+export FOOTPRINT_TCL = $(SCRIPT_DIR)/footprint.tcl
+
+export DIE_AREA  =   0   0 1940 1940
+export CORE_AREA = 270 270 1670 1670
 
 export USE_FILL = 1
-
-export CORE_UTILIZATION = 60
 export TNS_END_PERCENT = 100
 
 # FIXME
 export SYNTH_MEMORY_MAX_BITS = 12288
-
 export SYNTH_HIERARCHICAL=1
