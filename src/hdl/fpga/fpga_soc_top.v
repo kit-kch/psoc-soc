@@ -3,7 +3,7 @@
 //Description: Top-Level Verilog integrating the PSoC audio IP with neorv32 CPU
 
 module fpga_soc_top(
-        inout[29:0] pads,
+        inout[31:0] pads,
 
         output xip_q2,
         output xip_q3

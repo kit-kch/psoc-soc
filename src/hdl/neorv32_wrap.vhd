@@ -59,7 +59,9 @@ entity neorv32_wrap is
     twi_sda_i      : in std_logic; -- twi serial data line
     twi_sda_o      : out std_logic; -- twi serial data line
     twi_scl_i      : in std_logic; -- twi serial clock line
-    twi_scl_o      : out std_logic -- twi serial clock line
+    twi_scl_o      : out std_logic; -- twi serial clock line
+
+    pwm_o          : out std_ulogic_vector(15 downto 0) -- pwm channels
   );
 end neorv32_wrap;
 
@@ -109,12 +111,12 @@ begin
         XBUS_EN => true,  -- implement external memory bus interface?
 
         -- Processor peripherals --
-        IO_GPIO_NUM => 21,  -- implement general purpose input/output port unit (GPIO)?
+        IO_GPIO_NUM => 23,  -- implement general purpose input/output port unit (GPIO)?
         IO_CLINT_EN => true,  -- implement machine system timer (MTIME)?
         IO_UART0_EN => true,  -- implement primary universal asynchronous receiver/transmitter (UART0)?
         IO_SPI_EN => true,  -- implement serial peripheral interface (SPI)?
         IO_TWI_EN => true,  -- implement two-wire interface (TWI)?
-        IO_PWM_NUM_CH => 0,  -- number of PWM channels to implement (0..60); 0 = disabled
+        IO_PWM_NUM_CH => 2,  -- number of PWM channels to implement (0..60); 0 = disabled
         XIP_EN => true,  -- implement execute in place module (XIP)?
         CPU_RF_HW_RST_EN => true
     )
@@ -179,6 +181,9 @@ begin
         twi_sda_o => twi_sda_o, -- twi serial data line
         twi_scl_i => twi_scl_i, -- twi serial clock line
         twi_scl_o => twi_scl_o, -- twi serial clock line
+
+        -- PWM (available if IO_PWM_NUM_CH > 0) --
+        pwm_o => pwm_o,
 
         -- CPU interrupts --
         mtime_irq_i => 'L', -- machine timer interrupt, available if IO_MTIME_EN = false

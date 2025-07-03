@@ -16,32 +16,32 @@ set_property IOSTANDARD LVCMOS33 [get_ports {pads[1]}]
 # JTAG
 # ------------------------------------------------------
 # LA06_P, Bank 34, jtag_tck
-set_property PACKAGE_PIN L21 [get_ports {pads[20]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pads[20]}]
-# LA06_N, Bank 34, jtag_tdi
-set_property PACKAGE_PIN L22 [get_ports {pads[21]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pads[21]}]
-# LA26_N, Bank 35, jtag_tdo
-set_property PACKAGE_PIN E18 [get_ports {pads[22]}]
+set_property PACKAGE_PIN L21 [get_ports {pads[22]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {pads[22]}]
-# LA26_P, Bank 35, jtag_tms
-set_property PACKAGE_PIN F18 [get_ports {pads[23]}]
+# LA06_N, Bank 34, jtag_tdi
+set_property PACKAGE_PIN L22 [get_ports {pads[23]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {pads[23]}]
+# LA26_N, Bank 35, jtag_tdo
+set_property PACKAGE_PIN E18 [get_ports {pads[24]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[24]}]
+# LA26_P, Bank 35, jtag_tms
+set_property PACKAGE_PIN F18 [get_ports {pads[25]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[25]}]
 
 # ARSTN
 # ------------------------------------------------------
 # GPIO1, LA19_N, Bank 35, arstn
-set_property PACKAGE_PIN G16 [get_ports {pads[29]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pads[29]}]
+set_property PACKAGE_PIN G16 [get_ports {pads[31]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[31]}]
 
 # QSPI / XIP
 # ------------------------------------------------------
 # QSPI_Q0 (FLASH DI), LA20_P, Bank 35, xip_sdo
-set_property PACKAGE_PIN G20 [get_ports {pads[27]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pads[27]}]
+set_property PACKAGE_PIN G20 [get_ports {pads[29]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[29]}]
 # QSPI_Q1 (FLASH DO), LA20_N, Bank 35, xip_sid
-set_property PACKAGE_PIN G21 [get_ports {pads[26]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pads[26]}]
+set_property PACKAGE_PIN G21 [get_ports {pads[28]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[28]}]
 # QSPI_Q2, LA12_P, Bank 34
 set_property PACKAGE_PIN P20 [get_ports xip_q2]
 set_property IOSTANDARD LVCMOS33 [get_ports xip_q2]
@@ -49,12 +49,12 @@ set_property IOSTANDARD LVCMOS33 [get_ports xip_q2]
 set_property PACKAGE_PIN P21 [get_ports xip_q3]
 set_property IOSTANDARD LVCMOS33 [get_ports xip_q3]
 # QSPI_SCK, LA00_CC_P, Bank 34, xip_clk
-set_property PACKAGE_PIN M19 [get_ports {pads[25]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pads[25]}]
+set_property PACKAGE_PIN M19 [get_ports {pads[27]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[27]}]
 
 # QSPI_SS, LA30_P, Bank 35, xip_csn
-set_property PACKAGE_PIN C15 [get_ports {pads[24]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pads[24]}]
+set_property PACKAGE_PIN C15 [get_ports {pads[26]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[26]}]
 
 # UART
 # ------------------------------------------------------
@@ -96,6 +96,14 @@ set_property IOSTANDARD LVCMOS33 [get_ports {pads[14]}]
 set_property PACKAGE_PIN G15 [get_ports {pads[15]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {pads[15]}]
 
+# LEDs Buttons (shared with PWM Pins)
+# ------------------------------------------------------
+# GPIO2, LA03_N, Bank 34, d2/pwm0
+set_property PACKAGE_PIN P22 [get_ports {pads[20]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[20]}]
+# GPIO3, LA03_P, Bank 34, d3/pwm1
+set_property PACKAGE_PIN N22 [get_ports {pads[21]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[21]}]
 
 # PHONE_L / PHONE_R
 # ------------------------------------------------------
@@ -125,6 +133,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports {pads[19]}]
 # Clock Oscillator
 # ------------------------------------------------------
 # CLK0_M2C_P, Bank 34, clk
-set_property PACKAGE_PIN L18 [get_ports {pads[28]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pads[28]}]
-create_clock -period 10.173 -name clk -waveform {0.000 5.087} [get_ports {pads[28]}]
+set_property PACKAGE_PIN L18 [get_ports {pads[30]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[30]}]
+create_clock -period 10.173 -name clk -waveform {0.000 5.087} [get_ports {pads[30]}]

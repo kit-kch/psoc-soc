@@ -4,7 +4,7 @@
 
 // FIXME: clk, arstn also need to go through pads
 module soc_top(
-        inout[29:0] pads
+        inout[31:0] pads
     );
 
     // system clock
@@ -43,6 +43,8 @@ module soc_top(
     // SPI
     wire spi_sck_o, spi_sdo_o, spi_sdi_i;
     wire[7:0] spi_csn_o;
+    // PWM
+    wire[15:0] pwm_o;
     // JTAG
     wire jtag_tck_i, jtag_tdi_i, jtag_tdo_o, jtag_tms_i;
     // XIP
@@ -85,7 +87,9 @@ module soc_top(
         .twi_sda_i(i2c_sda_i),
         .twi_sda_o(i2c_sda_o),
         .twi_scl_i(i2c_scl_i),
-        .twi_scl_o(i2c_scl_o)
+        .twi_scl_o(i2c_scl_o),
+
+        .pwm_o(pwm_o)
     );
 
     wb_xbar xbar(
@@ -141,8 +145,8 @@ module soc_top(
         .phone_r(audio_r)
     );
 
-    // Hardcode this to GPIO port 20 for interrupt
-    assign gpio_i[20] = audio_fifo_low;
+    // Hardcode this to GPIO port 22 for interrupt
+    assign gpio_i[22] = audio_fifo_low;
 
     io_subsystem io(
         .clk(clk),
@@ -158,8 +162,8 @@ module soc_top(
         .wb_cyc(wb_io_cyc),
         .wb_ack(wb_io_ack),
 
-        .gpio_i(gpio_i[19:0]),
-        .gpio_o(gpio_o[19:0]),
+        .gpio_i(gpio_i[21:0]),
+        .gpio_o(gpio_o[21:0]),
 
         .i2s_mclk(i2s_mclk),
         .i2s_sdata(i2s_sdata),
@@ -181,6 +185,8 @@ module soc_top(
         .spi_sdo(spi_sdo_o),
         .spi_sdi(spi_sdi_i),
         .spi_csn(spi_csn_o[2:0]),
+
+        .pwm(pwm_o[1:0]),
 
         .jtag_tck(jtag_tck_i),
         .jtag_tdi(jtag_tdi_i),

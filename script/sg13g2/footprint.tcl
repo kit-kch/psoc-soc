@@ -45,19 +45,22 @@ place_pads -row IO_NORTH \
     {io/iob0/pad\[9\].inst} \
     {io/iob0/pad\[10\].inst} \
     {io/iob0/pad\[11\].inst} \
-    {io/iob0/pad\[12\].inst}
+    {io/iob0/pad\[12\].inst} \
+    {io/iob0/pad\[13\].inst}
 
 
 place_pads -row IO_SOUTH \
     io/iob1/u_pad_vdd_1 \
     io/iob1/u_pad_gnd_1 \
-    {io/iob0/pad\[13\].inst} \
     {io/iob0/pad\[14\].inst} \
     {io/iob0/pad\[15\].inst} \
     {io/iob0/pad\[16\].inst} \
     {io/iob0/pad\[17\].inst} \
     {io/iob0/pad\[18\].inst} \
-    {io/iob0/pad\[19\].inst}
+    {io/iob0/pad\[19\].inst} \
+    {io/iob0/pad\[20\].inst} \
+    {io/iob0/pad\[21\].inst}
+
 
 
 # Place corners

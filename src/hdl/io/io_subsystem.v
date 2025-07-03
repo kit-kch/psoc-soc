@@ -19,8 +19,8 @@ module io_subsystem(
         output wb_ack,
 
         // GPIO Signals
-        input[19:0] gpio_o,
-        output[19:0] gpio_i,
+        input[21:0] gpio_o,
+        output[21:0] gpio_i,
 
         // I2S signals
         input i2s_mclk,
@@ -48,6 +48,9 @@ module io_subsystem(
         output spi_sdi,
         input[2:0] spi_csn,
 
+        // PWN
+        input[1:0] pwm,
+
         // JTAG
         output jtag_tck,
         output jtag_tdi,
@@ -61,12 +64,12 @@ module io_subsystem(
         input xip_sdo,
 
         // Final outputs, as connected to pads
-        inout[29:0] pads
+        inout[31:0] pads
     );
 
-    wire[19:0] pad_o, pad_oe, pad_i;
-    wire[19:0] gpio_fn;
-    wire[19:0] fn_i, fn_o, gpio_oe, fn_oe;
+    wire[21:0] pad_o, pad_oe, pad_i;
+    wire[21:0] gpio_fn;
+    wire[21:0] fn_i, fn_o, gpio_oe, fn_oe;
 
 
     // Assign the special IOs
@@ -114,6 +117,11 @@ module io_subsystem(
     assign fn_o[19] = 1'b0;
     assign fn_oe[19] = 1'b0;
 
+    assign fn_o[20] = pwm[0];
+    assign fn_oe[20] = 1'b1;
+    assign fn_o[21] = pwm[1];
+    assign fn_oe[21] = 1'b1;
+
     // Wishbone regfile
     io_wb_regfile wb(
         .clk(clk),
@@ -154,7 +162,7 @@ module io_subsystem(
         .pad_i(pad_i),
         .pad_o(pad_o),
         .pad_oe(pad_oe),
-        .pads(pads[19:0])
+        .pads(pads[21:0])
     );
 
     // Direct input / outputs IOB
@@ -175,7 +183,7 @@ module io_subsystem(
         .xip_sdi(xip_sdi),
         .xip_sdo(xip_sdo),
 
-        .pads(pads[29:20])
+        .pads(pads[31:22])
     );
 
 endmodule

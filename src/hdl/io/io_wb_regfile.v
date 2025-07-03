@@ -23,8 +23,8 @@ module io_wb_regfile(
         output reg[31:0] wb_dat_i,
         output reg wb_ack_o,
 
-        output reg[19:0] gpio_oe,
-        output reg[19:0] gpio_fn
+        output reg[21:0] gpio_oe,
+        output reg[21:0] gpio_fn
     );
 
     wire o_wb_stall = 1'b0;
@@ -35,10 +35,10 @@ module io_wb_regfile(
         if (wb_cyc_i && !wb_we_i) begin
             case (wb_adr_i[15:0])
                 16'h0000: begin
-                    wb_dat_i <= {12'h000, gpio_oe};
+                    wb_dat_i <= {10'b0, gpio_oe};
                 end
                 16'h0004: begin
-                    wb_dat_i <= {12'h000, gpio_fn};
+                    wb_dat_i <= {10'b0, gpio_fn};
                 end
                 default: begin
                     wb_dat_i <= 32'h0000_0000;
@@ -57,7 +57,7 @@ module io_wb_regfile(
                 case (wb_adr_i[15:0])
                     32'h0000: begin
                         if (wb_sel_i[2])
-                            gpio_oe[19:16] <= wb_dat_o[19:16];
+                            gpio_oe[21:16] <= wb_dat_o[21:16];
                         if (wb_sel_i[1])
                             gpio_oe[15:8] <= wb_dat_o[15:8];
                         if (wb_sel_i[0])
@@ -65,7 +65,7 @@ module io_wb_regfile(
                     end
                     16'h0004: begin
                         if (wb_sel_i[2])
-                            gpio_fn[19:16] <= wb_dat_o[19:16];
+                            gpio_fn[21:16] <= wb_dat_o[21:16];
                         if (wb_sel_i[1])
                             gpio_fn[15:8] <= wb_dat_o[15:8];
                         if (wb_sel_i[0])

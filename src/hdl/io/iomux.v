@@ -3,19 +3,19 @@
 //Description: PSoC IC IO Subsystem
 
 module iomux(
-        input[19:0] gpio_fn,
+        input[21:0] gpio_fn,
     
-        output[19:0] gpio_i,
-        output[19:0] fn_i,
-        input[19:0] pad_i,
+        output[21:0] gpio_i,
+        output[21:0] fn_i,
+        input[21:0] pad_i,
 
-        input[19:0] gpio_o,
-        input[19:0] fn_o,
-        output[19:0] pad_o,
+        input[21:0] gpio_o,
+        input[21:0] fn_o,
+        output[21:0] pad_o,
 
-        input[19:0] gpio_oe,
-        input[19:0] fn_oe,
-        output[19:0] pad_oe
+        input[21:0] gpio_oe,
+        input[21:0] fn_oe,
+        output[21:0] pad_oe
     );
 
     assign gpio_i = pad_i;
@@ -23,7 +23,7 @@ module iomux(
 
     genvar i;
     generate
-        for (i = 0; i < 20; i = i + 1) begin : mux_loop
+        for (i = 0; i < 22; i = i + 1) begin : mux_loop
             assign pad_o[i] = (gpio_fn[i] == 1'b0) ? gpio_o[i] : fn_o[i];
             assign pad_oe[i] = (gpio_fn[i] == 1'b0) ? gpio_oe[i] : fn_oe[i];
         end
