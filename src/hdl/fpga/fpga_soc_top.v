@@ -9,7 +9,9 @@ module fpga_soc_top(
         output xip_q3
     );
 
-    soc_top soc(
+    soc_top #(
+        .sysinfo(16'h0000)
+    ) soc (
         .pads(pads)
     );
 

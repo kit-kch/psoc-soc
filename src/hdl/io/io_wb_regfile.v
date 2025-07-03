@@ -9,7 +9,9 @@
  * - 0x0004: PAD Function Register
  *   - Bit 0-31: Function for PAD i (0 = gpio, 1 = special function)
  */
-module io_wb_regfile(
+module io_wb_regfile #(
+        parameter [15:0] sysinfo = 16'h0
+    )(
         input clk,
         input rst,
 
@@ -39,6 +41,10 @@ module io_wb_regfile(
                 end
                 16'h0004: begin
                     wb_dat_i <= {10'b0, gpio_fn};
+                end
+                16'h0008: begin
+                    // Chip HW ID:
+                    wb_dat_i <= {16'hB50C, sysinfo};
                 end
                 default: begin
                     wb_dat_i <= 32'h0000_0000;

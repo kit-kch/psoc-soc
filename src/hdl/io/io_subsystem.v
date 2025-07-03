@@ -2,7 +2,9 @@
 //Author: Johannes Pfau
 //Description: PSoC IC IO Subsystem
 
-module io_subsystem(
+module io_subsystem #(
+        parameter [15:0] sysinfo = 16'h0
+    )(
         // system clock
         output clk,
         output arstn,
@@ -123,7 +125,9 @@ module io_subsystem(
     assign fn_oe[21] = 1'b1;
 
     // Wishbone regfile
-    io_wb_regfile wb(
+    io_wb_regfile #(
+        .sysinfo(sysinfo)
+    ) wb (
         .clk(clk),
         .rst(rst),
 

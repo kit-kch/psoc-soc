@@ -3,7 +3,9 @@
 //Description: Top-Level Verilog integrating the PSoC audio IP with neorv32 CPU
 
 // FIXME: clk, arstn also need to go through pads
-module soc_top(
+module soc_top #(
+        parameter [15:0] sysinfo = 16'h1001
+    )(
         inout[31:0] pads
     );
 
@@ -148,7 +150,9 @@ module soc_top(
     // Hardcode this to GPIO port 22 for interrupt
     assign gpio_i[22] = audio_fifo_low;
 
-    io_subsystem io(
+    io_subsystem #(
+        .sysinfo(sysinfo)
+    ) io (
         .clk(clk),
         .arstn(arstn),
         .rst(rst),
