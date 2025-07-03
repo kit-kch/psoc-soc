@@ -177,3 +177,6 @@ sg13g2_ui:
 
 sg13g2_sim:
 	cd src/sim/sg13g2 && make
+
+sg13g2_sim_gtl:
+	cd src/sim/sg13g2 && make GATES=yes

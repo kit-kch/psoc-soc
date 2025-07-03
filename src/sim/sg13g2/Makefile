@@ -39,8 +39,14 @@ COMPILE_ARGS    += -DSIM
 COMPILE_ARGS    += -DUNIT_DELAY=\#1
 VERILOG_SOURCES += $(PDK_DIR)/sg13g2_stdcell.v
 
-# this gets copied in by the GDS action workflow
+# Need a dummy module for the bondpad
+VERILOG_SOURCES += $(PWD)/bondpad.v
+
+# The synthesized netlist
 VERILOG_SOURCES += $(FLOW_HOME)/results/ihp-sg13g2/soc_top/base/6_final.v
+
+# OpenROAD creates dummy load cells, that don't have their outputs connected
+COMPILE_ARGS += -Wno-PINMISSING
 endif
 
 # Missing in ORFS PDK installation....
