@@ -18,18 +18,24 @@ module sfifo_mem(i_clk, i_wr, i_wr_addr, i_data, i_rd, i_rd_addr, o_data);
 	input   wire [LGFLEN-1:0] i_wr_addr;
 	// Read interface
 	input	wire		i_rd;
-	output	reg [(BW-1):0]	o_data;
+	output	wire [(BW-1):0]	o_data;
 	input   wire [LGFLEN-1:0] i_rd_addr;
 
-	initial begin
-		//assert (BW == 48) else $fatal("Parameter BW must be 48");
-		//assert (LGFLEN == 8) else $fatal("Parameter LGFLEN must be 8");
-	end
+    initial begin
+        if (BW !== 48) begin
+            $error("Parameter BW must be 48, but is %0d", BW);
+            $finish;
+        end
+        if (LGFLEN !== 8) begin
+            $error("Parameter LGFLEN must be 8, but is %0d", LGFLEN);
+            $finish;
+        end
+    end
 
 	// Map to IHP SRAM
-	wire addr = i_rd ? i_rd_addr : i_wr_addr;
+	wire[LGFLEN-1:0] addr = i_rd ? i_rd_addr : i_wr_addr;
     RM_IHPSG13_1P_256x48_c2_bm_bist sram(
-        .A_CLK(clk_i),
+        .A_CLK(i_clk),
         .A_MEN('b1),
         .A_WEN(i_wr),
         .A_REN(i_rd),

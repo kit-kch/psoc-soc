@@ -1,2 +1,5 @@
 build/**
 out/**
+src/sim/sg13g2/sim_build/**
+src/sim/sg13g2/*.vcd
+src/sim/sg13g2/results.xml

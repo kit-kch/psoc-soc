@@ -39,6 +39,7 @@ clean:
 	cd ext/psoc_boardtest_sw && $(SW_ENV) make clean
 	rm -rvf build
 	rm -rvf out
+	cd src/sim/sg13g2 && make clean
 
 # Project and UI
 project: $(XPR_FILE)
@@ -173,3 +174,6 @@ sg13g2_ui:
 	export DESIGN_CONFIG=$$PWD/script/sg13g2/config.mk; \
 		cd $$FLOW_HOME; \
 		make gui_final
+
+sg13g2_sim:
+	cd src/sim/sg13g2 && make
