@@ -29,11 +29,11 @@ module clock_generator(
 
 
     initial begin
-        clk_en_2 <= 0;
-        clk_en_4 <= 0;
-        clk_en_8 <= 0;
-        clk_en_16 <= 0;
-        c <= 0;
+        clk_en_2 = 0;
+        clk_en_4 = 0;
+        clk_en_8 = 0;
+        clk_en_16 = 0;
+        c = 0;
     end
 
     always @(posedge clk) begin

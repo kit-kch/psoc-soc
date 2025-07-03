@@ -9,7 +9,7 @@ module reset_logic(
         output reg rst
 );
 
-    initial rst <= 0;
+    initial rst = 0;
 
     always @(posedge clk)
         if (arstn == 0) 

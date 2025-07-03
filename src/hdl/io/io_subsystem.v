@@ -83,7 +83,7 @@ module io_subsystem #(
 
     assign fn_o[4] = audio_l;
     assign fn_o[5] = audio_r;
-    assign fn_oe[5:4] = 4'b11;
+    assign fn_oe[5:4] = 2'b11;
 
     assign fn_o[6] = i2c_sda_o;
     assign fn_o[7] = i2c_scl_o;

@@ -56,12 +56,12 @@ module io_wb_regfile #(
     // write logic
     always @(posedge clk) begin
         if (rst) begin
-            gpio_oe <= 32'h0000_0000;
-            gpio_fn <= 32'h0000_0000;
+            gpio_oe <= 'b0;
+            gpio_fn <= 'b0;
         end else begin
             if (wb_cyc_i && wb_we_i && !o_wb_stall) begin
                 case (wb_adr_i[15:0])
-                    32'h0000: begin
+                    16'h0000: begin
                         if (wb_sel_i[2])
                             gpio_oe[21:16] <= wb_dat_o[21:16];
                         if (wb_sel_i[1])
@@ -76,6 +76,9 @@ module io_wb_regfile #(
                             gpio_fn[15:8] <= wb_dat_o[15:8];
                         if (wb_sel_i[0])
                             gpio_fn[7:0] <= wb_dat_o[7:0];
+                    end
+                    default: begin
+                        
                     end
                 endcase
             end
