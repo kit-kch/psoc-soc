@@ -13,16 +13,16 @@ make_io_sites \
 
 ######## Place Pads ########
 place_pads -row IO_EAST \
+    {io/iob0/pad\[21\].inst} \
+    {io/iob0/pad\[20\].inst} \
+    {io/iob0/pad\[19\].inst} \
+    {io/iob0/pad\[18\].inst} \
+    {io/iob0/pad\[17\].inst} \
+    {io/iob0/pad\[16\].inst} \
+    {io/iob0/pad\[15\].inst} \
+    {io/iob0/pad\[14\].inst} \
     io/iob1/u_pad_vddio_0 \
-    io/iob1/u_pad_gndio_0 \
-    io/iob1/u_pad_jtag_tck \
-    io/iob1/u_pad_jtag_tdi \
-    io/iob1/u_pad_jtag_tdo \
-    io/iob1/u_pad_jtag_tms \
-    io/iob1/u_pad_xip_csn \
-    io/iob1/u_pad_xip_clk \
-    io/iob1/u_pad_xip_sdi \
-    io/iob1/u_pad_xip_sdo
+    io/iob1/u_pad_gndio_0
 
 place_pads -row IO_WEST \
     io/iob1/u_pad_vddio_1 \
@@ -50,16 +50,17 @@ place_pads -row IO_NORTH \
 
 
 place_pads -row IO_SOUTH \
+    io/iob1/u_pad_xip_sdo \
+    io/iob1/u_pad_xip_sdi \
+    io/iob1/u_pad_xip_clk \
+    io/iob1/u_pad_xip_csn \
+    io/iob1/u_pad_jtag_tms \
+    io/iob1/u_pad_jtag_tdo \
+    io/iob1/u_pad_jtag_tdi \
+    io/iob1/u_pad_jtag_tck \
     io/iob1/u_pad_vdd_1 \
-    io/iob1/u_pad_gnd_1 \
-    {io/iob0/pad\[14\].inst} \
-    {io/iob0/pad\[15\].inst} \
-    {io/iob0/pad\[16\].inst} \
-    {io/iob0/pad\[17\].inst} \
-    {io/iob0/pad\[18\].inst} \
-    {io/iob0/pad\[19\].inst} \
-    {io/iob0/pad\[20\].inst} \
-    {io/iob0/pad\[21\].inst}
+    io/iob1/u_pad_gnd_1
+
 
 
 
