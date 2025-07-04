@@ -36,22 +36,22 @@ module sfifo_mem(i_clk, i_wr, i_wr_addr, i_data, i_rd, i_rd_addr, o_data);
 	wire[LGFLEN-1:0] addr = i_rd ? i_rd_addr : i_wr_addr;
     RM_IHPSG13_1P_256x48_c2_bm_bist sram(
         .A_CLK(i_clk),
-        .A_MEN('b1),
+        .A_MEN(1'b1),
         .A_WEN(i_wr),
         .A_REN(i_rd),
         .A_ADDR(addr),
         .A_DIN(i_data),
-        .A_DLY('b1),
+        .A_DLY(1'b1),
         .A_DOUT(o_data),
         .A_BM('hFFFFFFFFFFFF),
-        .A_BIST_CLK('b0),
-        .A_BIST_EN('b0),
-        .A_BIST_MEN('b0),
-        .A_BIST_WEN('b0),
-        .A_BIST_REN('b0),
-        .A_BIST_ADDR('h00),
-        .A_BIST_DIN('h000000000000),
-        .A_BIST_BM('h000000000000)
+        .A_BIST_CLK(1'b0),
+        .A_BIST_EN(1'b0),
+        .A_BIST_MEN(1'b0),
+        .A_BIST_WEN(1'b0),
+        .A_BIST_REN(1'b0),
+        .A_BIST_ADDR(8'h00),
+        .A_BIST_DIN(48'h000000000000),
+        .A_BIST_BM(48'h000000000000)
     );
 
 endmodule
