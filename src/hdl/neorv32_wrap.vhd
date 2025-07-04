@@ -115,7 +115,7 @@ begin
 
         XIP_EN => true,  -- implement execute in place module (XIP)?
         XIP_CACHE_EN => true,  -- implement XIP cache
-        XIP_CACHE_NUM_BLOCKS => 8,      -- i-cache: number of blocks (min 1), has to be a power of 2
+        XIP_CACHE_NUM_BLOCKS => 16,      -- i-cache: number of blocks (min 1), has to be a power of 2
         XIP_CACHE_BLOCK_SIZE => 64,     -- i-cache: block size in bytes (min 4), has to be a power of 2
 
         CPU_RF_HW_RST_EN => true
