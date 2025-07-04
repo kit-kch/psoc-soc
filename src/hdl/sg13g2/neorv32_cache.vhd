@@ -624,7 +624,7 @@ architecture neorv32_cache_memory_rtl of neorv32_cache_memory is
   signal mem_addr: std_logic_vector(7 downto 0);
 
 begin
-  assert (NUM_BLOCKS * (BLOCK_SIZE/4) < 256) report "[SG13G2] Max memory depth for cache memory is 256" severity error;
+  assert (NUM_BLOCKS * (BLOCK_SIZE/4) <= 256) report "[SG13G2] Max memory depth for cache memory is 256" severity error;
 
 
   -- Access Address Decomposition -----------------------------------------------------------
