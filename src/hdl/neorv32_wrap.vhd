@@ -102,11 +102,6 @@ begin
         MEM_INT_DMEM_EN => true,  -- implement processor-internal data memory
         MEM_INT_DMEM_SIZE => 16*1024, -- size of processor-internal data memory in bytes
 
-        -- Internal Instruction Cache (iCACHE) --
-        ICACHE_EN => true,  -- implement instruction cache
-        ICACHE_NUM_BLOCKS => 8,      -- i-cache: number of blocks (min 1), has to be a power of 2
-        ICACHE_BLOCK_SIZE => 64,     -- i-cache: block size in bytes (min 4), has to be a power of 2
-
         -- External memory interface (WISHBONE) --
         XBUS_EN => true,  -- implement external memory bus interface?
 
@@ -117,7 +112,12 @@ begin
         IO_SPI_EN => true,  -- implement serial peripheral interface (SPI)?
         IO_TWI_EN => true,  -- implement two-wire interface (TWI)?
         IO_PWM_NUM_CH => 2,  -- number of PWM channels to implement (0..60); 0 = disabled
+
         XIP_EN => true,  -- implement execute in place module (XIP)?
+        XIP_CACHE_EN => true,  -- implement XIP cache
+        XIP_CACHE_NUM_BLOCKS => 8,      -- i-cache: number of blocks (min 1), has to be a power of 2
+        XIP_CACHE_BLOCK_SIZE => 64,     -- i-cache: block size in bytes (min 4), has to be a power of 2
+
         CPU_RF_HW_RST_EN => true
     )
     port map (
