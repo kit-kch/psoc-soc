@@ -1,6 +1,6 @@
 import cocotb
 from cocotb.clock import Clock
-from cocotb.triggers import ClockCycles, RisingEdge
+from cocotb.triggers import ClockCycles, Timer
 
 from cocotbext.spi import SpiBus
 from model.spi_flash import SpiFlash
@@ -21,7 +21,9 @@ async def test_project(dut):
     arstnPin.value = 0
     await ClockCycles(clkPin, 10)
     arstnPin.value = 1
-    # Wait till the application booted
-    await(RisingEdge(dut.pwm0))
-    # Simulate 1000 more cycles
-    await ClockCycles(clkPin, 1000)
+
+    # Wait till the application booted. 300 us is enough
+    await Timer(300, units='us')
+
+    # TODO: Check that dut.pwm0 is high and dut.pwm1 is toggling
+    assert dut.pwm0.value == 1, "Pin pwm0 did not go high at expected time"
