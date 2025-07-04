@@ -1,3 +1,5 @@
 pytest
 cocotb
 cocotbext-spi
+numpy
+scipy

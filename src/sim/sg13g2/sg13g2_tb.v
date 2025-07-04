@@ -3,6 +3,10 @@ module sg13g2_tb ();
   reg arstn;
   reg clk;
 
+  // DAC Pins
+  wire dacl = pads[5];
+  wire dacr = pads[4];
+
   // PWM Pins
   wire pwm0 = pads[20];
   wire pwm1 = pads[21];
