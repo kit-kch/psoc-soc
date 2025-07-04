@@ -16,6 +16,7 @@ module psoc_dac(
 
         // FIFO signals
         input [47:0] fifo_data,
+        input fifo_empty,
         output fifo_ready,
 
         // Analog outputs (unused in FPGA)
@@ -51,15 +52,21 @@ module psoc_dac(
     wire signed [23:0] fifo_r = fifo_data[47:24];
     wire signed [23:0] fifo_l = fifo_data[23:0];
     reg [23:0] shifted_r, shifted_l;
+    reg fifo_valid;
 
     always @(posedge clk) begin
         if (rst) begin
             shifted_r <= 0;
             shifted_l <= 0;
+            fifo_valid <= 0;
         end else begin
             if (fifo_ready) begin
-                shifted_r <= fifo_r + OFFSET;
-                shifted_l <= fifo_l + OFFSET;
+                fifo_valid <= !fifo_empty;
+                // Only use the data if the FIFO was not empty last time we read
+                if (fifo_valid) begin
+                    shifted_r <= fifo_r + OFFSET;
+                    shifted_l <= fifo_l + OFFSET;
+                end
             end
         end
     end

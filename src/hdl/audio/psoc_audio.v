@@ -82,6 +82,7 @@ module psoc_audio(
         .enable(dac_enable),
 
         .fifo_data(fifo_data_out),
+        .fifo_empty(fifo_empty),
         .fifo_ready(fifo_ready_dac),
 
         .phone_l(phone_l),
