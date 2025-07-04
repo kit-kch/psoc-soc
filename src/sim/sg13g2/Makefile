@@ -62,7 +62,7 @@ COMPILE_ARGS 		+= -I$(SRC_DIR)
 COMPILE_ARGS += -Wno-UNOPTFLAT
 
 # Enable waveform output
-EXTRA_ARGS += --trace --trace-structs
+EXTRA_ARGS += --trace --trace-fst --trace-structs
 
 # Include the testbench sources:
 VERILOG_SOURCES += $(PWD)/sg13g2_tb.v
