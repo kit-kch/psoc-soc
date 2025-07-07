@@ -47,5 +47,5 @@ async def test_dac_test(dut):
     await ClockCycles(clkPin, 10)
     arstnPin.value = 1
 
-    audio = cocotb.start_soon(collect_audio(dut.clk, dut.dacl, int(48000000 * 0.1) + 1))
+    audio = cocotb.start_soon(collect_audio("demo_dac_sin.wav", "test_sw/demo_dac_sin.golden.wav", dut.clk, dut.dacl, int(48000000 * 0.05) + 1))
     await audio
