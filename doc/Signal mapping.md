@@ -49,3 +49,9 @@ Debug connector naming scheme:
 | nd | E20 | LA21_N | SPI_SD_!SS | J8 R2 P7 |
 | nd | M21 | LA04_P | SPI_03_!SS | J8 R1 P12 |
 | nd | M22 | LA04_N | SPI_04_!SS | J8 R1 P13 |
+| NeoRV JTAG |
+| jtag_trst_i | K19  | LA14_P | LA14_P | J7-17 |
+| jtag_tck_i | L21  | LA06_P | LA06_P | J7-25 |
+| jtag_tdi_i | L22  | LA06_N | LA06_N | J7-27 |
+| jtag_tdo_o | E18  | LA26_N | LA26_N | J7-18 |
+| jtag_tms_i | F18  | LA26_P | LA26_P | J7-20 |
