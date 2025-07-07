@@ -11,6 +11,13 @@ module sg13g2_tb ();
   wire pwm0 = pads[20];
   wire pwm1 = pads[21];
 
+  // JTAG Pins. Note: Must drive those, otherwise GL simulation becomes invalid!
+  reg jtag_tms, jtag_tdi, jtag_tck;
+  wire jtag_tdo = pads[24];
+  assign pads[25] = jtag_tms;
+  assign pads[23] = jtag_tdi;
+  assign pads[22] = jtag_tck;
+
   // XIP SPI Flash slave peripheral
   reg xip_sdi;
   wire xip_sdo = pads[29];

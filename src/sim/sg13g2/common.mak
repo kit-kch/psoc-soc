@@ -1,4 +1,3 @@
-# defaults
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../../hdl
 PDK_DIR = $(FLOW_HOME)/platforms/ihp-sg13g2/verilog
@@ -23,18 +22,20 @@ RTL_SOURCES = \
 
 ifneq ($(GATES),yes)
 # RTL simulation:
-SIM_BUILD = sim_build/rtl
+SIM_BUILD = sim_build/$(SIM).rtl
 VERILOG_SOURCES += $(addprefix $(SRC_DIR)/,$(RTL_SOURCES))
 else
 # Gate level simulation:
-SIM_BUILD		= sim_build/gl
+SIM_BUILD		= sim_build/$(SIM).gl
+ifneq ($(SIM),questa)
 COMPILE_ARGS    += -DGL_TEST
 COMPILE_ARGS    += -DFUNCTIONAL
 COMPILE_ARGS    += -DUSE_POWER_PINS
 COMPILE_ARGS    += -DSIM
 COMPILE_ARGS    += -DUNIT_DELAY=\#1
-VERILOG_SOURCES += $(PDK_DIR)/sg13g2_stdcell.v
+endif
 
+VERILOG_SOURCES += $(PDK_DIR)/sg13g2_stdcell.v
 # Need a dummy module for the bondpad
 VERILOG_SOURCES += $(PWD)/bondpad.v
 
@@ -49,7 +50,9 @@ VERILOG_SOURCES += $(PDK_DIR)/RM_IHPSG13_1P_4096x16_c3_bm_bist.v
 VERILOG_SOURCES += $(PDK_DIR)/sg13g2_io.v
 
 # Allow sharing configuration between design and testbench via `include`:
+ifneq ($(SIM),questa)
 COMPILE_ARGS 		+= -I$(SRC_DIR)
+endif
 
 # Include the testbench sources:
 VERILOG_SOURCES += $(PWD)/sg13g2_tb.v

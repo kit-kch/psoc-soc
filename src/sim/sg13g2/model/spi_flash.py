@@ -39,7 +39,7 @@ class SpiFlash(SpiSlaveBase):
 
         # Load data from file
         self.file.seek(address)
-        data = int.from_bytes(self.file.read(1))
+        data = int.from_bytes(self.file.read(1), byteorder='big')
 
         # Send bits as long as frame is active
         # SPI mode 0: await self._shift returned at a falling edge
@@ -48,7 +48,7 @@ class SpiFlash(SpiSlaveBase):
         while True:
             self._miso.value = (data >> (bit_idx)) & 1
             if (bit_idx == 0):
-                data = int.from_bytes(self.file.read(1))
+                data = int.from_bytes(self.file.read(1), byteorder='big')
                 bit_idx = 7
             else:
                 bit_idx = bit_idx - 1

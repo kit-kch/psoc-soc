@@ -1,8 +1,2 @@
 build/**
 out/**
-src/sim/sg13g2/sim_build/**
-src/sim/sg13g2/*.vcd
-src/sim/sg13g2/*.fst
-src/sim/sg13g2/*.fst.hier
-src/sim/sg13g2/*.wav
-src/sim/sg13g2/results.xml

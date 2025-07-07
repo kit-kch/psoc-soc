@@ -1,0 +1,10 @@
+sim_build/**
+*.vcd
+*.fst
+*.fst.hier
+/*.wav
+results.xml
+modelsim.ini
+transcript
+xrun.*
+__pycache__
