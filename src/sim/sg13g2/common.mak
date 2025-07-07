@@ -1,8 +1,4 @@
-# Makefile
-# See https://docs.cocotb.org/en/stable/quickstart.html for more info
-
 # defaults
-SIM ?= verilator
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../../hdl
 PDK_DIR = $(FLOW_HOME)/platforms/ihp-sg13g2/verilog
@@ -44,9 +40,6 @@ VERILOG_SOURCES += $(PWD)/bondpad.v
 
 # The synthesized netlist
 VERILOG_SOURCES += $(FLOW_HOME)/results/ihp-sg13g2/soc_top/base/6_final.v
-
-# OpenROAD creates dummy load cells, that don't have their outputs connected
-COMPILE_ARGS += -Wno-PINMISSING
 endif
 
 # Missing in ORFS PDK installation....
@@ -58,18 +51,9 @@ VERILOG_SOURCES += $(PDK_DIR)/sg13g2_io.v
 # Allow sharing configuration between design and testbench via `include`:
 COMPILE_ARGS 		+= -I$(SRC_DIR)
 
-# NEORV32 generates a lot of these
-COMPILE_ARGS += -Wno-UNOPTFLAT
-
-# Enable waveform output
-EXTRA_ARGS += --trace --trace-fst --trace-structs
-
 # Include the testbench sources:
 VERILOG_SOURCES += $(PWD)/sg13g2_tb.v
 TOPLEVEL = sg13g2_tb
 
 # MODULE is the basename of the Python test file
 MODULE = sg13g2_tb
-
-# include cocotb's make rules to take care of the simulator setup
-include $(shell cocotb-config --makefiles)/Makefile.sim
