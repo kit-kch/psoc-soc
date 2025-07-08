@@ -22,13 +22,14 @@
 // FITNESS FOR A PARTICULAR PURPOSE.
 //
 ////////////////////////////////////////////////////////////////////////////////
-module sfifo(i_clk, i_wr, i_data, o_ready, o_full, o_fill, i_rd, o_data, o_empty);
+module sfifo(i_clk, i_rst, i_wr, i_data, o_ready, o_full, o_fill, i_rd, o_data, o_empty);
 	parameter	BW=32;	// Byte/data width
 	parameter 	LGFLEN=4;
 
 	input	wire		i_clk;
 	// Write interface
 	input	wire		i_wr;
+	input   wire        i_rst;
 	input	wire [(BW-1):0]	i_data;
 	output	wire		o_ready;
 	output	reg 		o_full;
@@ -50,10 +51,12 @@ module sfifo(i_clk, i_wr, i_data, o_ready, o_full, o_fill, i_rd, o_data, o_empty
 	//
 	// Write a new value into our FIFO
 	//
-	initial	wr_addr = 0;
-	always @(posedge i_clk)
-	if (!i_rd && w_wr)
-		wr_addr <= wr_addr + 1'b1;
+	always @(posedge i_clk or posedge i_rst) begin
+		if (i_rst)
+			wr_addr <= '0;
+		else if (!i_rd && w_wr)
+			wr_addr <= wr_addr + 1'b1;
+	end
 
 	// Instantiate the memory
     sfifo_mem #(.BW(BW), .LGFLEN(LGFLEN)) mem(
@@ -69,10 +72,12 @@ module sfifo(i_clk, i_wr, i_data, o_ready, o_full, o_fill, i_rd, o_data, o_empty
 	//
 	// Read a value back out of it
 	//
-	initial	rd_addr = 0;
-	always @(posedge i_clk)
-	if (w_rd)
-		rd_addr <= rd_addr + 1;
+	always @(posedge i_clk or posedge i_rst) begin
+		if (i_rst)
+			rd_addr <= '0;
+		else if (w_rd)
+			rd_addr <= rd_addr + 1;
+	end
 
 	//
 	// Return some metrics of the FIFO, it's current fill level,

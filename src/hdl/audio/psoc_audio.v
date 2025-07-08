@@ -99,6 +99,7 @@ module psoc_audio(
 
     sfifo #(.BW(48), .LGFLEN(FIFO_LEN_BITS)) fifo(
         .i_clk(clk),
+        .i_rst(rst),
         .i_wr(fifo_write),
         .i_data(fifo_data_in),
         .o_ready(fifo_write_ready),
