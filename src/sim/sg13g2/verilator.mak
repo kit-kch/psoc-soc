@@ -1,6 +1,6 @@
 # See https://docs.cocotb.org/en/stable/quickstart.html for more info
 SIM ?= verilator
-include common.mak
+include common/common.mak
 
 ifeq ($(GATES),yes)
 # Gate level simulation:

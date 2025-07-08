@@ -1,0 +1,2 @@
+from test_blink_led.test import test_blink_led
+from test_dac_sin.test import test_dac_test

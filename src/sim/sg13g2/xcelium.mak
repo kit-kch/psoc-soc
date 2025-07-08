@@ -1,6 +1,6 @@
 # See https://docs.cocotb.org/en/stable/quickstart.html for more info
 SIM ?= xcelium
-include common.mak
+include common/common.mak
 
 EXTRA_ARGS += -access +rwc
 EXTRA_ARGS += +dumpvars

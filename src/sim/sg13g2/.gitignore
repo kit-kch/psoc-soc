@@ -1,4 +1,4 @@
-sim_build/**
+.build/**
 *.vcd
 *.fst
 *.fst.hier

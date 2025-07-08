@@ -22,11 +22,11 @@ RTL_SOURCES = \
 
 ifneq ($(GATES),yes)
 # RTL simulation:
-SIM_BUILD = sim_build/$(SIM).rtl
+export SIM_BUILD = .build/$(SIM).rtl
 VERILOG_SOURCES += $(addprefix $(SRC_DIR)/,$(RTL_SOURCES))
 else
 # Gate level simulation:
-SIM_BUILD		= sim_build/$(SIM).gl
+export SIM_BUILD		= .build/$(SIM).gl
 ifneq ($(SIM),questa)
 COMPILE_ARGS    += -DGL_TEST
 COMPILE_ARGS    += -DFUNCTIONAL
@@ -37,14 +37,14 @@ endif
 
 VERILOG_SOURCES += $(PDK_DIR)/sg13g2_stdcell.v
 # Need a dummy module for the bondpad
-VERILOG_SOURCES += $(PWD)/bondpad.v
+VERILOG_SOURCES += $(PWD)/common/verilog/bondpad.v
 
 # The synthesized netlist
 VERILOG_SOURCES += $(FLOW_HOME)/results/ihp-sg13g2/soc_top/base/6_final.v
 endif
 
 # Missing in ORFS PDK installation....
-VERILOG_SOURCES += $(PWD)/RM_IHPSG13_1P_core_behavioral_bm_bist.v
+VERILOG_SOURCES += $(PWD)/common/verilog/RM_IHPSG13_1P_core_behavioral_bm_bist.v
 VERILOG_SOURCES += $(PDK_DIR)/RM_IHPSG13_1P_256x48_c2_bm_bist.v
 VERILOG_SOURCES += $(PDK_DIR)/RM_IHPSG13_1P_4096x16_c3_bm_bist.v
 VERILOG_SOURCES += $(PDK_DIR)/sg13g2_io.v
@@ -55,8 +55,8 @@ COMPILE_ARGS 		+= -I$(SRC_DIR)
 endif
 
 # Include the testbench sources:
-VERILOG_SOURCES += $(PWD)/sg13g2_tb.v
+VERILOG_SOURCES += $(PWD)/common/verilog/sg13g2_tb.v
 TOPLEVEL = sg13g2_tb
 
 # MODULE is the basename of the Python test file
-MODULE = sg13g2_tb
+MODULE = main

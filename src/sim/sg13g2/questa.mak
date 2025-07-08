@@ -1,6 +1,6 @@
 # See https://docs.cocotb.org/en/stable/quickstart.html for more info
 SIM ?= questa
-include common.mak
+include common/common.mak
 
 ifneq ($(GATES),yes)
 # If we don't do gate-level, we don't have hold times and hold checks in the RAM simulation fail...
