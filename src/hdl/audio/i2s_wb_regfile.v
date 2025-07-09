@@ -105,7 +105,8 @@ module i2s_wb_regfile #(
             // reset every cycle, should be high for one cycle only
             audio_valid <= 1'b0;
 
-            if (wb_cyc_i && wb_we_i && !o_wb_stall) begin
+            // Use stb, not cyc here, so we have only a single cycle per request
+            if (wb_stb_i && wb_we_i && !o_wb_stall) begin
                 case (wb_adr_i[15:0])
                     16'h0000: begin
                         if (wb_sel_i[0])

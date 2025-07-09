@@ -59,7 +59,7 @@ module io_wb_regfile #(
             gpio_oe <= 'b0;
             gpio_fn <= 'b0;
         end else begin
-            if (wb_cyc_i && wb_we_i && !o_wb_stall) begin
+            if (wb_stb_i && wb_we_i && !o_wb_stall) begin
                 case (wb_adr_i[15:0])
                     16'h0000: begin
                         if (wb_sel_i[2])
