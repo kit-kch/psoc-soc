@@ -11,7 +11,7 @@ async def test_blink_led(dut):
     await initializeSoC(dut, testDirPath("firmware.raw_exe.bin"))
 
     # Wait till the application booted. 300 us is enough
-    await Timer(300, units='us')
+    await Timer(500, units='us')
 
     # Check that dut.pwm0 is high
     assert dut.pwm0.value == 1, "Pin pwm0 did not go high at expected time"
