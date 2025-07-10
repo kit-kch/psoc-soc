@@ -53,7 +53,7 @@ module sfifo(i_clk, i_rst, i_wr, i_data, o_ready, o_full, o_fill, i_rd, o_data, 
 	//
 	always @(posedge i_clk or posedge i_rst) begin
 		if (i_rst)
-			wr_addr <= '0;
+			wr_addr <= {LGFLEN{1'b0}};
 		else if (!i_rd && w_wr)
 			wr_addr <= wr_addr + 1'b1;
 	end
@@ -74,7 +74,7 @@ module sfifo(i_clk, i_rst, i_wr, i_data, o_ready, o_full, o_fill, i_rd, o_data, 
 	//
 	always @(posedge i_clk or posedge i_rst) begin
 		if (i_rst)
-			rd_addr <= '0;
+			rd_addr <= {LGFLEN{1'b0}};
 		else if (w_rd)
 			rd_addr <= rd_addr + 1;
 	end
