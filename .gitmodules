@@ -13,3 +13,6 @@
 [submodule "ext/psoc_xip_bootloader"]
 	path = ext/psoc_xip_bootloader
 	url = ../../psoc-admin/psoc_xip_bootloader.git
+[submodule "ext/psoc_sw_lib"]
+	path = ext/psoc_sw_lib
+	url = https://github.com/kit-kch/psoc-sw-lib.git
