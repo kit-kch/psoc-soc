@@ -1,8 +1,6 @@
-//Date: 11.09.2022
-//Author: Johannes Pfau
-//Description: Top-Level Verilog integrating the PSoC audio IP with neorv32 CPU
-
-// FIXME: clk, arstn also need to go through pads
+// Date: 11.09.2022
+// Author: Johannes Pfau
+// Description: Top-Level Verilog integrating the PSoC audio IP with neorv32 CPU
 module soc_top #(
         parameter [15:0] sysinfo = 16'h1001
     )(
