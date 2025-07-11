@@ -113,6 +113,8 @@ pre:sg13g2_soc_top:wrap:
 
 behav:sg13g2_soc_top:
   stage: behav
+  image:
+    name: gitlab.itiv.kit.edu:1443/itiv/docker/rocky9:latest
   needs:
    - job: "pre:sg13g2_soc_top:wrap"
      artifacts: true
@@ -138,6 +140,8 @@ implement:sg13g2_soc_top:rtl2gds:
 
 postsim:sg13g2_soc_top:
   stage: postsim
+  image:
+    name: gitlab.itiv.kit.edu:1443/itiv/docker/rocky9:latest
   needs:
    - job: "implement:sg13g2_soc_top:rtl2gds"
      artifacts: true
