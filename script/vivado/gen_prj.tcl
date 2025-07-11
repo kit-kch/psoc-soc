@@ -859,52 +859,52 @@ set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "xsim.simulate.runtime" -value "1000us" -objects $obj
 
-# Create 'fpga_soc_top' fileset (if not found)
-if {[string equal [get_filesets -quiet fpga_soc_top] ""]} {
-  create_fileset -simset fpga_soc_top
+# Create 'zedboard_soc_top' fileset (if not found)
+if {[string equal [get_filesets -quiet zedboard_soc_top] ""]} {
+  create_fileset -simset zedboard_soc_top
 }
 
-# Set 'fpga_soc_top' fileset object
-set obj [get_filesets fpga_soc_top]
+# Set 'zedboard_soc_top' fileset object
+set obj [get_filesets zedboard_soc_top]
 set files [list \
  [file normalize "${origin_dir}/../../src/sim/tb_fpga_soc_top.v"] \
  [file normalize "${origin_dir}/../../src/sim/tb_fpga_soc_top_behav.wcfg"] \
 ]
 add_files -norecurse -fileset $obj $files
 
-# Set 'fpga_soc_top' fileset file properties for remote files
+# Set 'zedboard_soc_top' fileset file properties for remote files
 # None
 
-# Set 'fpga_soc_top' fileset file properties for local files
+# Set 'zedboard_soc_top' fileset file properties for local files
 # None
 
-# Set 'fpga_soc_top' fileset properties
-set obj [get_filesets fpga_soc_top]
+# Set 'zedboard_soc_top' fileset properties
+set obj [get_filesets zedboard_soc_top]
 set_property -name "top" -value "tb_fpga_soc_top" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "xsim.simulate.runtime" -value "1000us" -objects $obj
 
-# Create 'fpga_standalone_top' fileset (if not found)
-if {[string equal [get_filesets -quiet fpga_standalone_top] ""]} {
-  create_fileset -simset fpga_standalone_top
+# Create 'zedboard_standalone_top' fileset (if not found)
+if {[string equal [get_filesets -quiet zedboard_standalone_top] ""]} {
+  create_fileset -simset zedboard_standalone_top
 }
 
-# Set 'fpga_standalone_top' fileset object
-set obj [get_filesets fpga_standalone_top]
+# Set 'zedboard_standalone_top' fileset object
+set obj [get_filesets zedboard_standalone_top]
 set files [list \
  [file normalize "${origin_dir}/../../src/sim/tb_fpga_standalone_top.v"] \
 ]
 add_files -norecurse -fileset $obj $files
 
-# Set 'fpga_standalone_top' fileset file properties for remote files
+# Set 'zedboard_standalone_top' fileset file properties for remote files
 # None
 
-# Set 'fpga_standalone_top' fileset file properties for local files
+# Set 'zedboard_standalone_top' fileset file properties for local files
 # None
 
-# Set 'fpga_standalone_top' fileset properties
-set obj [get_filesets fpga_standalone_top]
+# Set 'zedboard_standalone_top' fileset properties
+set obj [get_filesets zedboard_standalone_top]
 set_property -name "top" -value "tb_fpga_standalone_top" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
