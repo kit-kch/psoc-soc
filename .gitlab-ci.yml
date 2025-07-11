@@ -106,7 +106,7 @@ pre:sg13g2_soc_top:wrap:
     name: docker.io/hpretl/iic-osic-tools:2025.05
     entrypoint: [""]
   script:
-    - make sg13g2_wrap
+    - /headless/.bashrc && make sg13g2_wrap
   artifacts:
     paths:
     - src/hdl/sg13g2/neorv32_wrap.v
@@ -131,7 +131,7 @@ implement:sg13g2_soc_top:rtl2gds:
     name: docker.io/hpretl/iic-osic-tools:2025.05
     entrypoint: [""]
   script:
-    - ./script/sg13g2/setup_orfs.sh && make sg13g2
+    - source /headless/.bashrc && ./script/sg13g2/setup_orfs.sh && make sg13g2
   artifacts:
     paths:
     - orfs/flow/results/ihp-sg13g2/soc_top
