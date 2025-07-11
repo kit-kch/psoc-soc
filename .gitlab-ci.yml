@@ -134,7 +134,7 @@ behav:sg13g2_soc_top:
     paths:
     - out/
 
-implement:sg13g2_soc_top:rtl2gds:
+implement:sg13g2_soc_top:
   stage: implement
   needs:
    - job: "pre:sg13g2_soc_top:wrap"
@@ -153,7 +153,7 @@ postsim:sg13g2_soc_top:
   image:
     name: gitlab.itiv.kit.edu:1443/itiv/docker/rocky9:latest
   needs:
-   - job: "implement:sg13g2_soc_top:rtl2gds"
+   - job: "implement:sg13g2_soc_top"
      artifacts: true
   script:
     - source ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make sg13g2_sim.gl
@@ -161,7 +161,7 @@ postsim:sg13g2_soc_top:
 upload:sg13g2_soc_top:
   stage: upload
   needs:
-   - job: "implement:sg13g2_soc_top:rtl2gds"
+   - job: "implement:sg13g2_soc_top"
      artifacts: true
   rules:
     - if: $CI_COMMIT_TAG
