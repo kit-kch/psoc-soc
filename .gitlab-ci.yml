@@ -16,6 +16,8 @@ behav:i2s_master:
   stage: behav
   script:
     - make i2s_master.sim
+  variables:
+    LD_PRELOAD: /lib64/libudev.so.1
   artifacts:
     paths:
     - out/
@@ -24,6 +26,8 @@ behav:sine_generator:
   stage: behav
   script:
     - make sine_generator.sim
+  variables:
+    LD_PRELOAD: /lib64/libudev.so.1
   artifacts:
     paths:
     - out/
@@ -32,6 +36,8 @@ behav:clock_generator:
   stage: behav
   script:
     - make clock_generator.sim
+  variables:
+    LD_PRELOAD: /lib64/libudev.so.1
   artifacts:
     paths:
     - out/
@@ -40,6 +46,8 @@ behav:zedboard_soc_top:
   stage: behav
   script:
     - make zedboard_soc_top.sim
+  variables:
+    LD_PRELOAD: /lib64/libudev.so.1
   artifacts:
     paths:
     - out/
@@ -48,6 +56,8 @@ behav:zedboard_standalone_top:
   stage: behav
   script:
     - make zedboard_standalone_top.sim
+  variables:
+    LD_PRELOAD: /lib64/libudev.so.1
   artifacts:
     paths:
     - out/
