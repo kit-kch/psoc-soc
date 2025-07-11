@@ -44,7 +44,7 @@ module fpga_standalone_top(
         .rst(rst)
     );
 
-    led led(
+    led_blink led(
         .clk(clk),
         .rst(rst),
         .led(gpio_o)

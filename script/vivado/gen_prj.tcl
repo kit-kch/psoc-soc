@@ -96,7 +96,7 @@
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/hdl/fpga/fpga_soc_top.v"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/hdl/fpga/fpga_standalone_top.v"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/init/sin_lut_90x24.mem"
-#    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/hdl/led.v"
+#    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/hdl/fpga/led_blink.v"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/hdl/audio/sine_generator.v"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/script/vivado/constr_standalone.xdc"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/script/vivado/constr_soc.xdc"
@@ -184,7 +184,7 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/../../src/hdl/fpga/fpga_soc_top.v"]"\
  "[file normalize "$origin_dir/../../src/hdl/fpga/fpga_standalone_top.v"]"\
  "[file normalize "$origin_dir/../../src/init/sin_lut_90x24.mem"]"\
- "[file normalize "$origin_dir/../../src/hdl/led.v"]"\
+ "[file normalize "$origin_dir/../../src/hdl/fpga/led_blink.v"]"\
  "[file normalize "$origin_dir/../../src/hdl/audio/sine_generator.v"]"\
  "[file normalize "$origin_dir/../../script/vivado/constr_standalone.xdc"]"\
  "[file normalize "$origin_dir/../../script/vivado/constr_soc.xdc"]"\
@@ -386,7 +386,7 @@ set files [list \
  [file normalize "${origin_dir}/../../src/hdl/fpga/fpga_soc_top.v"] \
  [file normalize "${origin_dir}/../../src/hdl/fpga/fpga_standalone_top.v"] \
  [file normalize "${origin_dir}/../../src/init/sin_lut_90x24.mem"] \
- [file normalize "${origin_dir}/../../src/hdl/led.v"] \
+ [file normalize "${origin_dir}/../../src/hdl/fpga/led_blink.v"] \
  [file normalize "${origin_dir}/../../src/hdl/audio/sine_generator.v"] \
 ]
 add_files -norecurse -fileset $obj $files
