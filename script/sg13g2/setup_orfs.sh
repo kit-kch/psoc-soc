@@ -1,4 +1,5 @@
 #!/bin/bash
+rm -rf orfs
 git clone --quiet --filter=blob:none https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts.git orfs
 pushd orfs
 git checkout $(cat ../ORFS_COMMIT)
