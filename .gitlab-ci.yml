@@ -13,7 +13,7 @@ stages:
  - upload
 
 fpga_behav:i2s_master:
-  stage: test
+  stage: fpga_behav
   needs: []
   script:
     - make i2s_master.sim
@@ -22,7 +22,7 @@ fpga_behav:i2s_master:
     - out/
 
 fpga_behav:sine_generator:
-  stage: test
+  stage: fpga_behav
   needs: []
   script:
     - make sine_generator.sim
@@ -31,7 +31,7 @@ fpga_behav:sine_generator:
     - out/
 
 fpga_behav:clock_generator:
-  stage: test
+  stage: fpga_behav
   needs: []
   script:
     - make clock_generator.sim
@@ -40,7 +40,7 @@ fpga_behav:clock_generator:
     - out/
 
 fpga_behav:fpga_soc_top:
-  stage: test
+  stage: fpga_behav
   needs:
    - job: "fpga_behav:i2s_master"
      artifacts: false
@@ -53,7 +53,7 @@ fpga_behav:fpga_soc_top:
     - out/
 
 fpga_behav:fpga_standalone_top:
-  stage: test
+  stage: fpga_behav
   needs:
    - job: "fpga_behav:i2s_master"
      artifacts: false
@@ -192,23 +192,3 @@ upload:soc:
   script:
     - echo "Upload firmware"
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/soc.bit" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/soc.bit"'
-
-upload:sw:
-  stage: upload
-  needs:
-   - job: "sw:i2s_sin"
-     artifacts: true
-   - job: "sw:i2s_sin_ir"
-     artifacts: true
-   - job: "sw:dac_bit"
-     artifacts: true
-   - job: "sw:boardtest"
-     artifacts: true
-  rules:
-    - if: $CI_COMMIT_TAG
-  script:
-    - echo "Upload software"
-    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/i2s_sin.exe.bin" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/i2s_sin.exe.bin"'
-    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/i2s_sin_ir.exe.bin" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/i2s_sin_ir.exe.bin"'
-    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/dac_bit.exe.bin" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/dac_bit.exe.bin"'
-    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/boardtest.exe.bin" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/boardtest.exe.bin"'
