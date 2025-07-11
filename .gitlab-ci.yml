@@ -6,149 +6,55 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
- - fpga_behav
- - fpga_bitstream
- - asic_test
- - asic
+ - behav
+ - implement
+ - postsim
  - upload
 
-fpga_behav:i2s_master:
-  stage: fpga_behav
-  needs: []
+fpga:i2s_master:
+  stage: behav
   script:
     - make i2s_master.sim
   artifacts:
     paths:
     - out/
 
-fpga_behav:sine_generator:
-  stage: fpga_behav
-  needs: []
+fpga:sine_generator:
+  stage: behav
   script:
     - make sine_generator.sim
   artifacts:
     paths:
     - out/
 
-fpga_behav:clock_generator:
-  stage: fpga_behav
-  needs: []
+fpga:clock_generator:
+  stage: behav
   script:
     - make clock_generator.sim
   artifacts:
     paths:
     - out/
 
-fpga_behav:fpga_soc_top:
-  stage: fpga_behav
+fpga:zedboard_soc_top:
+  stage: behav
+  script:
+    - make zedboard_soc_top.sim
+  artifacts:
+    paths:
+    - out/
+
+fpga:zedboard_standalone_top:
+  stage: behav
+  script:
+    - make zedboard_standalone_top.sim
+  artifacts:
+    paths:
+    - out/
+
+fpga:standalone:
+  stage: implement
   needs:
-   - job: "fpga_behav:i2s_master"
-     artifacts: false
-   - job: "fpga_behav:clock_generator"
-     artifacts: false
-  script:
-    - make fpga_soc_top.sim
-  artifacts:
-    paths:
-    - out/
-
-fpga_behav:fpga_standalone_top:
-  stage: fpga_behav
-  needs:
-   - job: "fpga_behav:i2s_master"
-     artifacts: false
-   - job: "fpga_behav:clock_generator"
-     artifacts: false
-   - job: "fpga_behav:sine_generator"
-     artifacts: false
-  script:
-    - make fpga_standalone_top.sim
-  artifacts:
-    paths:
-    - out/
-
-behavs:encoder_top:
-  stage: asic_test
-  needs: []
-  script:
-    - make encoder_top.xrun
-  artifacts:
-    paths:
-    - out/
-
-behavs:thermometer_encoder:
-  stage: asic_test
-  needs: []
-  script:
-    - make thermometer_encoder.xrun
-  artifacts:
-    paths:
-    - out/
-
-syns:encoder_top:
-  stage: asic_test
-  needs: []
-  script:
-    - export USER=build && make encoder_top.genus
-    - make encoder_top.xrun2
-  artifacts:
-    paths:
-    - out/
-
-syns:thermometer_encoder:
-  stage: asic_test
-  needs: []
-  script:
-    - export USER=build && make thermometer_encoder.genus
-    - make thermometer_encoder.xrun2
-  artifacts:
-    paths:
-    - out/
-
-imps:encoder_top:
-  stage: asic_test
-  needs: []
-  script:
-    - export USER=build && make encoder_top.genus
-    - export USER=build && make encoder_top.innovus
-    - make encoder_top.xrun3
-  artifacts:
-    paths:
-    - out/
-
-
-syn:encoder_top:
-  stage: asic
-  needs: []
-  script:
-    - export USER=build && make encoder_top.genus
-  artifacts:
-    paths:
-    - out/
-
-syn:thermometer_encoder:
-  stage: asic
-  needs: []
-  script:
-    - export USER=build && make thermometer_encoder.genus
-  artifacts:
-    paths:
-    - out/
-
-imp:encoder_top:
-  stage: asic
-  needs: []
-  script:
-    - export USER=build && make encoder_top.genus
-    - export USER=build && make encoder_top.innovus
-  artifacts:
-    paths:
-    - out/
-
-fpga_bitstream:standalone:
-  stage: fpga_bitstream
-  needs:
-   - job: "fpga_behav:fpga_standalone_top"
+   - job: "fpga:zedboard_standalone_top"
      artifacts: false
   script:
     - make standalone.bit
@@ -158,14 +64,10 @@ fpga_bitstream:standalone:
     paths:
     - out/
 
-fpga_bitstream:soc:
-  stage: fpga_bitstream
+fpga:soc:
+  stage: implement
   needs:
-   - job: "fpga_behav:clock_generator"
-     artifacts: false
-   - job: "fpga_behav:i2s_master"
-     artifacts: false
-   - job: "fpga_behav:fpga_soc_top"
+   - job: "fpga:zedboard_soc_top"
      artifacts: false
   script:
     - make soc.bit
@@ -175,10 +77,10 @@ fpga_bitstream:soc:
     paths:
     - out/
 
-upload:standalone:
+upload:fpga_standalone:
   stage: upload
   needs:
-   - job: "fpga_bitstream:standalone"
+   - job: "fpga:standalone"
      artifacts: true
   rules:
     - if: $CI_COMMIT_TAG
@@ -186,13 +88,64 @@ upload:standalone:
     - echo "Upload firmware"
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/standalone.bit" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/standlone.bit"'
 
-upload:soc:
+upload:fpga_soc:
   stage: upload
   needs:
-   - job: "fpga_bitstream:soc"
+   - job: "fpga:soc"
      artifacts: true
   rules:
     - if: $CI_COMMIT_TAG
   script:
     - echo "Upload firmware"
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/soc.bit" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/soc.bit"'
+
+sg13g2:test:
+  stage: behav
+  script:
+    - ./script/sg13g2/setup_orfs.sh && make sg13g2_sim.rtl
+  artifacts:
+    paths:
+    - out/
+
+sg13g2:wrap:
+  stage: implement
+  image:
+    name: docker.io/hpretl/iic-osic-tools:2025.05
+  script:
+    - make sg13g2_wrap
+  artifacts:
+    paths:
+    - src/hdl/sg13g2/neorv32_wrap.v
+
+sg13g2:rtl2gds:
+  stage: implement
+  needs:
+   - job: "sg13g2:wrap"
+     artifacts: true
+  image:
+    name: docker.io/hpretl/iic-osic-tools:2025.05
+  script:
+    - ./script/sg13g2/setup_orfs.sh && make sg13g2
+  artifacts:
+    paths:
+    - orfs/flow/results/ihp-sg13g2/soc_top
+
+sg13g2:gl_test:
+  stage: postsim
+  needs:
+   - job: "sg13g2:rtl2gds"
+     artifacts: true
+  script:
+    - ./script/sg13g2/setup_orfs.sh && make sg13g2_sim.gl
+
+upload:sg13g2:
+  stage: upload
+  needs:
+   - job: "sg13g2:rtl2gds"
+     artifacts: true
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo "Upload GDS"
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "orfs/flow/results/ihp-sg13g2/soc_top/base/6_1_merged.gds" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/rtl2gds/${CI_COMMIT_TAG}/6_1_merged.gds"'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "orfs/flow/results/ihp-sg13g2/soc_top/base/6_final.v" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/rtl2gds/${CI_COMMIT_TAG}/6_final.v"'

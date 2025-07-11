@@ -1,1 +1,0 @@
-$BASE/src/hdl/thermometer_encoder.v

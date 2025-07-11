@@ -13,7 +13,7 @@ SIM_SETS=$(addsuffix .sim,$(SIMULATION_SETS))
 # Tool Commands
 ####################################################################################################
 VIVADO_ENV="$(abspath ./script/vivado/vivado_env.sh)"
-CADENCE_ENV="$(abspath ./script/cadence/cadence_env.sh)"
+QUESTA_ENV="$(abspath ./script/sg13g2/questa_env.sh)"
 
 ####################################################################################################
 # Abbreviations
@@ -85,7 +85,17 @@ soc.bit: $(XPR_FILE)
 	cp -v build/psoc/psoc.sim/$*/behav/xsim/simulate.log out/$*.sim.log
 	grep -q 'Test OK' out/$*.sim.log
 
-# Cadence
+# sg13g2 targets
+# FIXME: Run tests individually?
+sg13g2_sim.rtl:
+	mkdir -p out
+	cd src/sim/sg13g2; \
+		$(QUESTA_ENV) make -f questa.mak
+
+sg13g2_sim.gl:
+	mkdir -p out
+	cd src/sim/sg13g2; \
+		$(QUESTA_ENV) make GATES=yes -f questa.mak
 
 # Synthesis
 %.genus:
