@@ -32,13 +32,8 @@ bitstream: standalone.bit soc.bit
 sw: i2s_sin i2s_sin_ir dac_bit boardtest
 
 clean:
-	cd ext/psoc_demo_sw/i2s_sin && $(SW_ENV) make clean
-	cd ext/psoc_demo_sw/i2s_sin_ir && $(SW_ENV) make clean
-	cd ext/psoc_demo_sw/dac_bit && $(SW_ENV) make clean
-	cd ext/psoc_boardtest_sw && $(SW_ENV) make clean
 	rm -rvf build
 	rm -rvf out
-	cd src/sim/sg13g2 && make clean
 
 # Project and UI
 project: $(XPR_FILE)
