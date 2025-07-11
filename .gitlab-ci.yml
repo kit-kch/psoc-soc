@@ -6,12 +6,13 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
+ - pre
  - behav
  - implement
  - postsim
  - upload
 
-fpga:i2s_master:
+behav:i2s_master:
   stage: behav
   script:
     - make i2s_master.sim
@@ -19,7 +20,7 @@ fpga:i2s_master:
     paths:
     - out/
 
-fpga:sine_generator:
+behav:sine_generator:
   stage: behav
   script:
     - make sine_generator.sim
@@ -27,7 +28,7 @@ fpga:sine_generator:
     paths:
     - out/
 
-fpga:clock_generator:
+behav:clock_generator:
   stage: behav
   script:
     - make clock_generator.sim
@@ -35,7 +36,7 @@ fpga:clock_generator:
     paths:
     - out/
 
-fpga:zedboard_soc_top:
+behav:zedboard_soc_top:
   stage: behav
   script:
     - make zedboard_soc_top.sim
@@ -43,7 +44,7 @@ fpga:zedboard_soc_top:
     paths:
     - out/
 
-fpga:zedboard_standalone_top:
+behav:zedboard_standalone_top:
   stage: behav
   script:
     - make zedboard_standalone_top.sim
@@ -51,10 +52,10 @@ fpga:zedboard_standalone_top:
     paths:
     - out/
 
-fpga:standalone:
+implement:zedboard_standalone_top:
   stage: implement
   needs:
-   - job: "fpga:zedboard_standalone_top"
+   - job: "behav:zedboard_standalone_top"
      artifacts: false
   script:
     - make standalone.bit
@@ -64,10 +65,10 @@ fpga:standalone:
     paths:
     - out/
 
-fpga:soc:
+implement:zedboard_soc_top:
   stage: implement
   needs:
-   - job: "fpga:zedboard_soc_top"
+   - job: "behav:zedboard_soc_top"
      artifacts: false
   script:
     - make soc.bit
@@ -77,10 +78,10 @@ fpga:soc:
     paths:
     - out/
 
-upload:fpga_standalone:
+upload:zedboard_standalone_top:
   stage: upload
   needs:
-   - job: "fpga:standalone"
+   - job: "implement:zedboard_standalone_top"
      artifacts: true
   rules:
     - if: $CI_COMMIT_TAG
@@ -88,10 +89,10 @@ upload:fpga_standalone:
     - echo "Upload firmware"
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/standalone.bit" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/standlone.bit"'
 
-upload:fpga_soc:
+upload:zedboard_soc_top:
   stage: upload
   needs:
-   - job: "fpga:soc"
+   - job: "implement:zedboard_soc_top"
      artifacts: true
   rules:
     - if: $CI_COMMIT_TAG
@@ -99,16 +100,8 @@ upload:fpga_soc:
     - echo "Upload firmware"
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "out/soc.bit" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/firmware/${CI_COMMIT_TAG}/soc.bit"'
 
-sg13g2:test:
-  stage: behav
-  script:
-    - ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make sg13g2_sim.rtl
-  artifacts:
-    paths:
-    - out/
-
-sg13g2:wrap:
-  stage: implement
+pre:sg13g2_soc_top:wrap:
+  stage: pre
   image:
     name: docker.io/hpretl/iic-osic-tools:2025.05
   script:
@@ -117,10 +110,21 @@ sg13g2:wrap:
     paths:
     - src/hdl/sg13g2/neorv32_wrap.v
 
-sg13g2:rtl2gds:
+behav:sg13g2_soc_top:
+  stage: behav
+  needs:
+   - job: "pre:sg13g2_soc_top:wrap"
+     artifacts: true
+  script:
+    - ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make sg13g2_sim.rtl
+  artifacts:
+    paths:
+    - out/
+
+implement:sg13g2_soc_top:rtl2gds:
   stage: implement
   needs:
-   - job: "sg13g2:wrap"
+   - job: "pre:sg13g2_soc_top:wrap"
      artifacts: true
   image:
     name: docker.io/hpretl/iic-osic-tools:2025.05
@@ -130,18 +134,18 @@ sg13g2:rtl2gds:
     paths:
     - orfs/flow/results/ihp-sg13g2/soc_top
 
-sg13g2:gl_test:
+postsim:sg13g2_soc_top:
   stage: postsim
   needs:
-   - job: "sg13g2:rtl2gds"
+   - job: "implement:sg13g2_soc_top:rtl2gds"
      artifacts: true
   script:
     - ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make sg13g2_sim.gl
 
-upload:sg13g2:
+upload:sg13g2_soc_top:
   stage: upload
   needs:
-   - job: "sg13g2:rtl2gds"
+   - job: "implement:sg13g2_soc_top:rtl2gds"
      artifacts: true
   rules:
     - if: $CI_COMMIT_TAG
