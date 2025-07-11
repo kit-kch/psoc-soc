@@ -119,7 +119,7 @@ behav:sg13g2_soc_top:
    - job: "pre:sg13g2_soc_top:wrap"
      artifacts: true
   script:
-    - ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make sg13g2_sim.rtl
+    - source ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make sg13g2_sim.rtl
   artifacts:
     paths:
     - out/
@@ -133,7 +133,7 @@ implement:sg13g2_soc_top:rtl2gds:
     name: docker.io/hpretl/iic-osic-tools:2025.05
     entrypoint: [""]
   script:
-    - source /headless/.bashrc && ./script/sg13g2/setup_orfs.sh && make sg13g2
+    - source /headless/.bashrc && source ./script/sg13g2/setup_orfs.sh && make sg13g2
   artifacts:
     paths:
     - orfs/flow/results/ihp-sg13g2/soc_top
@@ -146,7 +146,7 @@ postsim:sg13g2_soc_top:
    - job: "implement:sg13g2_soc_top:rtl2gds"
      artifacts: true
   script:
-    - ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make sg13g2_sim.gl
+    - source ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make sg13g2_sim.gl
 
 upload:sg13g2_soc_top:
   stage: upload
