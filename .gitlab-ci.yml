@@ -153,7 +153,7 @@ fpga_bitstream:standalone:
   script:
     - make standalone.bit
   variables:
-    - LD_PRELOAD: /lib64/libudev.so.1
+    LD_PRELOAD: /lib64/libudev.so.1
   artifacts:
     paths:
     - out/
@@ -170,7 +170,7 @@ fpga_bitstream:soc:
   script:
     - make soc.bit
   variables:
-    - LD_PRELOAD: /lib64/libudev.so.1
+    LD_PRELOAD: /lib64/libudev.so.1
   artifacts:
     paths:
     - out/
