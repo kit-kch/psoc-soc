@@ -6,14 +6,13 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
- - test
- - software
- - bitstream
+ - fpga_behav
+ - fpga_bitstream
  - asic_test
  - asic
  - upload
 
-test:i2s_master:
+fpga_behav:i2s_master:
   stage: test
   needs: []
   script:
@@ -22,7 +21,7 @@ test:i2s_master:
     paths:
     - out/
 
-test:sine_generator:
+fpga_behav:sine_generator:
   stage: test
   needs: []
   script:
@@ -31,7 +30,7 @@ test:sine_generator:
     paths:
     - out/
 
-test:clock_generator:
+fpga_behav:clock_generator:
   stage: test
   needs: []
   script:
@@ -40,12 +39,12 @@ test:clock_generator:
     paths:
     - out/
 
-test:fpga_soc_top:
+fpga_behav:fpga_soc_top:
   stage: test
   needs:
-   - job: "test:i2s_master"
+   - job: "fpga_behav:i2s_master"
      artifacts: false
-   - job: "test:clock_generator"
+   - job: "fpga_behav:clock_generator"
      artifacts: false
   script:
     - make fpga_soc_top.sim
@@ -53,58 +52,17 @@ test:fpga_soc_top:
     paths:
     - out/
 
-test:fpga_standalone_top:
+fpga_behav:fpga_standalone_top:
   stage: test
   needs:
-   - job: "test:i2s_master"
+   - job: "fpga_behav:i2s_master"
      artifacts: false
-   - job: "test:clock_generator"
+   - job: "fpga_behav:clock_generator"
      artifacts: false
-   - job: "test:sine_generator"
+   - job: "fpga_behav:sine_generator"
      artifacts: false
   script:
     - make fpga_standalone_top.sim
-  artifacts:
-    paths:
-    - out/
-
-sw:i2s_sin:
-  stage: software
-  needs: []
-  script:
-    - make i2s_sin
-  dependencies: []
-  artifacts:
-    paths:
-    - out/
-
-sw:i2s_sin_ir:
-  stage: software
-  needs: []
-  script:
-    - make i2s_sin_ir
-  dependencies: []
-  artifacts:
-    paths:
-    - out/
-
-sw:dac_bit:
-  stage: software
-  needs: []
-  script:
-    - make dac_bit
-  dependencies: []
-  artifacts:
-    paths:
-    - out/
-
-
-sw:boardtest:
-  stage: software
-  needs: []
-  script:
-    - make boardtest
-  dependencies: []
   artifacts:
     paths:
     - out/
@@ -187,10 +145,10 @@ imp:encoder_top:
     paths:
     - out/
 
-bitstream:standalone:
-  stage: bitstream
+fpga_bitstream:standalone:
+  stage: fpga_bitstream
   needs:
-   - job: "test:fpga_standalone_top"
+   - job: "fpga_behav:fpga_standalone_top"
      artifacts: false
   script:
     - make standalone.bit
@@ -198,14 +156,14 @@ bitstream:standalone:
     paths:
     - out/
 
-bitstream:soc:
-  stage: bitstream
+fpga_bitstream:soc:
+  stage: fpga_bitstream
   needs:
-   - job: "test:clock_generator"
+   - job: "fpga_behav:clock_generator"
      artifacts: false
-   - job: "test:i2s_master"
+   - job: "fpga_behav:i2s_master"
      artifacts: false
-   - job: "test:fpga_soc_top"
+   - job: "fpga_behav:fpga_soc_top"
      artifacts: false
   script:
     - make soc.bit
@@ -216,7 +174,7 @@ bitstream:soc:
 upload:standalone:
   stage: upload
   needs:
-   - job: "bitstream:standalone"
+   - job: "fpga_bitstream:standalone"
      artifacts: true
   rules:
     - if: $CI_COMMIT_TAG
@@ -227,7 +185,7 @@ upload:standalone:
 upload:soc:
   stage: upload
   needs:
-   - job: "bitstream:soc"
+   - job: "fpga_bitstream:soc"
      artifacts: true
   rules:
     - if: $CI_COMMIT_TAG

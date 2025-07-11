@@ -13,7 +13,6 @@ SIM_SETS=$(addsuffix .sim,$(SIMULATION_SETS))
 # Tool Commands
 ####################################################################################################
 VIVADO_ENV="$(abspath ./script/vivado/vivado_env.sh)"
-SW_ENV="$(abspath ./script/sw/sw_env.sh)"
 CADENCE_ENV="$(abspath ./script/cadence/cadence_env.sh)"
 
 ####################################################################################################
@@ -85,27 +84,6 @@ soc.bit: $(XPR_FILE)
 		$(VIVADO_ENV) ./simulate.sh
 	cp -v build/psoc/psoc.sim/$*/behav/xsim/simulate.log out/$*.sim.log
 	grep -q 'Test OK' out/$*.sim.log
-
-# Software
-i2s_sin:
-	mkdir -p out
-	cd ext/psoc_demo_sw/i2s_sin && $(SW_ENV) make exe
-	cp -v ext/psoc_demo_sw/i2s_sin/neorv32_exe.bin out/i2s_sin.exe.bin
-
-i2s_sin_ir:
-	mkdir -p out
-	cd ext/psoc_demo_sw/i2s_sin_ir && $(SW_ENV) make exe
-	cp -v ext/psoc_demo_sw/i2s_sin_ir/neorv32_exe.bin out/i2s_sin_ir.exe.bin
-
-dac_bit:
-	mkdir -p out
-	cd ext/psoc_demo_sw/dac_bit && $(SW_ENV) make exe
-	cp -v ext/psoc_demo_sw/dac_bit/neorv32_exe.bin out/dac_bit.exe.bin
-
-boardtest:
-	mkdir -p out
-	cd ext/psoc_boardtest_sw && $(SW_ENV) make exe
-	cp -v ext/psoc_boardtest_sw/neorv32_exe.bin out/boardtest.exe.bin
 
 # Cadence
 
