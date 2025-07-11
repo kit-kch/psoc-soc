@@ -7,6 +7,7 @@ if [ ! -d ".build/env" ]; then
 fi
 
 source .build/env/bin/activate
+pip install --upgrade pip
 pip install -r common/requirements.txt
 
 popd
