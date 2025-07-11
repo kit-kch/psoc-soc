@@ -102,7 +102,7 @@ upload:fpga_soc:
 sg13g2:test:
   stage: behav
   script:
-    - ./script/sg13g2/setup_orfs.sh && make sg13g2_sim.rtl
+    - ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make sg13g2_sim.rtl
   artifacts:
     paths:
     - out/
@@ -136,7 +136,7 @@ sg13g2:gl_test:
    - job: "sg13g2:rtl2gds"
      artifacts: true
   script:
-    - ./script/sg13g2/setup_orfs.sh && make sg13g2_sim.gl
+    - ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make sg13g2_sim.gl
 
 upload:sg13g2:
   stage: upload
