@@ -106,7 +106,7 @@ pre:sg13g2_soc_top:wrap:
     name: docker.io/hpretl/iic-osic-tools:2025.05
     entrypoint: [""]
   script:
-    - /headless/.bashrc && make sg13g2_wrap
+    - source /headless/.bashrc && make sg13g2_wrap
   artifacts:
     paths:
     - src/hdl/sg13g2/neorv32_wrap.v
