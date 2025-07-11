@@ -104,7 +104,7 @@ pre:sg13g2_soc_top:wrap:
   stage: pre
   image:
     name: docker.io/hpretl/iic-osic-tools:2025.05
-    entrypoint: ["/bin/bash", "-c"]
+    entrypoint: ["/bin/sh", "-c"]
   script:
     - make sg13g2_wrap
   artifacts:
@@ -129,7 +129,7 @@ implement:sg13g2_soc_top:rtl2gds:
      artifacts: true
   image:
     name: docker.io/hpretl/iic-osic-tools:2025.05
-    entrypoint: ["/bin/bash", "-c"]
+    entrypoint: ["/bin/sh", "-c"]
   script:
     - ./script/sg13g2/setup_orfs.sh && make sg13g2
   artifacts:
