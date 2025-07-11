@@ -86,6 +86,8 @@ cd orfs
 git checkout $(cat $TOOLS/openroad-latest/ORFS_COMMIT)
 ```
 
+Note that the ORFS version we test against is also saved in `ORFS_COMMIT` in this repository.
+
 Then open a terminal in the container, make sure this git repository is checked out and you're in the main folder.
 We then need to set some variables for the flow:
 
