@@ -146,9 +146,7 @@ implement:sg13g2_soc_top:
     - source /headless/.bashrc && source ./script/sg13g2/setup_orfs.sh && make sg13g2
   artifacts:
     paths:
-    - orfs
-  tags:
-    - invasic
+    - orfs/flow/results/ihp-sg13g2/soc_top
 
 postsim:sg13g2_soc_top:
   stage: postsim
@@ -159,8 +157,6 @@ postsim:sg13g2_soc_top:
      artifacts: true
   script:
     - source ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make sg13g2_sim.gl
-  tags:
-    - invasic
 
 upload:sg13g2_soc_top:
   stage: upload

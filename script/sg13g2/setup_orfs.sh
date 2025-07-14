@@ -1,6 +1,13 @@
 #!/bin/bash
 if [ ! -d "orfs" ]; then
     git clone --quiet --filter=blob:none https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts.git orfs
+elif [ ! -d "orfs/.git" ]; then
+    # When gitlab restored artifacts, but the repos was not yet cloned
+    pushd orfs
+    git init
+    git remote add origin https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts.git
+    git fetch origin
+    popd
 fi
 pushd orfs
 git checkout $(cat ../ORFS_COMMIT)
