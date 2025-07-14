@@ -1,6 +1,7 @@
 #!/bin/bash
-rm -rf orfs
-git clone --quiet --filter=blob:none https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts.git orfs
+if [ ! -d "orfs" ]; then
+    git clone --quiet --filter=blob:none https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts.git orfs
+fi
 pushd orfs
 git checkout $(cat ../ORFS_COMMIT)
 

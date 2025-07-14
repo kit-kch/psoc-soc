@@ -146,7 +146,7 @@ implement:sg13g2_soc_top:
     - source /headless/.bashrc && source ./script/sg13g2/setup_orfs.sh && make sg13g2
   artifacts:
     paths:
-    - orfs/flow/results/ihp-sg13g2/soc_top
+    - orfs
 
 postsim:sg13g2_soc_top:
   stage: postsim
