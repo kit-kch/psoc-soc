@@ -126,7 +126,7 @@ Once you have the software stack installed, programming is quite convenient.
   # Alternatively, to select an adapter with a specific ID
   openocd -c 'adapter serial 210249B1B925' -f ./script/openocd_neorv32_jtaghs2.cfg
   ```
-* Finally, connect using gdb and the program and run:
+* Finally, connect using gdb, load the program and run:
   ```bash
   riscv-none-elf-gdb
   target extended-remote localhost:3333
