@@ -1,4 +1,5 @@
-[![pipeline status](https://gitlab.itiv.kit.edu/psoc/psoc_fpga/badges/master/pipeline.svg)](https://gitlab.itiv.kit.edu/psoc/psoc_fpga/commits/master)
+[![Pipeline Status](https://gitlab.itiv.kit.edu/psoc-admin/psoc_soc/badges/xip/pipeline.svg)](https://gitlab.itiv.kit.edu/psoc-admin/psoc_soc/-/commits/xip)
+[![Latest Release](https://gitlab.itiv.kit.edu/psoc-admin/psoc_soc/-/badges/release.svg)](https://gitlab.itiv.kit.edu/psoc-admin/psoc_soc/-/releases)
 
 # KIT PSoC Lab RISC-V Reference SoC
 
