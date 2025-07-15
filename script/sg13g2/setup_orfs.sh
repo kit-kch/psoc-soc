@@ -14,6 +14,7 @@ elif [ ! -d "orfs/.git" ]; then
 fi
 pushd orfs
 git checkout $(cat ../ORFS_COMMIT)
+export FLOW_HOME=$PWD/flow
 
 # If in IIC-OSIC-TOOLS container
 if [ -n "$TOOLS" ]; then
@@ -27,7 +28,6 @@ if [ -n "$TOOLS" ]; then
     export YOSYS_EXE=$TOOLS/yosys/bin/yosys
     export OPENROAD_EXE=$TOOLS/openroad-latest/bin/openroad
     export OPENSTA_EXE=$TOOLS/openroad-latest/bin/sta
-    export FLOW_HOME=$PWD/flow
 fi
 
 popd
