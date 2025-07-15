@@ -5,7 +5,7 @@ from common.lib.audio_lp import collect_audio
 from common.lib.util import buildDirPath, testDirPath
 
 @cocotb.test()
-async def test_dac_test(dut):
+async def test_dac_sin(dut):
     dut._log.info("Starting DAC Data Generation Test")
     await initializeSoC(dut, testDirPath("firmware.raw_exe.bin"))
 
