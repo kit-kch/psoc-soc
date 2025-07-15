@@ -81,16 +81,15 @@ soc.bit: $(XPR_FILE)
 	grep -q 'Test OK' out/$*.sim.log
 
 # sg13g2 targets
-# FIXME: Run tests individually?
-sg13g2_sim.rtl:
+%.sg13g2_sim.rtl:
 	mkdir -p out
 	cd src/sim/sg13g2; \
-		$(QUESTA_ENV) make -f questa.mak
+		$(QUESTA_ENV) make TESTCASE=$* -f questa.mak
 
-sg13g2_sim.gl:
+%.sg13g2_sim.gl:
 	mkdir -p out
 	cd src/sim/sg13g2; \
-		$(QUESTA_ENV) make GATES=yes -f questa.mak
+		$(QUESTA_ENV) make TESTCASE=$* GATES=yes -f questa.mak
 
 # Synthesis
 %.genus:
