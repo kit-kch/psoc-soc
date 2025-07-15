@@ -1,18 +1,6 @@
 [submodule "ext/neorv32"]
 	path = ext/neorv32
 	url = https://github.com/kit-kch/psoc-neorv32.git
-[submodule "ext/psoc_demo_sw"]
-	path = ext/psoc_demo_sw
-	url = ../../psoc-admin/psoc_demo_sw.git
-[submodule "ext/psoc_analog"]
-	path = ext/psoc_analog
-	url = ../../psoc-admin/psoc_analog.git
-[submodule "ext/psoc_boardtest_sw"]
-	path = ext/psoc_boardtest_sw
-	url = ../../psoc-admin/psoc_boardtest_sw.git
 [submodule "ext/psoc_xip_bootloader"]
 	path = ext/psoc_xip_bootloader
 	url = https://github.com/kit-kch/psoc-xip-bootloader.git
-[submodule "ext/psoc_sw_lib"]
-	path = ext/psoc_sw_lib
-	url = https://github.com/kit-kch/psoc-sw-lib.git
