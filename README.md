@@ -151,7 +151,7 @@ Hint: If you want to tunnel the OpenOCD connection, you can do so like this:
 ssh -R 33340:localhost:3333 nq5949@work3.itiv.kit.edu
 ```
 
-## Implementing the Harware Design
+## Implementing the Hardware Design
 
 ### The Vivado project
 
