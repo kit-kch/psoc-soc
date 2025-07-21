@@ -34,12 +34,16 @@ export VERILOG_FILES = $(addprefix $(RTL_DIR)/,$(RTL_SOURCES))
 export SDC_FILE = $(SCRIPT_DIR)/constraint.sdc
 export FOOTPRINT_TCL = $(SCRIPT_DIR)/footprint.tcl
 
-export DIE_AREA  =   0   0 2140 2140
-export CORE_AREA = 270 270 1870 1870
+export PLACE_DENSITY = 0.65
+# Reduce HALO size around SRAM macros
+export MACRO_BLOCKAGE_HALO = 2
+
+# Have to specify this, but it's ignored as we use manual floorplan in footprint.tcl
+export CORE_UTILIZATION = 0.8
 
 export USE_FILL = 1
 export TNS_END_PERCENT = 100
 
-# FIXME
 export SYNTH_MEMORY_MAX_BITS = 12288
+# For debugging, disable later
 export SYNTH_HIERARCHICAL=1
