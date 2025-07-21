@@ -61,6 +61,17 @@ make GATES=yes -f verilator.mak -j40
 make GATES=yes -f xcelium.mak
 ```
 
+## Running a Single Test
+
+Note that you can also run a single test instead of running them all.
+For example, for the `test_blink_led` test do:
+```bash
+make TESTCASE=test_blink_led -f icarus.mak
+make TESTCASE=test_blink_led -f questa.mak
+make TESTCASE=test_blink_led -f verilator.mak -j40
+make TESTCASE=test_blink_led -f xcelium.mak
+```
+
 ## Rebuilding Test Firmware
 
 The firmware used in the tests is stored in the `firmware.raw_exe.bin` file in each test folder.
