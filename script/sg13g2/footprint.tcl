@@ -147,8 +147,7 @@ set FIFO_RAM_X $CORE_X1
 set FIFO_RAM_Y [expr {($CORE_Y2 - $SRAM2_HEIGHT)}]
 set XCACHE_RAM_X [expr {($FIFO_RAM_X + $SRAM2_WIDTH)}]
 set XCACHE_RAM_Y [expr {($CORE_Y2 - $SRAM2_HEIGHT)}]
-
-place_macro -macro_name cpu/inst/memory_system_neorv32_int_dmem_enabled_neorv32_int_dmem_inst/row_n1_inst -location "$CPU_RAM1_X $CPU_RAM1_Y" -orientation R180
-place_macro -macro_name cpu/inst/memory_system_neorv32_int_dmem_enabled_neorv32_int_dmem_inst/row_n2_inst -location "$CPU_RAM2_X $CPU_RAM2_Y" -orientation R180
+place_macro -macro_name cpu/inst/memory_system_neorv32_int_dmem_enabled_neorv32_int_dmem_inst/col_n1_row_n1_inst -location "$CPU_RAM1_X $CPU_RAM1_Y" -orientation R180
+place_macro -macro_name cpu/inst/memory_system_neorv32_int_dmem_enabled_neorv32_int_dmem_inst/col_n2_row_n1_inst -location "$CPU_RAM2_X $CPU_RAM2_Y" -orientation R180
 place_macro -macro_name audio/fifo/mem/sram -location "$FIFO_RAM_X $FIFO_RAM_Y" -orientation R0
 place_macro -macro_name cpu/inst/memory_system_neorv32_xip_enabled_neorv32_xipcache_enabled_neorv32_xcache_inst/neorv32_cache_memory_inst/mem -location "$XCACHE_RAM_X $XCACHE_RAM_Y" -orientation R0
