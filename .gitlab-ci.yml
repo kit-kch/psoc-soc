@@ -147,6 +147,19 @@ behav:sg13g2:dac_sin:
     paths:
     - out/
 
+behav:sg13g2:mem_quick:
+  stage: behav
+  image:
+    name: gitlab.itiv.kit.edu:1443/itiv/docker/rocky9:latest
+  needs:
+   - job: "pre:sg13g2_soc_top:wrap"
+     artifacts: true
+  script:
+    - source ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make test_mem_quick.sg13g2_sim.rtl
+  artifacts:
+    paths:
+    - out/
+
 implement:sg13g2_soc_top:
   stage: implement
   needs:
@@ -180,6 +193,16 @@ postsim:sg13g2:dac_sin:
      artifacts: true
   script:
     - source ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make test_dac_sin.sg13g2_sim.gl
+
+postsim:sg13g2:mem_quick:
+  stage: postsim
+  image:
+    name: gitlab.itiv.kit.edu:1443/itiv/docker/rocky9:latest
+  needs:
+   - job: "implement:sg13g2_soc_top"
+     artifacts: true
+  script:
+    - source ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make test_mem_quick.sg13g2_sim.gl
 
 upload:sg13g2_soc_top:
   stage: upload
