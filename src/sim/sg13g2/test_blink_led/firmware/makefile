@@ -1,6 +1,3 @@
-# Application makefile.
-# Use this makefile to configure all relevant CPU / compiler options.
-
 # Override the default CPU ISA
 MARCH = rv32i_zicsr_zifencei
 
