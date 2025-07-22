@@ -8,4 +8,4 @@ async def test_mem_quick(dut):
     dut._log.info("Starting Quick Memory Test")
     await initializeSoC(dut, testDirPath("firmware.raw_exe.bin"))
     # LED goes high if tests is ok
-    await waitForEdge(dut.pwm1, 10*60*1000*1000, True)
+    await waitForEdge(dut.pwm1, 10*1000*1000, True)
