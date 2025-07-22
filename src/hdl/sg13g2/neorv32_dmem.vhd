@@ -92,8 +92,8 @@ begin
         port map (
           A_CLK => clk_i,
           A_MEN => '1',
-          A_WEN => ram_row_en(y),
-          A_REN => ram_row_en(y),
+          A_WEN => ram_row_en(y) and wen,
+          A_REN => ram_row_en(y) and ren,
           A_ADDR => std_logic_vector(ram_addr),
           A_DIN => std_logic_vector(bus_req_i.data(16*x+15 downto 16*x)),
           A_DLY => '1',
