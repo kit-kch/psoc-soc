@@ -100,7 +100,7 @@ begin
 
         -- Internal Data memory (DMEM) --
         MEM_INT_DMEM_EN => true,  -- implement processor-internal data memory
-        MEM_INT_DMEM_SIZE => 16*1024, -- size of processor-internal data memory in bytes
+        MEM_INT_DMEM_SIZE => 2*16*1024, -- size of processor-internal data memory in bytes
 
         -- External memory interface (WISHBONE) --
         XBUS_EN => true,  -- implement external memory bus interface?
