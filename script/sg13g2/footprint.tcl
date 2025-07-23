@@ -7,7 +7,7 @@ set DIE_MARGIN_X 270.24
 set DIE_MARGIN_Y 272.16
 # Use multiple of 3.78 (row height)
 set CORE_HEIGHT 1024.38
-set CORE_WIDTH 2650
+set CORE_WIDTH 1450
 
 # Macro dimensions
 # https://github.com/IHP-GmbH/IHP-Open-PDK/blob/main/ihp-sg13g2/libs.ref/sg13g2_sram/lef/RM_IHPSG13_1P_4096x16_c3_bm_bist.lef
@@ -147,7 +147,7 @@ set FIFO_RAM_X $CORE_X1
 set FIFO_RAM_Y [expr {($CORE_Y2 - $SRAM2_HEIGHT)}]
 set XCACHE_RAM_X [expr {($FIFO_RAM_X + $SRAM2_WIDTH)}]
 set XCACHE_RAM_Y [expr {($CORE_Y2 - $SRAM2_HEIGHT)}]
-#place_macro -macro_name cpu/inst/memory_system_neorv32_int_dmem_enabled_neorv32_int_dmem_inst/col_n1_row_n1_inst -location "$CPU_RAM1_X $CPU_RAM1_Y" -orientation R180
-#place_macro -macro_name cpu/inst/memory_system_neorv32_int_dmem_enabled_neorv32_int_dmem_inst/col_n2_row_n1_inst -location "$CPU_RAM2_X $CPU_RAM2_Y" -orientation R180
-#place_macro -macro_name audio/fifo/mem/sram -location "$FIFO_RAM_X $FIFO_RAM_Y" -orientation R0
-#place_macro -macro_name cpu/inst/memory_system_neorv32_xip_enabled_neorv32_xipcache_enabled_neorv32_xcache_inst/neorv32_cache_memory_inst/mem -location "$XCACHE_RAM_X $XCACHE_RAM_Y" -orientation R0
+place_macro -macro_name cpu/inst/memory_system_neorv32_int_dmem_enabled_neorv32_int_dmem_inst/col_n1_row_n1_inst -location "$CPU_RAM1_X $CPU_RAM1_Y" -orientation R180
+place_macro -macro_name cpu/inst/memory_system_neorv32_int_dmem_enabled_neorv32_int_dmem_inst/col_n2_row_n1_inst -location "$CPU_RAM2_X $CPU_RAM2_Y" -orientation R180
+place_macro -macro_name audio/fifo/mem/sram -location "$FIFO_RAM_X $FIFO_RAM_Y" -orientation R0
+place_macro -macro_name cpu/inst/memory_system_neorv32_xip_enabled_neorv32_xipcache_enabled_neorv32_xcache_inst/neorv32_cache_memory_inst/mem -location "$XCACHE_RAM_X $XCACHE_RAM_Y" -orientation R0
