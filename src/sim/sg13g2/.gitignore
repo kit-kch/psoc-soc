@@ -8,3 +8,4 @@ modelsim.ini
 transcript
 xrun.*
 __pycache__
+vsim.wlf

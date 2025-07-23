@@ -1,5 +1,7 @@
 # See https://docs.cocotb.org/en/stable/quickstart.html for more info
 SIM ?= questa
+# Uncomment to dump waveform to vsim.wlf. View with vsimk vsim.wlf
+#WAVES=1
 include common/common.mak
 
 ifneq ($(GATES),yes)

@@ -72,6 +72,15 @@ make TESTCASE=test_blink_led -f verilator.mak -j40
 make TESTCASE=test_blink_led -f xcelium.mak
 ```
 
+## Dumping Waveform Traces
+
+If you need a waveform trace for debugging, for some simulators you can enable that by setting `WAVES` to `1`:
+```bash
+make WAVES=1 -f icarus.mak
+make WAVES=1 -f questa.mak
+```
+
+
 ## Rebuilding Test Firmware
 
 The firmware used in the tests is stored in the `firmware.raw_exe.bin` file in each test folder.
