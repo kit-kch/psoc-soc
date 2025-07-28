@@ -25,7 +25,9 @@ def generate_sealring(width: float, heigth: float, output: str, offset_x: float 
     :type heigth: float
     :param output: Path and name of the file where the sealring should be written to.
     :param offset_x: Translation in X direction in µm.
+    :type offset_x: float
     :param offset_y: Translation in Y direction in µm.
+    :type offset_y: float
     """
     layout = klayout.db.Layout(True)
     layout.dbu = 0.001
@@ -55,8 +57,8 @@ def generate_sealring(width: float, heigth: float, output: str, offset_x: float 
     layout.cell(pcell)
 
     # Convert offset from µm to dbu
-    dx = int(offset_x * 1000)
-    dy = int(offset_y * 1000)
+    dx = int(float(offset_x) * 1000)
+    dy = int(float(offset_y) * 1000)
 
     # Insert the cell with translation
     top_cell.insert(klayout.db.CellInstArray(

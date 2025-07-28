@@ -20,4 +20,7 @@ echo "MARGIN X: $DIE_MARGIN_X MARGIN Y: $DIE_MARGIN_Y"
 echo "DIE WIDTH: $DIE_WIDTH DIE HEIGHT: $DIE_HEIGHT"
 echo "SEALRING WIDTH: $SEALRING_WIDTH SEALRING HEIGHT: $SEALRING_HEIGHT"
 
-klayout -n sg13g2 -zz -r script/sg13g2/sealring.py -rd width=$SEALRING_WIDTH -rd height=$SEALRING_HEIGHT -rd output=script/sg13g2/sealring.gds -rd offset_x=-$SEALRING_MARGIN -rd offset_y=-$SEALRING_MARGIN
+OFFSET_X="-$SEALRING_MARGIN"
+OFFSET_Y="-$SEALRING_MARGIN"
+
+klayout -n sg13g2 -zz -r script/sg13g2/sealring.py -rd "width=$SEALRING_WIDTH" -rd "height=$SEALRING_HEIGHT" -rd output=script/sg13g2/sealring.gds -rd "offset_x=$OFFSET_X" -rd "offset_y=$OFFSET_Y"
