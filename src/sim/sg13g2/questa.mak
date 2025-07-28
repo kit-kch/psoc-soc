@@ -12,5 +12,7 @@ else
 EXTRA_ARGS += +notimingchecks
 endif
 
+SIM_ARGS += -no_autoacc
+
 
 include $(shell cocotb-config --makefiles)/Makefile.sim
