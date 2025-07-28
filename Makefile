@@ -146,7 +146,10 @@ soc.bit: $(XPR_FILE)
 sg13g2_wrap:
 	./script/sg13g2/convert_neo.sh
 
-sg13g2:
+sg13g2_sealring:
+	./script/sg13g2/sealring.sh
+
+sg13g2: sg13g2_sealring
 	export DESIGN_CONFIG=$$PWD/script/sg13g2/config.mk; \
 		cd $$FLOW_HOME; \
 		make clean_all; \
