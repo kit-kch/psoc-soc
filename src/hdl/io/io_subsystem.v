@@ -48,7 +48,7 @@ module io_subsystem #(
         input spi_sck,
         input spi_sdo,
         output spi_sdi,
-        input[2:0] spi_csn,
+        input spi_csn,
 
         // PWN
         input[1:0] pwm,
@@ -103,13 +103,13 @@ module io_subsystem #(
     assign fn_oe[11] = 1'b1;
     assign spi_sdi = fn_i[12];
     assign fn_oe[12] = 1'b0;
-    assign fn_o[13] = spi_csn[0];
+    assign fn_o[13] = spi_csn;
     assign fn_oe[13] = 1'b1;
-    assign fn_o[14] = spi_csn[1];
-    assign fn_oe[14] = 1'b1;
-    assign fn_o[15] = spi_csn[2];
-    assign fn_oe[15] = 1'b1;
-    // TODO: SD signals: clk, cmd, dat, cd
+    // TODO: SD signals: clk, cmd, dat0-dat3
+    assign fn_o[14] = 1'b0;
+    assign fn_oe[14] = 1'b0;
+    assign fn_o[15] = 1'b0;
+    assign fn_oe[15] = 1'b0;
     assign fn_o[16] = 1'b0;
     assign fn_oe[16] = 1'b0;
     assign fn_o[17] = 1'b0;

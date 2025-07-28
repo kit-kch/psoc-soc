@@ -186,7 +186,7 @@ module soc_top #(
         .spi_sck(spi_sck_o),
         .spi_sdo(spi_sdo_o),
         .spi_sdi(spi_sdi_i),
-        .spi_csn(spi_csn_o[2:0]),
+        .spi_csn(spi_csn_o[0]),
 
         .pwm(pwm_o[1:0]),
 
