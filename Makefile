@@ -149,7 +149,7 @@ sg13g2_wrap:
 sg13g2_sealring:
 	./script/sg13g2/sealring.sh
 
-sg13g2: sg13g2_sealring
+sg13g2:
 	export DESIGN_CONFIG=$$PWD/script/sg13g2/config.mk; \
 		cd $$FLOW_HOME; \
 		make clean_all; \

@@ -225,6 +225,9 @@ You can then use the normal psoc Makefile:
 # Compile NEORV32 VHDL to Verilog (src/hdl/sg13g2/neorv32_wrap.v)
 make sg13g2_wrap
 
+# Make the sealring GDS
+make sg13g2_sealring
+
 # Do the actual RTL2GDS flow
 make sg13g2
 
