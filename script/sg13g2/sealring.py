@@ -53,7 +53,7 @@ def generate_sealring(width: float, heigth: float, output: str, offset_x: float 
     heigth = float(heigth) - edge_box * 2
 
     top_cell = layout.cell(layout.add_cell("sealring_top"))
-    pcell = layout.add_pcell_variant(lib, pcell_decl.id(), {'w': f'{width}u', 'l': f'{heigth}u'})
+    pcell = layout.add_pcell_variant(lib, pcell_decl.id(), {'l': f'{width}u', 'w': f'{heigth}u'})
     layout.cell(pcell)
 
     # Convert offset from µm to dbu
