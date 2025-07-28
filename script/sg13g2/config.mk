@@ -33,6 +33,7 @@ RTL_SOURCES = \
 export VERILOG_FILES = $(addprefix $(RTL_DIR)/,$(RTL_SOURCES))
 export SDC_FILE = $(SCRIPT_DIR)/constraint.sdc
 export FOOTPRINT_TCL = $(SCRIPT_DIR)/footprint.tcl
+export SEAL_GDS = $(SCRIPT_DIR)/sealring.gds
 
 export PLACE_DENSITY = 0.65
 # Reduce HALO size around SRAM macros

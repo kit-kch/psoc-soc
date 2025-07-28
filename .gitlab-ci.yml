@@ -121,6 +121,17 @@ pre:sg13g2_soc_top:wrap:
     paths:
     - src/hdl/sg13g2/neorv32_wrap.v
 
+pre:sg13g2_soc_top:sealring:
+  stage: pre
+  image:
+    name: docker.io/hpretl/iic-osic-tools:2025.05
+    entrypoint: [""]
+  script:
+    - source /headless/.bashrc && make sg13g2_sealring
+  artifacts:
+    paths:
+    - script/sg13g2/sealring.gds
+
 behav:sg13g2:blink_led:
   stage: behav
   image:
@@ -164,6 +175,8 @@ implement:sg13g2_soc_top:
   stage: implement
   needs:
    - job: "pre:sg13g2_soc_top:wrap"
+     artifacts: true
+   - job: "pre:sg13g2_soc_top:sealring"
      artifacts: true
   image:
     name: docker.io/hpretl/iic-osic-tools:2025.05
