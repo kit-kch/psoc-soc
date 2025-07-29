@@ -10,6 +10,8 @@ stages:
  - behav
  - implement
  - postsim
+ - post
+ - drc
  - upload
 
 behav:i2s_master:
@@ -216,6 +218,48 @@ postsim:sg13g2:mem_quick:
      artifacts: true
   script:
     - source ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make test_mem_quick.sg13g2_sim.gl
+
+post:sg13g2_soc_top:fill:
+  stage: post
+  needs:
+   - job: "implement:sg13g2_soc_top"
+     artifacts: true
+  image:
+    name: docker.io/hpretl/iic-osic-tools:2025.05
+    entrypoint: [""]
+  script:
+    - source /headless/.bashrc && source ./script/sg13g2/setup_orfs.sh && make sg13g2_fill
+  artifacts:
+    paths:
+    - orfs/flow/results/ihp-sg13g2/soc_top
+
+drc:sg13g2_soc_top:minimal:
+  stage: drc
+  needs:
+   - job: "post:sg13g2_soc_top:fill"
+     artifacts: true
+  image:
+    name: docker.io/hpretl/iic-osic-tools:2025.05
+    entrypoint: [""]
+  script:
+    - source /headless/.bashrc && source ./script/sg13g2/setup_orfs.sh && make sg13g2_drc
+  artifacts:
+    paths:
+    - orfs/flow/results/ihp-sg13g2/soc_top
+
+drc:sg13g2_soc_top:full:
+  stage: drc
+  needs:
+   - job: "post:sg13g2_soc_top:fill"
+     artifacts: true
+  image:
+    name: docker.io/hpretl/iic-osic-tools:2025.05
+    entrypoint: [""]
+  script:
+    - source /headless/.bashrc && source ./script/sg13g2/setup_orfs.sh && make sg13g2_drc_full
+  artifacts:
+    paths:
+    - orfs/flow/results/ihp-sg13g2/soc_top
 
 upload:sg13g2_soc_top:
   stage: upload

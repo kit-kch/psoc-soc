@@ -155,13 +155,16 @@ sg13g2:
 		make clean_all; \
 		make
 
+sg13g2_fill:
+	script/sg13g2/fill.sh
+
+sg13g2_drc:
+	script/sg13g2/drc.sh
+
+sg13g2_drc_full:
+	script/sg13g2/drc_full.sh
+
 sg13g2_ui:
 	export DESIGN_CONFIG=$$PWD/script/sg13g2/config.mk; \
 		cd $$FLOW_HOME; \
 		make gui_final
-
-sg13g2_sim:
-	cd src/sim/sg13g2 && make
-
-sg13g2_sim_gtl:
-	cd src/sim/sg13g2 && make GATES=yes
