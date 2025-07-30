@@ -233,6 +233,25 @@ make sg13g2
 
 # View the results in the GUI
 make sg13g2_ui
+
+# Do final fills
+make sg13g2_fill
+
+# Run quick DRC
+make sg13g2_drc
+
+# Run full DRC
+make sg13g2_ui
+```
+
+To view the final results in klayout, open `7_filled.gds` in the results directory:
+
+```bash
+klayout $FLOW_HOME/results/ihp-sg13g2/soc_top/base/7_filled.gds
+
+# To view the DRC results:
+klayout  $FLOW_HOME/results/ihp-sg13g2/soc_top/base/7_filled.gds -m $FLOW_HOME/results/ihp-sg13g2/soc_top/base/8_drc_sg13g2_minimal.lyrdb
+klayout  $FLOW_HOME/results/ihp-sg13g2/soc_top/base/7_filled.gds -m $FLOW_HOME/results/ihp-sg13g2/soc_top/base/8_drc_sg13g2_maximal.lyrdb
 ```
 
 For simulation instructions for the SG13G2 ASIC, see [src/sim/sg13g2/README.md](src/sim/sg13g2/README.md).
