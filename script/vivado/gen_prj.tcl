@@ -44,7 +44,7 @@
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/src/hdl/wb_xbar.v"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/ext/neorv32/rtl/core/neorv32_package.vhd"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/ext/neorv32/rtl/core/neorv32_application_image.vhd"
-#    "/home/nq5949/Dokumente/psoc/psoc_soc2/ext/psoc_xip_bootloader/bootloader_tiny/neorv32_bootloader_image.vhd"
+#    "/home/nq5949/Dokumente/psoc/psoc_soc2/ext/psoc-xip-bootloader/bootloader_tiny/neorv32_bootloader_image.vhd"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/ext/neorv32/rtl/core/neorv32_boot_rom.vhd"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/ext/neorv32/rtl/core/neorv32_bus.vhd"
 #    "/home/nq5949/Dokumente/psoc/psoc_soc2/ext/neorv32/rtl/core/neorv32_cache.vhd"
@@ -132,7 +132,7 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/../../src/hdl/wb_xbar.v"]"\
  "[file normalize "$origin_dir/../../ext/neorv32/rtl/core/neorv32_package.vhd"]"\
  "[file normalize "$origin_dir/../../ext/neorv32/rtl/core/neorv32_application_image.vhd"]"\
- "[file normalize "$origin_dir/../../ext/psoc_xip_bootloader/bootloader_tiny/neorv32_bootloader_image.vhd"]"\
+ "[file normalize "$origin_dir/../../ext/psoc-xip-bootloader/bootloader_tiny/neorv32_bootloader_image.vhd"]"\
  "[file normalize "$origin_dir/../../ext/neorv32/rtl/core/neorv32_boot_rom.vhd"]"\
  "[file normalize "$origin_dir/../../ext/neorv32/rtl/core/neorv32_bus.vhd"]"\
  "[file normalize "$origin_dir/../../ext/neorv32/rtl/core/neorv32_cache.vhd"]"\
@@ -334,7 +334,7 @@ set files [list \
  [file normalize "${origin_dir}/../../src/hdl/wb_xbar.v"] \
  [file normalize "${origin_dir}/../../ext/neorv32/rtl/core/neorv32_package.vhd"] \
  [file normalize "${origin_dir}/../../ext/neorv32/rtl/core/neorv32_application_image.vhd"] \
- [file normalize "${origin_dir}/../../ext/psoc_xip_bootloader/bootloader_tiny/neorv32_bootloader_image.vhd"] \
+ [file normalize "${origin_dir}/../../ext/psoc-xip-bootloader/bootloader_tiny/neorv32_bootloader_image.vhd"] \
  [file normalize "${origin_dir}/../../ext/neorv32/rtl/core/neorv32_boot_rom.vhd"] \
  [file normalize "${origin_dir}/../../ext/neorv32/rtl/core/neorv32_bus.vhd"] \
  [file normalize "${origin_dir}/../../ext/neorv32/rtl/core/neorv32_cache.vhd"] \
@@ -404,7 +404,7 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 set_property -name "library" -value "neorv32" -objects $file_obj
 
-set file "$origin_dir/../../ext/psoc_xip_bootloader/bootloader_tiny/neorv32_bootloader_image.vhd"
+set file "$origin_dir/../../ext/psoc-xip-bootloader/bootloader_tiny/neorv32_bootloader_image.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj

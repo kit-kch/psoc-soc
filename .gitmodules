@@ -2,5 +2,5 @@
 	path = ext/neorv32
 	url = https://github.com/kit-kch/psoc-neorv32.git
 [submodule "ext/psoc_xip_bootloader"]
-	path = ext/psoc_xip_bootloader
+	path = ext/psoc-xip-bootloader
 	url = https://github.com/kit-kch/psoc-xip-bootloader.git

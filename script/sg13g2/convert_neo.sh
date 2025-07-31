@@ -9,7 +9,7 @@ TOP=neorv32_wrap
 NEORV32_FILES=$(sed "s|NEORV32_RTL_PATH_PLACEHOLDER|$NEORV32_HDL|g" src/hdl/sg13g2/file_list_soc.f)
 # Modified or extra files
 EXTRA_FILES="../../src/hdl/neorv32_wrap.vhd \
-    ../../ext/psoc_xip_bootloader/bootloader_tiny/neorv32_bootloader_image.vhd \
+    ../../ext/psoc-xip-bootloader/bootloader_tiny/neorv32_bootloader_image.vhd \
     ../../src/hdl/sg13g2/neorv32_dmem.vhd \
     ../../src/hdl/sg13g2//neorv32_cache.vhd"
 
