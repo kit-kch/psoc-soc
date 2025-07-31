@@ -3,6 +3,26 @@
 
 # KIT PSoC Lab RISC-V Reference SoC
 
+## External Repositories
+
+We include some external repositories in the [ext](ext) folder as submodules, so make sure to clone with the `--recursive` flag.
+Currently we include the following repositories:
+
+### NEORV32 Fork
+
+`neorv32` contains [our fork](https://github.com/kit-kch/psoc-neorv32) of the [NEORV32](https://github.com/stnolting/neorv32) SoC.
+
+Please note that we have frozen our NEORV32 version, whereas the upstream version is constantly being updated.
+Due to this, the documentation on the official website might not match the code used here.
+Please refer to [our fork site](https://github.com/kit-kch/psoc-neorv32) and the generated documentation instead:
+* [Datasheet](https://kit-kch.github.io/psoc-neorv32/)
+* [User Guide](https://kit-kch.github.io/psoc-neorv32/ug/)
+* [API Reference](https://kit-kch.github.io/psoc-neorv32/sw/)
+
+### XIP Bootloader
+
+`psoc-xip-bootloader` contains our [custom bootloader](https://github.com/kit-kch/psoc-xip-bootloader) to boot from external SPI flash.
+
 ## Tools, Compilers, etc
 
 ### Compiler and GDB
