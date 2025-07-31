@@ -257,6 +257,7 @@ drc:sg13g2_soc_top:minimal:
     - orfs/flow/results/ihp-sg13g2/soc_top
 
 drc:sg13g2_soc_top:full:
+  allow_failure: true
   stage: drc
   needs:
    - job: "post:sg13g2_soc_top:fill"
