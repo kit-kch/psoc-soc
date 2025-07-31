@@ -21,6 +21,7 @@ behav:i2s_master:
   variables:
     LD_PRELOAD: /lib64/libudev.so.1
   artifacts:
+    when: always
     paths:
     - out/
 
@@ -31,6 +32,7 @@ behav:sine_generator:
   variables:
     LD_PRELOAD: /lib64/libudev.so.1
   artifacts:
+    when: always
     paths:
     - out/
 
@@ -41,6 +43,7 @@ behav:clock_generator:
   variables:
     LD_PRELOAD: /lib64/libudev.so.1
   artifacts:
+    when: always
     paths:
     - out/
 
@@ -51,6 +54,7 @@ behav:zedboard_soc_top:
   variables:
     LD_PRELOAD: /lib64/libudev.so.1
   artifacts:
+    when: always
     paths:
     - out/
 
@@ -61,6 +65,7 @@ behav:zedboard_standalone_top:
   variables:
     LD_PRELOAD: /lib64/libudev.so.1
   artifacts:
+    when: always
     paths:
     - out/
 
@@ -144,6 +149,7 @@ behav:sg13g2:blink_led:
   script:
     - source ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make test_blink_led.sg13g2_sim.rtl
   artifacts:
+    when: always
     paths:
     - out/
 
@@ -157,6 +163,7 @@ behav:sg13g2:dac_sin:
   script:
     - source ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make test_dac_sin.sg13g2_sim.rtl
   artifacts:
+    when: always
     paths:
     - out/
 
@@ -170,6 +177,7 @@ behav:sg13g2:mem_quick:
   script:
     - source ./script/sg13g2/setup_orfs.sh && source ./script/sg13g2/setup_cocotb.sh && make test_mem_quick.sg13g2_sim.rtl
   artifacts:
+    when: always
     paths:
     - out/
 
@@ -244,6 +252,7 @@ drc:sg13g2_soc_top:minimal:
   script:
     - source /headless/.bashrc && source ./script/sg13g2/setup_orfs.sh && make sg13g2_drc
   artifacts:
+    when: always
     paths:
     - orfs/flow/results/ihp-sg13g2/soc_top
 
@@ -258,6 +267,7 @@ drc:sg13g2_soc_top:full:
   script:
     - source /headless/.bashrc && source ./script/sg13g2/setup_orfs.sh && make sg13g2_drc_full
   artifacts:
+    when: always
     paths:
     - orfs/flow/results/ihp-sg13g2/soc_top
 
