@@ -260,7 +260,7 @@ make sg13g2_fill
 make sg13g2_drc
 
 # Run full DRC
-make sg13g2_ui
+make sg13g2_drc_full
 ```
 
 To view the final results in klayout, open `7_filled.gds` in the results directory:
