@@ -24,13 +24,13 @@ reset_run -quiet impl_1
 #Update Riscv Constraints File
 set_property constrset constrs_soc [get_runs synth_1]
 set_property constrset constrs_soc [get_runs impl_1]
-set file_list [glob -directory ../src/constraints/ constr_soc.xdc]
+set file_list [glob -directory ../script/vivado/ constr_soc.xdc]
 read_xdc $file_list
 
 #Update Standalone Constraints File
 set_property constrset constrs_standalone [get_runs synth_1]
 set_property constrset constrs_standalone [get_runs impl_1]
-set file_list [glob -directory ../src/constraints/ constr_standalone.xdc]
+set file_list [glob -directory ../script/vivado/ constr_standalone.xdc]
 read_xdc $file_list
 
 #Automatically set new compile order.
