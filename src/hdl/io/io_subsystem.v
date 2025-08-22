@@ -65,6 +65,24 @@ module io_subsystem #(
         output xip_sdi,
         input xip_sdo,
 
+        // SD
+        input sd_clk_o,
+        input sd_cmd_o,
+        output sd_cmd_i,
+        input sd_cmd_oe,
+        input sd_dat0_o,
+        input sd_dat1_o,
+        input sd_dat2_o,
+        input sd_dat3_o,
+        output sd_dat0_i,
+        output sd_dat1_i,
+        output sd_dat2_i,
+        output sd_dat3_i,
+        input sd_dat0_oe,
+        input sd_dat1_oe,
+        input sd_dat2_oe,
+        input sd_dat3_oe,
+
         // Final outputs, as connected to pads
         inout[31:0] pads
     );
@@ -105,19 +123,24 @@ module io_subsystem #(
     assign fn_oe[12] = 1'b0;
     assign fn_o[13] = spi_csn;
     assign fn_oe[13] = 1'b1;
-    // TODO: SD signals: clk, cmd, dat0-dat3
-    assign fn_o[14] = 1'b0;
-    assign fn_oe[14] = 1'b0;
-    assign fn_o[15] = 1'b0;
-    assign fn_oe[15] = 1'b0;
-    assign fn_o[16] = 1'b0;
-    assign fn_oe[16] = 1'b0;
-    assign fn_o[17] = 1'b0;
-    assign fn_oe[17] = 1'b0;
-    assign fn_o[18] = 1'b0;
-    assign fn_oe[18] = 1'b0;
-    assign fn_o[19] = 1'b0;
-    assign fn_oe[19] = 1'b0;
+
+    assign fn_o[14] = sd_clk_o;
+    assign fn_oe[14] = 1'b1;
+    assign fn_o[15] = sd_cmd_o;
+    assign fn_oe[15] = sd_cmd_oe;
+    assign sd_cmd_i = fn_i[15];
+    assign fn_o[16] = sd_dat0_o;
+    assign fn_oe[16] = sd_dat0_oe;
+    assign sd_dat0_i = fn_i[16];
+    assign fn_o[17] = sd_dat1_o;
+    assign fn_oe[17] = sd_dat1_oe;
+    assign sd_dat1_i = fn_i[17];
+    assign fn_o[18] = sd_dat2_o;
+    assign fn_oe[18] = sd_dat2_oe;
+    assign sd_dat2_i = fn_i[18];
+    assign fn_o[19] = sd_dat3_o;
+    assign fn_oe[19] = sd_dat3_oe;
+    assign sd_dat3_i = fn_i[19];
 
     assign fn_o[20] = pwm[0];
     assign fn_oe[20] = 1'b1;

@@ -27,6 +27,10 @@ module soc_top #(
     wire[31:0] wb_io_adr, wb_io_dat_i, wb_io_dat_o;
     wire wb_io_we, wb_io_stb, wb_io_cyc, wb_io_ack;
     wire[3:0] wb_io_sel;
+    // Wishbone bus for SD module
+    wire[31:0] wb_sd_adr, wb_sd_dat_i, wb_sd_dat_o;
+    wire wb_sd_we, wb_sd_stb, wb_sd_cyc, wb_sd_ack;
+    wire[3:0] wb_sd_sel;
 
     // Audio module interrupt line
     wire audio_fifo_low;
@@ -49,6 +53,12 @@ module soc_top #(
     wire jtag_tck_i, jtag_tdi_i, jtag_tdo_o, jtag_tms_i;
     // XIP
     wire xip_csn_o, xip_clk_o, xip_sdi_i, xip_sdo_o;
+    // SD
+    wire sd_clk_o, sd_cmd_o, sd_cmd_i, sd_cmd_oe;
+    wire sd_dat0_o, sd_dat0_i, sd_dat0_oe;
+    wire sd_dat1_o, sd_dat1_i, sd_dat1_oe;
+    wire sd_dat2_o, sd_dat2_i, sd_dat2_oe;
+    wire sd_dat3_o, sd_dat3_i, sd_dat3_oe;
 
     neorv32_wrap cpu(
         .clk_i(clk),
@@ -118,7 +128,16 @@ module soc_top #(
         .wb_io_sel(wb_io_sel),
         .wb_io_stb(wb_io_stb),
         .wb_io_cyc(wb_io_cyc),
-        .wb_io_ack(wb_io_ack)
+        .wb_io_ack(wb_io_ack),
+
+        .wb_sd_adr(wb_sd_adr),
+        .wb_sd_dat_i(wb_sd_dat_i),
+        .wb_sd_dat_o(wb_sd_dat_o),
+        .wb_sd_we(wb_sd_we),
+        .wb_sd_sel(wb_sd_sel),
+        .wb_sd_stb(wb_sd_stb),
+        .wb_sd_cyc(wb_sd_cyc),
+        .wb_sd_ack(wb_sd_ack)
     );
     
     psoc_audio audio(
@@ -147,6 +166,38 @@ module soc_top #(
 
     // Hardcode this to GPIO port 22 for interrupt
     assign gpio_i[22] = audio_fifo_low;
+
+    neosd sd (
+        .clk_i(clk),
+        .rstn_i(~rst),
+
+        .wb_adr_i(wb_sd_adr),
+        .wb_dat_i(wb_sd_dat_o),
+        .wb_dat_o(wb_sd_dat_i),
+        .wb_we_i(wb_sd_we),
+        .wb_sel_i(wb_sd_sel),
+        .wb_stb_i(wb_sd_stb),
+        .wb_cyc_i(wb_sd_cyc),
+        .wb_ack_o(wb_sd_ack),
+
+        .sd_clk_o(sd_clk_o),
+        .sd_cmd_o(sd_cmd_o),
+        .sd_cmd_i(sd_cmd_i),
+        .sd_cmd_oe(sd_cmd_oe),
+        .sd_dat0_o(sd_dat0_o),
+        .sd_dat1_o(sd_dat1_o),
+        .sd_dat2_o(sd_dat2_o),
+        .sd_dat3_o(sd_dat3_o),
+        .sd_dat0_i(sd_dat0_i),
+        .sd_dat1_i(sd_dat1_i),
+        .sd_dat2_i(sd_dat2_i),
+        .sd_dat3_i(sd_dat3_i),
+        .sd_dat0_oe(sd_dat0_oe),
+        .sd_dat1_oe(sd_dat1_oe),
+        .sd_dat2_oe(sd_dat2_oe),
+        .sd_dat3_oe(sd_dat3_oe)
+    );
+
 
     io_subsystem #(
         .sysinfo(sysinfo)
@@ -199,6 +250,23 @@ module soc_top #(
         .xip_clk(xip_clk_o),
         .xip_sdi(xip_sdi_i),
         .xip_sdo(xip_sdo_o),
+
+        .sd_clk_o(sd_clk_o),
+        .sd_cmd_o(sd_cmd_o),
+        .sd_cmd_i(sd_cmd_i),
+        .sd_cmd_oe(sd_cmd_oe),
+        .sd_dat0_o(sd_dat0_o),
+        .sd_dat1_o(sd_dat1_o),
+        .sd_dat2_o(sd_dat2_o),
+        .sd_dat3_o(sd_dat3_o),
+        .sd_dat0_i(sd_dat0_i),
+        .sd_dat1_i(sd_dat1_i),
+        .sd_dat2_i(sd_dat2_i),
+        .sd_dat3_i(sd_dat3_i),
+        .sd_dat0_oe(sd_dat0_oe),
+        .sd_dat1_oe(sd_dat1_oe),
+        .sd_dat2_oe(sd_dat2_oe),
+        .sd_dat3_oe(sd_dat3_oe),
 
         .pads(pads)
     );
