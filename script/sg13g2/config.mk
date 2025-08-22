@@ -9,8 +9,20 @@ export ADDITIONAL_LIBS += $(PLATFORM_DIR)/lib/RM_IHPSG13_1P_4096x16_c3_bm_bist_t
 export ADDITIONAL_GDS += $(PLATFORM_DIR)/gds/RM_IHPSG13_1P_4096x16_c3_bm_bist.gds \
     $(PLATFORM_DIR)/gds/RM_IHPSG13_1P_256x48_c2_bm_bist.gds
 
+NEOSD_DIR = $(DESIGN_PATH)ext/neosd/rtl
 RTL_DIR = $(DESIGN_PATH)src/hdl
 SCRIPT_DIR = $(DESIGN_PATH)script/sg13g2
+
+NEOSD_SOURCES = \
+    neosd_clk.sv \
+    neosd_clken.v \
+    neosd_cmd_reg.sv \
+    neosd_cmd_fsm.sv \
+    neosd_dat_reg.sv \
+    neosd_dat_crc.sv \
+    neosd_dat_block.sv \
+    neosd_dat_fsm.sv \
+    neosd_top.sv
 
 RTL_SOURCES = \
     sg13g2/sfifo_mem.v \
@@ -30,7 +42,7 @@ RTL_SOURCES = \
     wb_xbar.v \
 	soc_top.v
 
-export VERILOG_FILES = $(addprefix $(RTL_DIR)/,$(RTL_SOURCES))
+export VERILOG_FILES = $(addprefix $(RTL_DIR)/,$(RTL_SOURCES)) $(addprefix $(NEOSD_DIR)/,$(NEOSD_SOURCES))
 export SDC_FILE = $(SCRIPT_DIR)/constraint.sdc
 export FOOTPRINT_TCL = $(SCRIPT_DIR)/footprint.tcl
 export SEAL_GDS = $(SCRIPT_DIR)/sealring.gds
