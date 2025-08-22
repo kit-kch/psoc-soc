@@ -4,3 +4,6 @@
 [submodule "ext/psoc_xip_bootloader"]
 	path = ext/psoc-xip-bootloader
 	url = https://github.com/kit-kch/psoc-xip-bootloader.git
+[submodule "ext/neosd"]
+	path = ext/neosd
+	url = https://github.com/jpf91/neosd.git
