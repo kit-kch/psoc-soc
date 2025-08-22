@@ -89,12 +89,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports {pads[12]}]
 # GPIO_BTND, LA22_P, Bank 35, btn_r/spi_ss0
 set_property PACKAGE_PIN G19 [get_ports {pads[13]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {pads[13]}]
-# GPIO_BTNCE, LA25_N, Bank 13, btn_c/spi_ss1
-set_property PACKAGE_PIN C22 [get_ports {pads[14]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pads[14]}]
-# GPIO0, LA19_P, Bank 35, sw3/spi_ss2
-set_property PACKAGE_PIN G15 [get_ports {pads[15]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pads[15]}]
 
 # LEDs Buttons (shared with PWM Pins)
 # ------------------------------------------------------
@@ -118,17 +112,24 @@ set_property IOSTANDARD LVCMOS33 [get_ports {pads[5]}]
 # SD CARD
 # ------------------------------------------------------
 # SPI_SCK, LA14_N, Bank 34, clk
-set_property PACKAGE_PIN K20 [get_ports {pads[16]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pads[16]}]
+set_property PACKAGE_PIN K20 [get_ports {pads[14]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[14]}]
 # SPI_MOSI, LA10_N, Bank 34, cmd
-set_property PACKAGE_PIN T19 [get_ports {pads[17]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pads[17]}]
-# SPI_MISO, LA10_P, Bank 34, dat
-set_property PACKAGE_PIN R19 [get_ports {pads[18]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pads[18]}]
-# SPI_SD_SS, LA21_N, Bank 35, cd
+set_property PACKAGE_PIN T19 [get_ports {pads[15]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[15]}]
+# SPI_MISO, LA10_P, Bank 34, dat0
+set_property PACKAGE_PIN R19 [get_ports {pads[16]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[16]}]
+# SPI_SD_SS, LA21_N, Bank 35, cd/dat3
 set_property PACKAGE_PIN E20 [get_ports {pads[19]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {pads[19]}]
+
+# GPIO_BTNCE, LA25_N, Bank 13, btn_c/spi_ss1
+set_property PACKAGE_PIN C22 [get_ports {pads[17]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[17]}]
+# GPIO0, LA19_P, Bank 35, sw3/spi_ss2
+set_property PACKAGE_PIN G15 [get_ports {pads[18]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pads[18]}]
 
 # Clock Oscillator
 # ------------------------------------------------------
