@@ -2,6 +2,20 @@ TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../../hdl
 PDK_DIR = $(FLOW_HOME)/platforms/ihp-sg13g2/verilog
 
+NEOSD_DIR = $(PWD)/../../../ext/neosd/rtl
+
+
+NEOSD_SOURCES = \
+    neosd_clk.sv \
+    neosd_clken.v \
+    neosd_cmd_reg.sv \
+    neosd_cmd_fsm.sv \
+    neosd_dat_reg.sv \
+    neosd_dat_crc.sv \
+    neosd_dat_block.sv \
+    neosd_dat_fsm.sv \
+    neosd_top.sv
+
 RTL_SOURCES = \
     sg13g2/sfifo_mem.v \
     audio/sfifo.v \
@@ -23,7 +37,7 @@ RTL_SOURCES = \
 ifneq ($(GATES),yes)
 # RTL simulation:
 export SIM_BUILD = .build/$(SIM).rtl
-VERILOG_SOURCES += $(addprefix $(SRC_DIR)/,$(RTL_SOURCES))
+VERILOG_SOURCES += $(addprefix $(SRC_DIR)/,$(RTL_SOURCES)) $(addprefix $(NEOSD_DIR)/,$(NEOSD_SOURCES))
 else
 # Gate level simulation:
 export SIM_BUILD		= .build/$(SIM).gl
