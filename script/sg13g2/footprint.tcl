@@ -6,7 +6,7 @@
 set DIE_MARGIN_X 270.24
 set DIE_MARGIN_Y 272.16
 # Use multiple of 3.78 (row height)
-set CORE_HEIGHT 1062.18
+set CORE_HEIGHT 1069.74
 set CORE_WIDTH 1449.6
 # Leave some space between SRAM and CORE so some cells can be placed close to IO pads. 3 rows (1 not usable due to halo)
 set SRAM_MARGIN [expr {0}]
