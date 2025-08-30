@@ -106,7 +106,7 @@ begin
         XBUS_EN => true,  -- implement external memory bus interface?
 
         -- Processor peripherals --
-        IO_GPIO_NUM => 23,  -- implement general purpose input/output port unit (GPIO)?
+        IO_GPIO_NUM => 24,  -- implement general purpose input/output port unit (GPIO)?
         IO_CLINT_EN => true,  -- implement machine system timer (MTIME)?
         IO_UART0_EN => true,  -- implement primary universal asynchronous receiver/transmitter (UART0)?
         IO_SPI_EN => true,  -- implement serial peripheral interface (SPI)?

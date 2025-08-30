@@ -59,6 +59,8 @@ module soc_top #(
     wire sd_dat1_o, sd_dat1_i, sd_dat1_oe;
     wire sd_dat2_o, sd_dat2_i, sd_dat2_oe;
     wire sd_dat3_o, sd_dat3_i, sd_dat3_oe;
+    wire[3:0] sd_dat_o, sd_dat_i, sd_dat_oe;
+    wire sd_irq, sd_flag_data;
 
     neorv32_wrap cpu(
         .clk_i(clk),
@@ -164,8 +166,10 @@ module soc_top #(
         .phone_r(audio_r)
     );
 
-    // Hardcode this to GPIO port 22 for interrupt
+    // Hardcode this to GPIO port 22 for audio interrupt
     assign gpio_i[22] = audio_fifo_low;
+    // Hardcode this to GPIO port 23 for sd interrupt
+    assign gpio_i[23] = sd_irq;
 
     neosd sd (
         .clk_i(clk),
@@ -180,24 +184,26 @@ module soc_top #(
         .wb_cyc_i(wb_sd_cyc),
         .wb_ack_o(wb_sd_ack),
 
+        .irq_o(sd_irq),
+        .flag_data_o(sd_flag_data),
+
         .sd_clk_o(sd_clk_o),
         .sd_cmd_o(sd_cmd_o),
         .sd_cmd_i(sd_cmd_i),
         .sd_cmd_oe(sd_cmd_oe),
-        .sd_dat0_o(sd_dat0_o),
-        .sd_dat1_o(sd_dat1_o),
-        .sd_dat2_o(sd_dat2_o),
-        .sd_dat3_o(sd_dat3_o),
-        .sd_dat0_i(sd_dat0_i),
-        .sd_dat1_i(sd_dat1_i),
-        .sd_dat2_i(sd_dat2_i),
-        .sd_dat3_i(sd_dat3_i),
-        .sd_dat0_oe(sd_dat0_oe),
-        .sd_dat1_oe(sd_dat1_oe),
-        .sd_dat2_oe(sd_dat2_oe),
-        .sd_dat3_oe(sd_dat3_oe)
+        .sd_dat_o(sd_dat_o),
+        .sd_dat_i(sd_dat_i),
+        .sd_dat_oe(sd_dat_oe)
     );
-
+    assign sd_dat_i = {sd_dat3_i, sd_dat2_i, sd_dat1_i, sd_dat0_i};
+    assign sd_dat0_o = sd_dat_o[0];
+    assign sd_dat1_o = sd_dat_o[1];
+    assign sd_dat2_o = sd_dat_o[2];
+    assign sd_dat3_o = sd_dat_o[3];
+    assign sd_dat0_oe = sd_dat_oe[0];
+    assign sd_dat1_oe = sd_dat_oe[1];
+    assign sd_dat2_oe = sd_dat_oe[2];
+    assign sd_dat3_oe = sd_dat_oe[3];
 
     io_subsystem #(
         .sysinfo(sysinfo)
