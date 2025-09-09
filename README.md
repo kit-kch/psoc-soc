@@ -44,16 +44,19 @@ source /tools/psoc/psoc.sh riscv
 Outside of ITIV, you need to compile OpenOCD by yourself:
 ```bash
 # In empty rocky 8 container, first install libraries
+dnf install 'dnf-command(config-manager)'
 dnf config-manager --set-enabled powertools
+dnf install epel-release
+dnf makecache
 dnf groupinstall "Development Tools"
-dnf install jimtcl-devel libftdi-devel
+dnf install libftdi-devel
 
 # Now build
-git clone https://github.com/kit-kch/psoc-openocd.git openocd
+git clone --recursive https://github.com/kit-kch/psoc-openocd.git openocd
 cd openocd
 git checkout neorv
 ./bootstrap
-./configure --prefix=/
+./configure --prefix=/ --enable-internal-jimtcl
 make -j24
 make DESTDIR=/tools/psoc/openocd/2025.07.25_0.12.0+bd577aad8a install
 ```
