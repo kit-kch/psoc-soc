@@ -153,7 +153,7 @@ Once you have the software stack installed, programming is quite convenient.
   load
   # Example how to set a breakpoint
   break main
-  j *(0xFFE00000)
+  run
   ```
 
 The nice thing here is that GDB knows that the memory region at `0xE0000000` provided by the XIP peripheral is read-only.
@@ -161,9 +161,7 @@ It therefore automatically uses the OpenOCD flash feature, which uses JTAGSPI to
 In addition, it now automatically uses HW breakpoints for this region, as SW breakpoints only work in writable memory.
 Note that there's only one hardware breakpoint, so you can't have multiple breakpoints in GDB.
 
-To reset the application without confusing the debugger, the best way is to just jump to the code entrypoint.
-For some reason, jumping to the main application does usually not work.
-Jumping to the bootloader entrypoint as shown above however works fine.
+To reset the application without confusing the debugger, the best way is to just jump to the code entrypoint with `run`.
 
 Hint: If you want to tunnel the OpenOCD connection, you can do so like this:
 ```bash
