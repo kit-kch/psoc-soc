@@ -10,8 +10,8 @@ set CORE_HEIGHT 1069.74
 set CORE_WIDTH 1449.6
 # Leave some space between SRAM and CORE so some cells can be placed close to IO pads. 3 rows (1 not usable due to halo)
 set SRAM_MARGIN [expr {0}]
-# Some spacing between adjacent SRAMs to avoid M1.b DRC error
-set SRAM_SPACE [expr {0.2}]
+# Some spacing between adjacent SRAMs to avoid Mx.b DRC error
+set SRAM_SPACE [expr {0.4}]
 
 # Macro dimensions
 # https://github.com/IHP-GmbH/IHP-Open-PDK/blob/main/ihp-sg13g2/libs.ref/sg13g2_sram/lef/RM_IHPSG13_1P_4096x16_c3_bm_bist.lef
