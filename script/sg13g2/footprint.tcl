@@ -10,6 +10,8 @@ set CORE_HEIGHT 1069.74
 set CORE_WIDTH 1449.6
 # Leave some space between SRAM and CORE so some cells can be placed close to IO pads. 3 rows (1 not usable due to halo)
 set SRAM_MARGIN [expr {0}]
+# Some spacing between adjacent SRAMs to avoid M1.b DRC error
+set SRAM_SPACE [expr {0.2}]
 
 # Macro dimensions
 # https://github.com/IHP-GmbH/IHP-Open-PDK/blob/main/ihp-sg13g2/libs.ref/sg13g2_sram/lef/RM_IHPSG13_1P_4096x16_c3_bm_bist.lef
@@ -143,14 +145,14 @@ remove_io_rows
 # Bottom left corner is DMEM
 set CPU_RAM1_X [expr {($CORE_X1 + $SRAM_MARGIN)}]
 set CPU_RAM1_Y [expr {($CORE_Y1 + $SRAM_MARGIN)}]
-set CPU_RAM2_X [expr {($CPU_RAM1_X + $SRAM1_WIDTH)}]
+set CPU_RAM2_X [expr {($CPU_RAM1_X + $SRAM1_WIDTH + $SRAM_SPACE)}]
 set CPU_RAM2_Y $CPU_RAM1_Y
 
 # Top let corner is audio FIFO
 set FIFO_RAM_X [expr {($CORE_X1 + $SRAM_MARGIN)}]
 set FIFO_RAM_Y [expr {($CORE_Y2 - $SRAM2_HEIGHT - $SRAM_MARGIN)}]
 # NExt to it is CACHE memory
-set XCACHE_RAM_X [expr {($CORE_X1 + $SRAM2_WIDTH + $SRAM_MARGIN)}]
+set XCACHE_RAM_X [expr {($CORE_X1 + $SRAM2_WIDTH + $SRAM_SPACE + $SRAM_MARGIN)}]
 set XCACHE_RAM_Y [expr {($CORE_Y2 - $SRAM2_HEIGHT - $SRAM_MARGIN)}]
 place_macro -macro_name cpu/inst/memory_system_neorv32_int_dmem_enabled_neorv32_int_dmem_inst/col_n1_row_n1_inst -location "$CPU_RAM1_X $CPU_RAM1_Y" -orientation R180
 place_macro -macro_name cpu/inst/memory_system_neorv32_int_dmem_enabled_neorv32_int_dmem_inst/col_n2_row_n1_inst -location "$CPU_RAM2_X $CPU_RAM2_Y" -orientation R180
