@@ -2,6 +2,43 @@
 
 # KIT PSoC Lab RISC-V Reference SoC
 
+![PSoC Chip Overview](asic_overview.png)
+
+## About the Application
+
+The SoC was designed to realize a simple SD-Card based audio player.
+It can be controlled using display and buttons on the [FMC PCB](https://github.com/kit-kch/psoc-pcb-fmc), which also contains DAC for audio playback, clock generation and firmware storage.
+The audio player firmware can be found in the [kit-kch/psoc-sw-player](https://github.com/kit-kch/psoc-sw-player) project.
+
+The SoC itself can be emulated on the ZedBoard FPGA board or taped out using the IHP SG13G2 130nm Open PDK.
+
+## About the System-on-Chip
+
+The PSoC SoC is a RISC-V system based on the open-source [NEORV32](https://github.com/stnolting/neorv32) RISC-V core and the [NEOSD](https://github.com/jpf91/neosd) SD card controller.
+All components are open source, including RTL, bootloader, firmware, and PCBs.
+
+Peripherals of the chip include:
+* I2S (custom peripheral)
+* Delta-Sigma Modulator for Audio (custom peripheral to be designed by students)
+* I2C
+* UART
+* SPI
+* SD Card Interface
+* PWM
+* JTAG for on-chip debugging and programming
+* SPI-Flash with execute-in-place support
+* GPIO with configurable interrupts
+* Instruction cache
+* Timer and software interrupts
+* Data memory
+
+21 pins can be configured either for their primary function or as GPIO. All GPIOs are configurable as input or output.
+
+## About the Tapeout
+
+The design was [submitted for fabrication](https://github.com/kit-kch/psoc-soc/releases/tag/ihp-0925) in IHP’s SG13G2 130nm SiGe BiCMOS technology, with dimensions of 2.046 mm × 1.67 mm (3.42 mm² total area). It features 40 pins, 8 of which are power pins use to connect the two supply voltages: 3.3V for I/O and 1.2V for the core.
+The taped out chip can be mounted on a [carrier pcb](https://github.com/kit-kch/psoc-pcb-fmc) and can then interface the same peripherals on the [FMC PCB](https://github.com/kit-kch/psoc-pcb-fmc) as the FPGA design.
+
 ## External Repositories
 
 We include some external repositories in the [ext](ext) folder as submodules, so make sure to clone with the `--recursive` flag.
@@ -21,6 +58,10 @@ Please refer to [our fork site](https://github.com/kit-kch/psoc-neorv32) and the
 ### XIP Bootloader
 
 `psoc-xip-bootloader` contains our [custom bootloader](https://github.com/kit-kch/psoc-xip-bootloader) to boot from external SPI flash.
+
+### NEOSD Peripheral
+
+`neosd` contains the [NEOSD](https://github.com/jpf91/neosd) SD Card controller.
 
 ## Tools, Compilers, etc
 
