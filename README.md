@@ -4,7 +4,9 @@
 
 ![PSoC Chip Overview](asic_overview.png)
 
-## About the Application
+## Overview of the Design
+
+### About the Application
 
 The SoC was designed to realize a simple SD-Card based audio player.
 It can be controlled using display and buttons on the [FMC PCB](https://github.com/kit-kch/psoc-pcb-fmc), which also contains DAC for audio playback, clock generation and firmware storage.
@@ -12,7 +14,7 @@ The audio player firmware can be found in the [kit-kch/psoc-sw-player](https://g
 
 The SoC itself can be emulated on the ZedBoard FPGA board or taped out using the IHP SG13G2 130nm Open PDK.
 
-## About the System-on-Chip
+### About the System-on-Chip
 
 The PSoC SoC is a RISC-V system based on the open-source [NEORV32](https://github.com/stnolting/neorv32) RISC-V core and the [NEOSD](https://github.com/jpf91/neosd) SD card controller.
 All components are open source, including [RTL](src/hdl), [bootloader](https://github.com/kit-kch/psoc-xip-bootloader), [firmware](https://github.com/kit-kch/psoc-sw-player), and [PCBs](https://github.com/kit-kch/psoc-pcb-fmc).
@@ -34,17 +36,19 @@ Peripherals of the chip include:
 
 21 pins can be configured either for their primary function or as GPIO. All GPIOs are configurable as input or output.
 
-## About the Tapeout
+### About the Tapeout
 
 The design was [submitted for fabrication](https://github.com/kit-kch/psoc-soc/releases/tag/ihp-0925) in IHP’s SG13G2 130nm SiGe BiCMOS technology, with dimensions of 2.046 mm × 1.67 mm (3.42 mm² total area). It features 40 pins, 8 of which are power pins used to connect the two supply voltages: 3.3V for I/O and 1.2V for the core.
 The taped out chip can be mounted on a [carrier pcb](https://github.com/kit-kch/psoc-pcb-ihp0925) and can then interface the same peripherals on the [FMC PCB](https://github.com/kit-kch/psoc-pcb-fmc) as the FPGA design.
 
-## External Repositories
+## Working with this Repository
+
+### External Repositories
 
 We include some external repositories in the [ext](ext) folder as submodules, so make sure to clone with the `--recursive` flag.
 Currently we include the following repositories:
 
-### NEORV32 Fork
+#### NEORV32 Fork
 
 `neorv32` contains [our fork](https://github.com/kit-kch/psoc-neorv32) of the [NEORV32](https://github.com/stnolting/neorv32) SoC.
 
@@ -55,17 +59,17 @@ Please refer to [our fork site](https://github.com/kit-kch/psoc-neorv32) and the
 * [User Guide](https://kit-kch.github.io/psoc-neorv32/ug/)
 * [API Reference](https://kit-kch.github.io/psoc-neorv32/sw/)
 
-### XIP Bootloader
+#### XIP Bootloader
 
 `psoc-xip-bootloader` contains our [custom bootloader](https://github.com/kit-kch/psoc-xip-bootloader) to boot from external SPI flash.
 
-### NEOSD Peripheral
+#### NEOSD Peripheral
 
 `neosd` contains the [NEOSD](https://github.com/jpf91/neosd) SD Card controller.
 
-## Tools, Compilers, etc
+### Tools, Compilers, etc
 
-### Compiler and GDB
+#### Compiler and GDB
 
 At ITIV, we just use the compiler installed in `/tools/riscv/riscv-none-elf-gcc-xpack/xpack-riscv-none-elf-gcc-14.2.0-3/` which is set up by the `psoc.sh` script:
 ```bash
@@ -74,7 +78,7 @@ source /tools/psoc/psoc.sh riscv
 
 Outside of ITIV, you need to set up the [xPack GNU RISC-V Embedded GCC v14.2.0-3](https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/tag/v14.2.0-3) toolchain by yourself.
 
-### OpenOCD
+#### OpenOCD
 
 As our `JTAGSPI` support has currently not been upstreamed, you need our custom [OpenOCD fork](https://github.com/kit-kch/psoc-openocd).
 For ITIV PSoC students, this fork is installed in `/tools/riscv/openocd/2025.07.25_0.12.0+bd577aad8a` and set up by soureing `psoc.sh`:
@@ -102,11 +106,11 @@ make -j24
 make DESTDIR=/tools/psoc/openocd/2025.07.25_0.12.0+bd577aad8a install
 ```
 
-### Bootloader
+#### Bootloader
 
 Refer to the [psoc-xip-bootloader](https://github.com/kit-kch/psoc-xip-bootloader) instructions.
 
-### Vivado
+#### Vivado
 
 Vivado is used for FPGA synthesis and some behavorial simulations.
 At ITIV, [vivado_env.sh](script/vivado/vivado_env.sh) uses `module load xilinx/2024.1` in case Vivado was not set up previously.
@@ -117,7 +121,7 @@ source /tools/psoc/psoc.sh vivado
 
 If you're not at ITIV, you will have to install Vivado 2024.1 and make sure it's in `$PATH`.
 
-### OpenRoad / ORFS
+#### OpenRoad / ORFS
 
 We use OpenRoad and ORFS to synthesize the ASIC for the SG13G2 Open PDK target.
 The OpenRoad synthesis flow at ITIV is meant to be run in the [IIC-OSIC-TOOLS](https://github.com/iic-jku/IIC-OSIC-TOOLS) container, version `2025.05`.
@@ -140,28 +144,28 @@ distrobox enter asic
 
 ORFS is not shipped with `IIC-OSIC-TOOLS`, but the [setup_orfs.sh](script/sg13g2/setup_orfs.sh) script will automatically clone the correct version from git.
 
-### Cocotb
+#### Cocotb
 
 Cocotb is used to simulate the whole SoC for the ASIC SG13G2 target.
 The [setup_cocotb.sh](script/sg13g2/setup_cocotb.sh) script automatically sets up a venv with the correct version of cocotb and required libraries.
 You just need to have a recent enough python with venv support.
 
-### QuestaSim
+#### QuestaSim
 
 Cocotb is used as a backend for cocotb for the ASIC simulations.
 At ITIV, [questa_env.sh](script/sg13g2/questa_env.sh) uses `module load questa/2023.4` in case QuestaSim was not set up previously.
 If you're not at ITIV, you will have to install QuestaSim 2023.4 and make sure it's in `$PATH`.
 
-### Other Simulators
+#### Other Simulators
 
 The ASIC simulation in [src/sim/sg13g2](src/sim/sg13g2/) provides support for other simulators.
 For example, you can also use Verilator or Icarus Verilog, which are shippped with the IIC-OSIC-TOOLS container.
 
-## Running Firmware
+### Running Firmware
 
 To run firmware on the ASIC or FPGA, there are two main points to remember:
 
-### Compilling Code Accordingly
+#### Compilling Code Accordingly
 
 We are using the execute-in-place (XIP) peripheral.
 This means the entry point of your code needs to be mapped to the XIP base address `0xE0000000`.
@@ -169,7 +173,7 @@ With the neorv linker script, this can be achieved by defining `__neorv32_rom_ba
 All our reference code includes `psoc_lib.mk` from the [psoc-sw-lib](https://github.com/kit-kch/psoc-sw-lib) repository.
 Apart from providing low-level drivers for our custom hardware components, this makefile also sets `__neorv32_rom_base`.
 
-### Programming the SPI Flash
+#### Programming the SPI Flash
 
 The software needs to be programmed to the SPI flash, but our [psoc-fmc-board](https://gitlab.itiv.kit.edu/psoc-admin/psoc_board/-/tree/master/doc?ref_type=heads) does not provide any option to program it externally.
 To program it from the FPGA or ASIC, you could use the extended [psoc-xip-bootloader](https://github.com/kit-kch/psoc-xip-bootloader).
@@ -212,9 +216,9 @@ Hint: If you want to tunnel the OpenOCD connection, you can do so like this:
 ssh -R 33340:localhost:3333 nq5949@work3.itiv.kit.edu
 ```
 
-## Implementing the Hardware Design
+### Implementing the Hardware Design
 
-### The Vivado project
+#### The Vivado project
 
 For FPGA development on the Zedboard, you will need these commands:
 
@@ -251,7 +255,7 @@ make all
 make clean
 ```
 
-### IHP SG13G2 Tapeout
+#### IHP SG13G2 Tapeout
 
 To synthesize the design for IHPs [SG13G2 Open PDK](https://github.com/IHP-GmbH/IHP-Open-PDK), follow these instructions:
 
