@@ -15,7 +15,7 @@ The SoC itself can be emulated on the ZedBoard FPGA board or taped out using the
 ## About the System-on-Chip
 
 The PSoC SoC is a RISC-V system based on the open-source [NEORV32](https://github.com/stnolting/neorv32) RISC-V core and the [NEOSD](https://github.com/jpf91/neosd) SD card controller.
-All components are open source, including RTL, bootloader, firmware, and PCBs.
+All components are open source, including [RTL](src/hdl), [bootloader](https://github.com/kit-kch/psoc-xip-bootloader), [firmware](https://github.com/kit-kch/psoc-sw-player), and [PCBs](https://github.com/kit-kch/psoc-pcb-fmc).
 
 Peripherals of the chip include:
 * I2S (custom peripheral)
@@ -36,8 +36,8 @@ Peripherals of the chip include:
 
 ## About the Tapeout
 
-The design was [submitted for fabrication](https://github.com/kit-kch/psoc-soc/releases/tag/ihp-0925) in IHP’s SG13G2 130nm SiGe BiCMOS technology, with dimensions of 2.046 mm × 1.67 mm (3.42 mm² total area). It features 40 pins, 8 of which are power pins use to connect the two supply voltages: 3.3V for I/O and 1.2V for the core.
-The taped out chip can be mounted on a [carrier pcb](https://github.com/kit-kch/psoc-pcb-fmc) and can then interface the same peripherals on the [FMC PCB](https://github.com/kit-kch/psoc-pcb-fmc) as the FPGA design.
+The design was [submitted for fabrication](https://github.com/kit-kch/psoc-soc/releases/tag/ihp-0925) in IHP’s SG13G2 130nm SiGe BiCMOS technology, with dimensions of 2.046 mm × 1.67 mm (3.42 mm² total area). It features 40 pins, 8 of which are power pins used to connect the two supply voltages: 3.3V for I/O and 1.2V for the core.
+The taped out chip can be mounted on a [carrier pcb](https://github.com/kit-kch/psoc-pcb-ihp0925) and can then interface the same peripherals on the [FMC PCB](https://github.com/kit-kch/psoc-pcb-fmc) as the FPGA design.
 
 ## External Repositories
 
