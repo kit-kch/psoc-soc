@@ -255,6 +255,14 @@ make all
 make clean
 ```
 
+#### Flashing the Vivado Project to SPI Flash
+
+When you program the bitstream using the Vivado GUI using JTAG, this only temporarily stores the FPGA bitstream in SRAM.
+Once you reset the power to the ZedBoard, the FPGA will lose its configuration.
+
+If you want to automatically load the design as soon as you power on the ZedBoard, you will have to flash the bitstream to SPI flash.
+Doing that is unnecessarily complex, but the way to do it is documented in the [psoc-vitis-zedboard](https://github.com/kit-kch/psoc-vitis-zedboard) project.
+
 #### IHP SG13G2 Tapeout
 
 To synthesize the design for IHPs [SG13G2 Open PDK](https://github.com/IHP-GmbH/IHP-Open-PDK), follow these instructions:
