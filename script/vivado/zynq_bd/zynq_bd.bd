@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xCC6CFA53F622E079",
+      "boundary_crc": "0xCC6CFA53B4580162",
       "device": "xc7z020clg484-1",
       "name": "zynq_bd",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -826,6 +826,9 @@
           "PCW_MIO_TREE_SIGNALS": {
             "value": "gpio[0]#qspi0_ss_b#qspi0_io[0]#qspi0_io[1]#qspi0_io[2]#qspi0_io[3]/HOLD_B#qspi0_sclk#gpio[7]#qspi_fbclk#gpio[9]#gpio[10]#gpio[11]#gpio[12]#gpio[13]#gpio[14]#gpio[15]#tx_clk#txd[0]#txd[1]#txd[2]#txd[3]#tx_ctl#rx_clk#rxd[0]#rxd[1]#rxd[2]#rxd[3]#rx_ctl#data[4]#dir#stp#nxt#data[0]#data[1]#data[2]#data[3]#clk#data[5]#data[6]#data[7]#clk#cmd#data[0]#data[1]#data[2]#data[3]#reset#cd#tx#rx#gpio[50]#gpio[51]#gpio[52]#gpio[53]"
           },
+          "PCW_PERIPHERAL_BOARD_PRESET": {
+            "value": "part0"
+          },
           "PCW_PRESET_BANK1_VOLTAGE": {
             "value": "LVCMOS 1.8V"
           },
@@ -926,16 +929,16 @@
             "value": "0.187"
           },
           "PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_0": {
-            "value": "0"
+            "value": "0.0"
           },
           "PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_1": {
-            "value": "0"
+            "value": "0.0"
           },
           "PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_2": {
-            "value": "0"
+            "value": "0.0"
           },
           "PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_3": {
-            "value": "0"
+            "value": "0.0"
           },
           "PCW_UIPARAM_DDR_FREQ_MHZ": {
             "value": "525"
