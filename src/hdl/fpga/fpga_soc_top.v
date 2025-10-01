@@ -44,6 +44,8 @@ module fpga_soc_top(
     assign xip_q3 = 1'b1;
 
     // We don't really want this, but the Zynq architecture forces us to include it
+    // It even causes simulation errors...
+`ifndef XILINX_SIMULATOR
     zynq_bd_wrapper ps7 (
         .DDR_addr(DDR_addr),
         .DDR_ba(DDR_ba),
@@ -67,5 +69,6 @@ module fpga_soc_top(
         .FIXED_IO_ps_clk(FIXED_IO_ps_clk),
         .FIXED_IO_ps_porb(FIXED_IO_ps_porb)
     );
+`endif
 
 endmodule
